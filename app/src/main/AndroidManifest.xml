@@ -15,17 +15,23 @@
         <activity
             android:name=".Login"
             android:exported="false" />
+
+        <!-- SplashScreen set as the LAUNCHER activity -->
         <activity
             android:name=".SplashScreen"
-            android:exported="false" />
+            android:exported="true"
+            android:theme="@style/Theme.XBCADAntonieMotors.MySplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--false-->
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <meta-data
