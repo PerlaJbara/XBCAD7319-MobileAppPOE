@@ -7,5 +7,5 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     tools:context=".SplashScreen">
-<!-- android:background="@drawable/roadss"-->
+<!-- android:background="@drawable/roads"-->
 </androidx.constraintlayout.widget.ConstraintLayout>
