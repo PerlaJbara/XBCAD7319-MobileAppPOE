@@ -8,7 +8,6 @@
     tools:context=".Login">
 
     <!-- Semi-Transparent Round-Edged Rectangle -->
-
     <LinearLayout
         android:layout_width="362dp"
         android:layout_height="639dp"
@@ -35,8 +34,6 @@
             android:textStyle="bold" />
 
         <!-- Username Label -->
-
-        <!-- Username TextBox -->
         <TextView
             android:id="@+id/username_label"
             android:layout_width="wrap_content"
@@ -47,6 +44,7 @@
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
+        <!-- Username TextBox -->
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="match_parent"
@@ -55,7 +53,7 @@
             android:inputType="text"
             android:padding="12dp" />
 
-
+        <!-- Password Label -->
         <TextView
             android:id="@+id/password_label"
             android:layout_width="wrap_content"
@@ -77,15 +75,30 @@
             android:inputType="textPassword"
             android:padding="12dp" />
 
-        <TextView
-            android:id="@+id/textView6"
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="175dp"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/black"
+            android:padding="12dp"
+            android:text="Login"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Footer Text -->
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="316dp"
+            android:layout_height="185dp"
+            android:paddingTop="98dp"
             android:text="Powered By Tech Fusion"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20sp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
