@@ -16,7 +16,7 @@
             android:name=".Login"
             android:exported="false" />
 
-        <!-- SplashScreen set as the LAUNCHER activity -->
+
         <activity
             android:name=".SplashScreen"
             android:exported="true"
@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--false-->
+
 
         <activity
             android:name=".MainActivity"

@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/carstack"
+    android:background="@drawable/logincar"
     tools:context=".Login">
 
-    <!-- Semi-Transparent Round-Edged Rectangle -->
+
     <LinearLayout
         android:layout_width="362dp"
         android:layout_height="639dp"
@@ -33,7 +33,7 @@
             android:textSize="80sp"
             android:textStyle="bold" />
 
-        <!-- Username Label -->
+
         <TextView
             android:id="@+id/username_label"
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
-        <!-- Username TextBox -->
+
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
             android:inputType="text"
             android:padding="12dp" />
 
-        <!-- Password Label -->
+
         <TextView
             android:id="@+id/password_label"
             android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
-        <!-- Password TextBox -->
+
         <EditText
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
@@ -75,7 +75,7 @@
             android:inputType="textPassword"
             android:padding="12dp" />
 
-        <!-- Login Button -->
+
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -97,7 +97,7 @@
             android:text="Powered By Tech Fusion"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="18dpsp" />
 
     </LinearLayout>
 

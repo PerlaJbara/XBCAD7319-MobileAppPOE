@@ -25,7 +25,7 @@
         />
     <item
         android:id="@+id/navEmployees"
-        android:icon="@drawable/vectortoolsblack"
+        android:icon="@drawable/vectortoolstransparent"
         android:title="Employees"
         />
 </menu>
