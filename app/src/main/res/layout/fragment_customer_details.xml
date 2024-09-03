@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CustomerDetailsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linLayoutHeader"
+            android:layout_width="match_parent"
+            android:layout_height="181dp"
+            android:orientation="vertical">
+
+
+            <!-- Background Image with See-Through Black Layer -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/customerdetailsfragmentheader"
+                android:background="@drawable/rounded_image"
+                android:clipToOutline="true"/>
+
+
+            <TextView
+                android:id="@+id/textViewCustomerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="80dp"
+                android:text="Customer Name"
+                android:textColor="#ffffff"
+                android:textSize="35sp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linLayoutBody"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="466dp"
+                android:layout_marginVertical="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+
+                    <!-- Contact Information Section -->
+                    <TextView
+                        android:id="@+id/textViewContactInfoHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingRight="70dp"
+                        android:text="Contact Information"
+                        android:textStyle="bold"
+                        android:textSize="30sp"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@android:color/black"/>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingRight="165dp"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:id="@+id/textViewCellNumberLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cell number:"
+                            android:textStyle="bold"
+                            android:textSize="18sp"/>
+
+                        <TextView
+                            android:id="@+id/textViewCellNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="074 352 1145"
+                            android:textSize="18sp"/>
+
+                        <TextView
+                            android:id="@+id/textViewEmailLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email:"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:layout_marginTop="8dp"/>
+
+                        <TextView
+                            android:id="@+id/textViewEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="cviljoen3@gmail.com"
+                            android:textSize="18sp"/>
+
+                        <TextView
+                            android:id="@+id/textViewAddressLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Physical Address:"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:layout_marginTop="8dp"/>
+
+                        <TextView
+                            android:id="@+id/textViewAddress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                            android:textSize="18sp"/>
+
+                    </LinearLayout>
+
+
+
+
+                    <!-- Vehicles Information Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="20dp">
+
+
+                        <TextView
+                            android:layout_width="330dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:text="Vehicle/s"
+                            android:paddingBottom="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <ScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:paddingLeft="45dp"
+                                android:orientation="vertical"
+                                android:paddingBottom="20dp">
+
+
+                                <TextView
+                                    android:id="@+id/txtCustomerVehicles"
+                                    android:layout_width="390dp"
+                                    android:textColor="@color/red"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:text="This is a test for the scroll view in case the owner has more then 1 vehicle "
+                                    android:textSize="20sp" />
+
+                                <TextView
+                                    android:id="@+id/txtCarModelLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Car Model:"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"/>
+
+
+                                <TextView
+                                    android:id="@+id/txtCarModel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="2002 Honda Civic"
+                                    android:textSize="18sp"/>
+
+
+                                <TextView
+                                    android:id="@+id/txtVinNumberLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="VIN Number:"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:layout_marginTop="8dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtVinNumber"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="1EFCV1F65JA522134"
+                                    android:textSize="18sp"/>
+
+                                <TextView
+                                    android:id="@+id/txtKilometersLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Kilometers:"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:layout_marginTop="8dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtKilometers"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="351 112.98 km"
+                                    android:textSize="18sp"/>
+
+                                <TextView
+                                    android:id="@+id/txtLicensePlateLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="License Plate:"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:layout_marginTop="8dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtLicensePlate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="GHJ907 GP"
+                                    android:textSize="18sp"/>
+
+
+                                <TextView
+                                    android:id="@+id/txtTest1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="License Plate:"
+                                    android:textStyle="bold"
+                                    android:textSize="18sp"
+                                    android:layout_marginTop="8dp"/>
+
+                                <TextView
+                                    android:id="@+id/txtTest1View"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="GHJ907 GP"
+                                    android:textSize="18sp"/>
+
+                            </LinearLayout>
+
+                        </ScrollView>
+
+
+
+
+
+
+                        <!-- History Information Section -->
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingBottom="10dp"
+                        android:paddingRight="220dp"
+                        android:text="History"
+                        android:textAlignment="center"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="383dp"
+                            android:layout_gravity="center_horizontal"
+                            android:paddingLeft="40dp"
+                            android:paddingRight="40dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10dp"
+                            android:background="@drawable/customer_cards"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="vehicle Serviced:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2002 Honda Civic"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"
+                                android:paddingBottom="10dp"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Service:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Basic Service"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Service Notes:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Head light replacment, egine repairs and new whiper blades"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Parts Costs:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lights: R400\nBlades: R300x3"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"/>
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Labour Costs:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="R2000,00"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Service Cost:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="R 3300,00"
+                                android:textSize="18sp"
+                                android:layout_marginTop="4dp"/>
+
+                        </LinearLayout>
+
+
+
+
+                    </ScrollView>
+
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="73dp">
+
+                <Button
+                    android:id="@+id/btnEditCustomer"
+                    android:layout_width="143dp"
+                    android:layout_height="62dp"
+                    android:backgroundTint="#038A39"
+                    android:text="Edit"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.059"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <Button
+                    android:id="@+id/btnDeleteCustomer"
+                    android:layout_width="143dp"
+                    android:layout_height="62dp"
+                    android:textSize="18sp"
+                    android:backgroundTint="#CA2F2E"
+                    android:text="Delete Customer"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.94"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>
