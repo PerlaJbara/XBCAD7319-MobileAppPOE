@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -60,16 +61,32 @@
             android:orientation="vertical"
             android:paddingBottom="60dp">
 
-            <TextView
-                android:id="@+id/textView7"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="18dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:text="Reminders:"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="147dp"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:text="Reminders:"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/ivAddReminder"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="110dp"
+                    android:paddingTop="15dp"
+                    android:src="@drawable/vectorplus" />
+
+            </LinearLayout>
 
             <ScrollView
                 android:id="@+id/svHomeReminders"

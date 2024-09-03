@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Login Heading -->
+
         <TextView
             android:id="@+id/login_heading"
             android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <!-- Footer Text -->
+
         <TextView
             android:id="@+id/textView6"
             android:layout_width="316dp"
