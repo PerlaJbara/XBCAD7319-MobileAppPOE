@@ -14,16 +14,8 @@
             android:id="@+id/linLayoutHeader"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:background="@drawable/redlayoutheader"
+            android:background="@drawable/servicesheader"
             android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/vectorcar" />
 
             <TextView
                 android:id="@+id/textView"
@@ -32,6 +24,7 @@
                 android:clickable="false"
                 android:fontFamily="@font/fontpoppinsmedium"
                 android:text="Add a Service"
+                android:layout_marginTop="80dp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="38sp" />
