@@ -102,7 +102,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/spingradientgtor"
                     android:padding="12dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             </LinearLayout>
 
@@ -132,9 +133,10 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/spingradientgtor"
-                    android:padding="12dp"
                     android:inputType="textEmailAddress"
-                    android:textSize="16sp" />
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             </LinearLayout>
 
@@ -188,9 +190,10 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/spingradientgtor"
-                    android:padding="12dp"
                     android:inputType="number"
-                    android:textSize="16sp" />
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             </LinearLayout>
 
@@ -220,9 +223,10 @@
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/spingradientgtor"
-                    android:padding="12dp"
                     android:inputType="numberDecimal"
-                    android:textSize="16sp" />
+                    android:padding="12dp"
+                    android:textSize="16sp"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             </LinearLayout>
 

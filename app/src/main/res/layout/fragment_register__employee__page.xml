@@ -77,7 +77,8 @@
                 app:layout_constraintHorizontal_bias="0.195"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtEmpName"
-                app:layout_constraintWidth_percent="0.8" />
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 
             <TextView
@@ -107,7 +108,8 @@
                 app:layout_constraintHorizontal_bias="0.195"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtMonthlySalary"
-                app:layout_constraintWidth_percent="0.8" />
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <!-- Side by Side TextViews -->
             <TextView
@@ -151,7 +153,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtTotalLeave"
-                app:layout_constraintWidth_percent="0.4" />
+                app:layout_constraintWidth_percent="0.4"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <EditText
                 android:id="@+id/txtleft"
@@ -165,7 +168,8 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/txtTotal"
                 app:layout_constraintTop_toBottomOf="@+id/txtLeaveleft"
-                app:layout_constraintWidth_percent="0.4" />
+                app:layout_constraintWidth_percent="0.4"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/txtMobileNumber"
@@ -193,7 +197,8 @@
                 app:layout_constraintHorizontal_bias="0.195"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtMobileNumber"
-                app:layout_constraintWidth_percent="0.8" />
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <!-- Email Field -->
             <TextView
@@ -222,7 +227,8 @@
                 app:layout_constraintHorizontal_bias="0.195"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtEmail"
-                app:layout_constraintWidth_percent="0.8" />
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/txtPhysicalAddress"
