@@ -8,36 +8,32 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@drawable/redlayoutheader"
+        android:layout_height="191dp"
+        android:background="@drawable/carexhaustheader"
+        android:clipToOutline="true"
         android:orientation="vertical"
         android:paddingTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imgQuoteVector"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            app:srcCompat="@drawable/vectorquote" />
 
         <TextView
-            android:id="@+id/txtQuoteGenerator"
+            android:id="@+id/txtQuoteOverview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
+            android:fontFamily="@font/fontpoppinssemibold"
             android:gravity="center_horizontal"
-            android:paddingTop="12dp"
+            android:paddingTop="85dp"
             android:text="Quote Generator"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />
+
     </LinearLayout>
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="3dp"
+        android:layout_width="411dp"
+        android:layout_height="537dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
@@ -50,12 +46,13 @@
                 android:id="@+id/txtSelecctCustomer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Select Customer"
                 android:textSize="25sp"
-                android:gravity="center"
-                app:layout_constraintTop_toTopOf="parent"
+                android:fontFamily="@font/fontpoppinsmedium"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
                 android:id="@+id/spinCustomer"
@@ -63,23 +60,25 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/spingradientgtor"
-                app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/fontpoppinsregular"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_default="wrap"
-                app:layout_constraintHorizontal_bias="0.5" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer"
+                app:layout_constraintWidth_default="wrap" />
 
             <TextView
                 android:id="@+id/txtServiceType"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
                 android:text="Select Service Type"
                 android:textSize="25sp"
-                android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@+id/spinCustomer"
+                android:fontFamily="@font/fontpoppinsmedium"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/spinCustomer" />
 
             <Spinner
                 android:id="@+id/spinQuote"
@@ -87,6 +86,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/spingradientgtor"
+                android:fontFamily="@font/fontpoppinsregular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -95,25 +95,27 @@
 
             <Button
                 android:id="@+id/btnServiceTypes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
                 android:layout_marginTop="5dp"
-                android:text="Button"
-                app:layout_constraintTop_toBottomOf="@+id/spinQuote"
+                android:backgroundTint="@color/red"
+                android:text="Edit Service"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/spinQuote" />
 
             <TextView
                 android:id="@+id/txtParts"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
                 android:text="Parts"
                 android:textSize="25sp"
-                android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@+id/btnServiceTypes"
+                android:fontFamily="@font/fontpoppinsmedium"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/btnServiceTypes" />
 
             <EditText
                 android:id="@+id/edttxtParts"
@@ -121,6 +123,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/spingradientgtor"
+                android:fontFamily="@font/fontpoppinsregular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -132,24 +135,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
                 android:text="Labour Cost"
                 android:textSize="25sp"
-                android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@+id/edttxtParts"
+                android:fontFamily="@font/fontpoppinsmedium"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/edttxtParts" />
 
             <EditText
                 android:id="@+id/edttxtLabour"
                 android:layout_width="310dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
+                android:fontFamily="@font/fontpoppinsregular"
                 android:background="@drawable/spingradientgtor"
-                app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_default="wrap"
-                app:layout_constraintHorizontal_bias="0.5" />
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
+                app:layout_constraintWidth_default="wrap" />
 
             <TextView
                 android:id="@+id/txtFinalQuote"
@@ -157,7 +162,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Final Quote"
+                android:text="Final Amount"
+                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
@@ -168,18 +174,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote">
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/btnReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="138dp"
+                android:layout_height="54dp"
                 android:layout_marginTop="44dp"
-                android:text="Button"
+                android:backgroundTint="#038A39"
+                android:text="Review"
+                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutQuote" />
@@ -188,8 +196,9 @@
                 android:id="@+id/txtRvalue"
                 android:layout_width="192dp"
                 android:layout_height="32dp"
-                android:background="#6DECA0"
+                android:background="@drawable/greenboderbackground"
                 android:text="TextView"
+                android:fontFamily="@font/fontpoppinsregular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/layoutQuote" />
@@ -200,6 +209,7 @@
                 android:layout_height="42dp"
                 android:text="R"
                 android:textSize="30dp"
+                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toStartOf="@+id/txtRvalue"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote" />
