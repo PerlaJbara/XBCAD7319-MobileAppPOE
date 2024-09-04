@@ -27,8 +27,6 @@
                 android:clipToOutline="true"/>
 
 
-
-
         </LinearLayout>
 
         <LinearLayout
