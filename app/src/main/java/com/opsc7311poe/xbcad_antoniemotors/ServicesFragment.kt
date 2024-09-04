@@ -27,7 +27,7 @@ class ServicesFragment : Fragment() {
 
         imgPlus.setOnClickListener(){
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(ManageServiceTypesFragment())
+            replaceFragment(AddServiceFragment())
         }
 
         return view
