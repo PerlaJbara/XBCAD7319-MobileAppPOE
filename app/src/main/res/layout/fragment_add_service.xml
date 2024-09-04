@@ -91,7 +91,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtServiceName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtDateCarReceived"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtDateCarReturned"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/txtParts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <EditText
                     android:id="@+id/txtLabourCost"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -2,6 +2,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,8 @@ class ServicesFragment : Fragment() {
         imgPlus = view.findViewById(R.id.imgPlus)
 
         imgPlus.setOnClickListener(){
-            replaceFragment(AddServiceFragment())
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(ManageServiceTypesFragment())
         }
 
         return view
