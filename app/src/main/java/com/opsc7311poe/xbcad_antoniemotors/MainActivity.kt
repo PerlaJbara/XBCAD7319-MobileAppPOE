@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navReceipt -> {
-                    replaceFragment(ReceiptFragment())
+                    replaceFragment(ReceiptGeneratorFragment())
                     true
                 }
                 R.id.navEmployees -> {
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navQuoteGen -> {
-                    replaceFragment(QuoteFragment())
+                    replaceFragment(QuoteGenFragment())
                     true
                 }
                 else -> false
