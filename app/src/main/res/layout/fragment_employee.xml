@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
+            android:paddingTop="80dp"
             android:text="Employee"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
@@ -92,30 +93,17 @@
         android:id="@+id/svEmployeeList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="140dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contentLayout"
-        app:layout_constraintVertical_bias="1.0">
+        tools:ignore="SpeakableTextPresentCheck">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Replacing EditText with TextView for displaying employee names -->
-            <TextView
-                android:id="@+id/textViewEmployeeList"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="#038A39"
-                android:padding="16dp"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp" />
-
-        </LinearLayout>
+            android:padding="16dp" />
 
     </ScrollView>
 

@@ -24,11 +24,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/txtEmpInfo"
+            android:id="@+id/txtheaderempname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
+            android:paddingTop="80dp"
             android:text="EmpName"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
@@ -49,302 +50,277 @@
         <LinearLayout
             android:id="@+id/linLayoutBody"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="466dp"
-                android:layout_marginVertical="5dp">
+            <!-- Contact Information Section -->
+            <TextView
+                android:id="@+id/textViewContactInfoHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingRight="70dp"
+                android:text="Contact Information"
+                android:textStyle="bold"
+                android:textSize="30sp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@android:color/black"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingRight="165dp"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:id="@+id/textViewCellNumberLabel"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:text="Cell number:"
+                    android:textStyle="bold"
+                    android:textSize="18sp"/>
 
-                    <!-- Contact Information Section -->
-                    <TextView
-                        android:id="@+id/textViewContactInfoHeader"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingRight="70dp"
-                        android:text="Contact Information"
-                        android:textStyle="bold"
-                        android:textSize="30sp"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@android:color/black"/>
+                <TextView
+                    android:id="@+id/txtempcell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="074 352 1145"
+                    android:textSize="18sp"/>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingRight="165dp"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="16dp">
+                <TextView
+                    android:id="@+id/textViewEmailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email:"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginTop="8dp"/>
 
-                        <TextView
-                            android:id="@+id/textViewCellNumberLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cell number:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/txtempEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="cviljoen3@gmail.com"
+                    android:textSize="18sp"/>
 
-                        <TextView
-                            android:id="@+id/textViewCellNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="074 352 1145"
-                            android:textSize="18sp"/>
+                <TextView
+                    android:id="@+id/textViewAddressLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Physical Address:"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginTop="8dp"/>
 
-                        <TextView
-                            android:id="@+id/textViewEmailLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Email:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:layout_marginTop="8dp"/>
+                <TextView
+                    android:id="@+id/txtempAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                    android:textSize="18sp"/>
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textViewEmail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="cviljoen3@gmail.com"
-                            android:textSize="18sp"/>
+            <!-- Employee Information Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
 
-                        <TextView
-                            android:id="@+id/textViewAddressLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Physical Address:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:layout_marginTop="8dp"/>
+                <TextView
+                    android:layout_width="330dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:text="Employee Information"
+                    android:paddingBottom="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/textViewAddress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
-                            android:textSize="18sp"/>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                    </LinearLayout>
-
-                    <!-- Employee Information Section -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:orientation="vertical"
+                        android:paddingLeft="45dp"
                         android:paddingBottom="20dp">
 
                         <TextView
-                            android:layout_width="330dp"
+                            android:id="@+id/txtleaveremain"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:text="Employee Information"
-                            android:paddingBottom="20dp"
-                            android:layout_gravity="center_horizontal"
-                            android:textSize="30sp"
+                            android:text="Leave Days Remaining:"
+                            android:textSize="18sp"
                             android:textStyle="bold" />
 
-                        <ScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:paddingLeft="45dp"
-                                android:orientation="vertical"
-                                android:paddingBottom="20dp">
-
-                                <TextView
-                                    android:id="@+id/txtleaveremain"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Leave Days Remaining:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"/>
-
-                                <TextView
-                                    android:id="@+id/txtleave"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="1 Days"
-                                    android:textSize="18sp"/>
-
-                                <TextView
-                                    android:id="@+id/txtmonsal"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Monthly Salary:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"
-                                    android:layout_marginTop="8dp"/>
-
-                                <TextView
-                                    android:id="@+id/txtmonthly"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="R16 000"
-                                    android:textSize="18sp"/>
-
-                            </LinearLayout>
-                        </ScrollView>
-                    </LinearLayout>
-
-                    <!-- Future Leave Section -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingRight="220dp"
-                        android:text="Future Leave"
-                        android:textAlignment="center"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/customer_cards">
+                        <TextView
+                            android:id="@+id/txtleave"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1 Days"
+                            android:textSize="18sp" />
 
                         <TextView
-                            android:id="@+id/lblFamilyLeaveLabel"
+                            android:id="@+id/txtmonsal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Family Leave"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="8dp"/>
-
-                        <!-- Start Date and End Date -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_gravity="center_horizontal"
-                            android:gravity="center"
-                            android:weightSum="2"
-                            android:layout_marginBottom="16dp">
-
-                            <EditText
-                                android:id="@+id/txtStartDate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@drawable/roundcorneredt"
-                                android:inputType="date" />
-
-                            <EditText
-                                android:id="@+id/txtEndDate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="16dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/roundcorneredt"
-                                android:inputType="date"
-                                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/btnSaveLeave"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:text="Save"
-                            android:backgroundTint="#CA2F2E"
-                            android:textSize="18sp"/>
-                    </LinearLayout>
-
-                    <!-- Holiday Section -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/customer_cards"
-                        android:layout_marginTop="16dp">
+                            android:layout_marginTop="8dp"
+                            android:text="Monthly Salary:"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/lblHolidayLabel"
+                            android:id="@+id/txtmonthly"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Holiday"
-                            android:textStyle="bold"
-                            android:textSize="20sp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="8dp"/>
-
-                        <!-- Start Date and End Date for Holiday -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_gravity="center_horizontal"
-                            android:gravity="center"
-                            android:weightSum="2">
-
-                            <EditText
-                                android:id="@+id/txtHolidayStartDate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@drawable/roundcorneredt"
-                                android:inputType="date" />
-
-                            <EditText
-                                android:id="@+id/txtHolidayEndDate"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@drawable/roundcorneredt"
-                                android:inputType="date"
-                                android:layout_marginStart="16dp"/>
-                        </LinearLayout>
+                            android:text="R16 000"
+                            android:textSize="18sp" />
                     </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
 
+            <!-- Future Leave Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="10dp"
+                android:paddingRight="220dp"
+                android:text="Future Leave"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/customer_cards"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Start Date and End Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <EditText
+                        android:id="@+id/txtStartDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/roundcorneredt"
+                        android:inputType="date"
+                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                    <EditText
+                        android:id="@+id/txtEndDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/roundcorneredt"
+                        android:inputType="date"
+                        tools:ignore="TouchTargetSizeCheck" />
                 </LinearLayout>
-            </ScrollView>
+
+                <Button
+                    android:id="@+id/btnSaveLeave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:backgroundTint="#CA2F2E"
+                    android:text="Save"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <!-- Holiday Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/customer_cards"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/lblHolidayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Holiday"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Start Date and End Date for Holiday -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:weightSum="2">
+
+                    <EditText
+                        android:id="@+id/txtHolidayStartDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/roundcorneredt"
+                        android:inputType="date" />
+
+                    <EditText
+                        android:id="@+id/txtHolidayEndDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/roundcorneredt"
+                        android:inputType="date"
+                        android:layout_marginStart="16dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
     <Button
+        android:id="@+id/btnDeleteEmp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#CA2F2E"
+        android:text="Delete"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/svEmployeedetails"
+        app:layout_constraintVertical_bias="0.904" />
+
+    <Button
         android:id="@+id/btnEditEmployeeInfo"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="44dp"
         android:backgroundTint="#038A39"
         android:text="Edit Employee Info"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/btnDeleteEmp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnDeleteEmp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
-        android:backgroundTint="#CA2F2E"
-        android:text="Delete Employee"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.8" />
 </androidx.constraintlayout.widget.ConstraintLayout>
