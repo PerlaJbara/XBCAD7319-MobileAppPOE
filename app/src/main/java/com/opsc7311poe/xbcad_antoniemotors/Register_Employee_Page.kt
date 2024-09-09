@@ -37,8 +37,8 @@ class Register_Employee_Page : Fragment() {
 
         btnSubmit.setOnClickListener(){
             //save button
-            txtName = view.findViewById(R.id.txtEmpName)
-            txtSal = view.findViewById(R.id.txtEmpName)
+            txtName = view.findViewById(R.id.txtEmpname)
+            txtSal = view.findViewById(R.id.txtEmpsalary)
             txtTotalLeave = view.findViewById(R.id.txtTotal)
             txtLeaveLeft = view.findViewById(R.id.txtleft)
             txtNum = view.findViewById(R.id.txtnumber)
