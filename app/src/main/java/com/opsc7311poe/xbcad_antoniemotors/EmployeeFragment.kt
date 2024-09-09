@@ -9,69 +9,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginBottom
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 
 
 class EmployeeFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
-
-
-    //method to load in each employee
-    private fun loadEmployees() {
-        /*//fetching projects from database and displaying them in scrollview
-        //fetching projects from DB into list
-        svAllProjs = findViewById(R.id.svAllProjs)
-        linLay = findViewById(R.id.displayEntries)
-
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null)
-        {
-            val database = Firebase.database
-
-            val projRef = database.getReference(userId).child("projects")
-
-            projRef.addValueEventListener(object: ValueEventListener
-            {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    linLay.removeAllViews()
-
-                    for(pulledOrder in snapshot.children)
-                    {
-                        val projName : String? = pulledOrder.child("name").getValue(String::class.java)
-                        if (projName != null)
-                        {
-                            //adding text view with project name
-                            val textView = TextView(this@AllProjects)
-
-                            textView.text = projName
-                            textView.textSize = 25f
-                            textView.height = 120
-                            textView.setTextColor(Color.parseColor("#FFFFFF"))
-                            textView.typeface = ResourcesCompat.getFont(this@AllProjects, R.font.italiana)
-                            //when project name is tapped the project name is logged and the user is taken to project details page
-                            textView.setOnClickListener {
-                                val intent = Intent(this@AllProjects, ProjectDetails::class.java)
-                                intent.putExtra("projectName", textView.text)
-                                startActivity(intent)
-                            }
-
-                            linLay.addView(textView)
-                        }
-
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(baseContext, "Error reading from the database: " + error.toString(), Toast.LENGTH_SHORT).show()
-                }
-            })
-        }*/
-
-    }
+    private lateinit var svEmpList : ScrollView
+    private lateinit var linLay : LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,6 +37,57 @@ class EmployeeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_employee, container, false)
 
+        //adding list of employees as buttons
+        //fetching employees from DB into list
+        svEmpList = view.findViewById(R.id.svEmployeeList)
+        linLay = view.findViewById(R.id.linlayEmployees)
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null)
+        {
+            val database = Firebase.database
+
+            val empRef = database.getReference(userId).child("Employees")
+
+            empRef.addValueEventListener(object: ValueEventListener
+            {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    linLay.removeAllViews()
+
+                    for(pulledOrder in snapshot.children)
+                    {
+                        val empName : String? = pulledOrder.child("name").getValue(String::class.java)
+                        if (empName != null)
+                        {
+                            //adding text view with project name
+                            val TextView = TextView(requireContext())
+
+                            TextView.text = empName
+                            TextView.textSize = 25f
+                            //TextView.setBackgroundColor(Color.parseColor("#038a39"))
+                            TextView.setTextColor(Color.parseColor("#000000"))
+                            TextView.typeface = ResourcesCompat.getFont(requireContext(), R.font.fontpoppinsregular)
+                            //when Employee name is tapped the project name is logged and the user is taken to project details page
+                            /*textView.setOnClickListener {
+                                val intent = Intent(this@EmployeeFragment, ProjectDetails::class.java)
+                                intent.putExtra("projectName", textView.text)
+                                startActivity(intent)
+                            }*/
+
+                            linLay.addView(TextView)
+                        }
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    //Toast.makeText(baseContext, "Error reading from the database: " + error.toString(), Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+
+
+        //plus button functionality
         imgPlus = view.findViewById(R.id.imgPlus)
 
         imgPlus.setOnClickListener(){
