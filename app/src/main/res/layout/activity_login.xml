@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/albert_sans"
             android:paddingBottom="8dp"
-            android:text="Username"
+            android:text="Email"
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
