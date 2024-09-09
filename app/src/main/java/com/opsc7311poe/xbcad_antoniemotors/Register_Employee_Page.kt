@@ -96,12 +96,15 @@ class Register_Employee_Page : Fragment() {
 
 //employee data class
 data class Employee(
-    var name: String,
-    var salary: String,
-    var totalLeave: String,
-    var leaveLeft: String,
-    var number: String,
-    var email: String,
-    var address: String
-)
+    var name: String?,
+    var salary: String?,
+    var totalLeave: String?,
+    var leaveLeft: String?,
+    var number: String?,
+    var email: String?,
+    var address: String?
+){
+    // No-argument constructor (required by Firebase)
+    constructor() : this(null, null, null, null, null, null, null)
+}
 

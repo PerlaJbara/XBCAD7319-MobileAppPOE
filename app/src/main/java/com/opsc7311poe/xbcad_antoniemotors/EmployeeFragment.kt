@@ -14,6 +14,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -73,10 +75,18 @@ class EmployeeFragment : Fragment() {
                             layoutParams.setMargins(0, 20, 0, 20) // Add margins for spacing
                             employeeButton.layoutParams = layoutParams
 
-                            // On click behavior for each employee button
-                            /*employeeButton.setOnClickListener {
-                                // Implement button functionality here (e.g., navigate to details)
-                            }*/
+                            //when Employee name is tapped the project name is logged and the user is taken to project details page
+                            employeeButton.setOnClickListener {
+
+                                val employeeInfoFragment = Employee_Info_Page()
+                                //transferring employee info using a bundle
+                                val bundle = Bundle()
+                                bundle.putString("employeeName", empName)
+                                employeeInfoFragment.arguments = bundle
+                                //changing to employee info fragment
+                                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                                replaceFragment(employeeInfoFragment)
+                            }
 
                             // Add the button to the LinearLayout
                             linLay.addView(employeeButton)
@@ -101,8 +111,10 @@ class EmployeeFragment : Fragment() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
+        Log.d("EmployeeFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }
