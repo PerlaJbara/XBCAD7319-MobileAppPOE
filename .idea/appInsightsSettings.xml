@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.opsc7311poe.xbcad_antoniemotors" />
+                  <option name="mobileSdkAppId" value="1:208400258513:android:87ee4bec4a1377bccf7cf0" />
+                  <option name="projectId" value="antonie-motors" />
+                  <option name="projectNumber" value="208400258513" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
