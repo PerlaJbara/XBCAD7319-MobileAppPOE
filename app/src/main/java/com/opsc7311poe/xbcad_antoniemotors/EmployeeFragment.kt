@@ -1,59 +1,98 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [EmployeeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EmployeeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private lateinit var imgPlus: ImageView
+
+
+    //method to load in each employee
+    private fun loadEmployees() {
+        /*//fetching projects from database and displaying them in scrollview
+        //fetching projects from DB into list
+        svAllProjs = findViewById(R.id.svAllProjs)
+        linLay = findViewById(R.id.displayEntries)
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null)
+        {
+            val database = Firebase.database
+
+            val projRef = database.getReference(userId).child("projects")
+
+            projRef.addValueEventListener(object: ValueEventListener
+            {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    linLay.removeAllViews()
+
+                    for(pulledOrder in snapshot.children)
+                    {
+                        val projName : String? = pulledOrder.child("name").getValue(String::class.java)
+                        if (projName != null)
+                        {
+                            //adding text view with project name
+                            val textView = TextView(this@AllProjects)
+
+                            textView.text = projName
+                            textView.textSize = 25f
+                            textView.height = 120
+                            textView.setTextColor(Color.parseColor("#FFFFFF"))
+                            textView.typeface = ResourcesCompat.getFont(this@AllProjects, R.font.italiana)
+                            //when project name is tapped the project name is logged and the user is taken to project details page
+                            textView.setOnClickListener {
+                                val intent = Intent(this@AllProjects, ProjectDetails::class.java)
+                                intent.putExtra("projectName", textView.text)
+                                startActivity(intent)
+                            }
+
+                            linLay.addView(textView)
+                        }
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(baseContext, "Error reading from the database: " + error.toString(), Toast.LENGTH_SHORT).show()
+                }
+            })
+        }*/
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_employee, container, false)
+        val view = inflater.inflate(R.layout.fragment_employee, container, false)
+
+        imgPlus = view.findViewById(R.id.imgPlus)
+
+        imgPlus.setOnClickListener(){
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(Register_Employee_Page())
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EmployeeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EmployeeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun replaceFragment(fragment: Fragment) {
+        Log.d("EmployeeFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
     }
 }

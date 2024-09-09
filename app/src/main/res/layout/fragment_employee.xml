@@ -92,7 +92,7 @@
     <ScrollView
         android:id="@+id/svEmployeeList"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="350dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +103,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp" />
+            android:padding="16dp" >
+
+        </LinearLayout>
 
     </ScrollView>
 
@@ -116,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/svEmployeeList">
 
         <ImageView
-            android:id="@+id/imageButton"
+            android:id="@+id/imgPlus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

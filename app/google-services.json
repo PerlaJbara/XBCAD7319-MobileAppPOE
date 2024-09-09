@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "208400258513",
+    "firebase_url": "https://antonie-motors-default-rtdb.firebaseio.com",
     "project_id": "antonie-motors",
     "storage_bucket": "antonie-motors.appspot.com"
   },
