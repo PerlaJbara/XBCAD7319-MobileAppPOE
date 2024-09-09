@@ -1,59 +1,86 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.*
+import androidx.fragment.app.Fragment
+import com.google.firebase.database.FirebaseDatabase
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RegisterVehicleFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RegisterVehicleFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var spinCustomer: Spinner
+    private lateinit var edtVehicleNoPlate: EditText
+    private lateinit var edtVehicleModel: EditText
+    private lateinit var edtVinNumber: EditText
+    private lateinit var edtVehicleKms: EditText
+    private lateinit var btnSubmitRegCustomer: Button
+
+    // Firebase database reference
+    private val database = FirebaseDatabase.getInstance().getReference("Vehicles")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_vehicle, container, false)
+        val view = inflater.inflate(R.layout.fragment_register_vehicle, container, false)
+
+        // Initialize views
+        spinCustomer = view.findViewById(R.id.spinCustomer)
+        edtVehicleNoPlate = view.findViewById(R.id.edttxtVehicleNoPlate)
+        edtVehicleModel = view.findViewById(R.id.edttxtVehicleModel)
+        edtVinNumber = view.findViewById(R.id.edttxtVinNumber)
+        edtVehicleKms = view.findViewById(R.id.edttxtVehicleKms)
+        btnSubmitRegCustomer = view.findViewById(R.id.btnSubmitRegCustomer)
+
+        // Set up button click listener
+        btnSubmitRegCustomer.setOnClickListener {
+            registerVehicle()
+        }
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegisterVehicleFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterVehicleFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun registerVehicle() {
+        val owner = spinCustomer.selectedItem.toString()
+        val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
+        val vehicleModel = edtVehicleModel.text.toString().trim()
+        val vinNumber = edtVinNumber.text.toString().trim()
+        val vehicleKms = edtVehicleKms.text.toString().trim()
+
+        if (owner.isEmpty() || vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vinNumber.isEmpty() || vehicleKms.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        // Create a map to store vehicle data
+        val vehicleData = hashMapOf(
+            "owner" to owner,
+            "vehicleNoPlate" to vehicleNoPlate,
+            "vehicleModel" to vehicleModel,
+            "vinNumber" to vinNumber,
+            "vehicleKms" to vehicleKms
+        )
+
+        // Push the map to Firebase
+        val newVehicleRef = database.push()
+        newVehicleRef.setValue(vehicleData)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Vehicle registered successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to register vehicle: ${it.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 }
+
