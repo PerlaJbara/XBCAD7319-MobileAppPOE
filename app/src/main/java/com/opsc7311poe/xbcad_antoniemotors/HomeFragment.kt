@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 
 class HomeFragment : Fragment() {
 
     private lateinit var viewCustomersBtn: Button
+    private lateinit var btnSettings: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +23,8 @@ class HomeFragment : Fragment() {
 
         // Initialize the button
         viewCustomersBtn = view.findViewById(R.id.btnViewCustomers)
+        btnSettings = view.findViewById(R.id.ivSettings)
+
 
         // Set up the button click event to navigate to CustomerFragment
         viewCustomersBtn.setOnClickListener {
@@ -28,6 +32,13 @@ class HomeFragment : Fragment() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(CustomerFragment())
         }
+
+        btnSettings.setOnClickListener {
+            // Replace the current fragment with CustomerFragment
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(SettingsFragment())
+        }
+
 
         return view
     }

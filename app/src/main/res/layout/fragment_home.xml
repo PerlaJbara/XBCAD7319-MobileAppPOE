@@ -35,23 +35,22 @@
 
             <TextView
                 android:id="@+id/txtWelcome"
-                android:layout_width="244dp"
+                android:layout_width="268dp"
                 android:layout_height="wrap_content"
                 android:paddingRight="6dp"
                 android:text="Welcome"
                 android:textAlignment="textEnd"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txtWelcomeNameUser"
-                android:layout_width="175dp"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/ivSettings"
+                android:layout_width="61dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:text="Perla"
-                android:textAlignment="textStart"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:paddingLeft="75dp"
+                android:src="@drawable/vectorsettings" />
 
         </LinearLayout>
 
@@ -83,7 +82,7 @@
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:paddingLeft="110dp"
+                    android:paddingLeft="192dp"
                     android:paddingTop="15dp"
                     android:src="@drawable/vectorplus" />
 
