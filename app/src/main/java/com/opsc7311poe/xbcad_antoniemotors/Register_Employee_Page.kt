@@ -75,8 +75,8 @@ class Register_Employee_Page : Fragment() {
 
 
                     //go back to employee landing page
-                    /*val intent = Intent(this, activity_manage_project::class.java)
-                    startActivity(intent)*/
+                    it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                    replaceFragment(EmployeeFragment())
                 }
 
             }
