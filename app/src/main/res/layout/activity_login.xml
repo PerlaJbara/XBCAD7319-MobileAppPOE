@@ -51,7 +51,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/txtgradientgtor"
             android:inputType="text"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/black" />
 
 
         <TextView
@@ -73,7 +74,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/txtgradientgtor"
             android:inputType="textPassword"
-            android:padding="12dp" />
+            android:padding="12dp"
+            android:textColor="@color/black" />
 
 
         <Button

@@ -10,26 +10,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginBottom
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
-
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class EmployeeFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
-    private lateinit var svEmpList : ScrollView
-    private lateinit var linLay : LinearLayout
+    private lateinit var svEmpList: ScrollView
+    private lateinit var linLay: LinearLayout
+    private lateinit var searchBar: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,60 +35,64 @@ class EmployeeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_employee, container, false)
 
-        //adding list of employees as buttons
-        //fetching employees from DB into list
+        // Adding search bar
+        searchBar = view.findViewById(R.id.txtEmpSearched)
+
+        // ScrollView and LinearLayout setup for employee list
         svEmpList = view.findViewById(R.id.svEmployeeList)
         linLay = view.findViewById(R.id.linlayEmployees)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null)
-        {
+        if (userId != null) {
             val database = Firebase.database
-
             val empRef = database.getReference(userId).child("Employees")
 
-            empRef.addValueEventListener(object: ValueEventListener
-            {
+            empRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     linLay.removeAllViews()
 
-                    for(pulledOrder in snapshot.children)
-                    {
-                        val empName : String? = pulledOrder.child("name").getValue(String::class.java)
-                        if (empName != null)
-                        {
-                            //adding text view with project name
-                            val TextView = TextView(requireContext())
+                    for (pulledOrder in snapshot.children) {
+                        val empName: String? = pulledOrder.child("name").getValue(String::class.java)
+                        if (empName != null) {
 
-                            TextView.text = empName
-                            TextView.textSize = 25f
-                            //TextView.setBackgroundColor(Color.parseColor("#038a39"))
-                            TextView.setTextColor(Color.parseColor("#000000"))
-                            TextView.typeface = ResourcesCompat.getFont(requireContext(), R.font.fontpoppinsregular)
-                            //when Employee name is tapped the project name is logged and the user is taken to project details page
-                            /*textView.setOnClickListener {
-                                val intent = Intent(this@EmployeeFragment, ProjectDetails::class.java)
-                                intent.putExtra("projectName", textView.text)
-                                startActivity(intent)
+                            val employeeButton = Button(requireContext())
+
+
+                            employeeButton.text = empName
+                            employeeButton.textSize = 20f
+                            employeeButton.setBackgroundColor(Color.parseColor("#038a39"))
+                            employeeButton.setTextColor(Color.WHITE)
+                            employeeButton.typeface = ResourcesCompat.getFont(requireContext(), R.font.fontpoppinsregular)
+                            employeeButton.setPadding(20, 20, 20, 20)
+                            employeeButton.background = ResourcesCompat.getDrawable(resources, R.drawable.gbutton_round, null)
+
+                            val layoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                            layoutParams.setMargins(0, 20, 0, 20) // Add margins for spacing
+                            employeeButton.layoutParams = layoutParams
+
+                            // On click behavior for each employee button
+                            /*employeeButton.setOnClickListener {
+                                // Implement button functionality here (e.g., navigate to details)
                             }*/
 
-                            linLay.addView(TextView)
+                            // Add the button to the LinearLayout
+                            linLay.addView(employeeButton)
                         }
-
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    //Toast.makeText(baseContext, "Error reading from the database: " + error.toString(), Toast.LENGTH_SHORT).show()
+                    // Handle database error here
                 }
             })
         }
 
-
-        //plus button functionality
+        // Plus button functionality
         imgPlus = view.findViewById(R.id.imgPlus)
-
-        imgPlus.setOnClickListener(){
+        imgPlus.setOnClickListener() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(Register_Employee_Page())
         }
@@ -99,7 +101,6 @@ class EmployeeFragment : Fragment() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        Log.d("EmployeeFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
             .commit()
