@@ -14,6 +14,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewCustomersBtn: Button
     private lateinit var btnSettings: ImageView
+    private lateinit var btnRegVehicle: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,6 +25,7 @@ class HomeFragment : Fragment() {
         // Initialize the button
         viewCustomersBtn = view.findViewById(R.id.btnViewCustomers)
         btnSettings = view.findViewById(R.id.ivSettings)
+        btnRegVehicle = view.findViewById(R.id.btnRegisterVehicle)
 
 
         // Set up the button click event to navigate to CustomerFragment
@@ -38,6 +40,13 @@ class HomeFragment : Fragment() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(SettingsFragment())
         }
+
+        btnRegVehicle.setOnClickListener {
+            // Replace the current fragment with CustomerFragment
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(RegisterVehicleFragment())
+        }
+
 
 
         return view

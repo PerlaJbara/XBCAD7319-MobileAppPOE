@@ -6,6 +6,7 @@ import java.util.Locale
 
 data class CustomerData(
 
+    var CustomerID: String = "",
     var CustomerName: String = "",
     var CustomerSurname: String = "",
     var CustomerMobileNum: String = "",

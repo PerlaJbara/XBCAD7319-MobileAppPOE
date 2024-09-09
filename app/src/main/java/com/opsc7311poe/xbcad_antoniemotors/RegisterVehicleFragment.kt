@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class RegisterVehicleFragment : Fragment() {
 
@@ -15,7 +18,8 @@ class RegisterVehicleFragment : Fragment() {
     private lateinit var edtVehicleModel: EditText
     private lateinit var edtVinNumber: EditText
     private lateinit var edtVehicleKms: EditText
-    private lateinit var btnSubmitRegCustomer: Button
+    private lateinit var btnSubmitRegVehicle: Button
+    private var selectedCustomerId: String = ""
 
     // Firebase database reference
     private val database = FirebaseDatabase.getInstance().getReference("Vehicles")
@@ -32,55 +36,104 @@ class RegisterVehicleFragment : Fragment() {
         edtVehicleModel = view.findViewById(R.id.edttxtVehicleModel)
         edtVinNumber = view.findViewById(R.id.edttxtVinNumber)
         edtVehicleKms = view.findViewById(R.id.edttxtVehicleKms)
-        btnSubmitRegCustomer = view.findViewById(R.id.btnSubmitRegCustomer)
+        btnSubmitRegVehicle = view.findViewById(R.id.btnSubmitRegVehicle)
+
+        // Load customer names into spinner
+        loadCustomerNames()
 
         // Set up button click listener
-        btnSubmitRegCustomer.setOnClickListener {
+        btnSubmitRegVehicle.setOnClickListener {
             registerVehicle()
         }
 
         return view
     }
 
+
+    private fun loadCustomerNames() {
+        val customerList = mutableListOf<String>()
+        val customerIds = mutableListOf<String>()
+        val customerRef = FirebaseDatabase.getInstance().getReference("Customers")
+
+        customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (customerSnapshot in snapshot.children) {
+                    val customerName = customerSnapshot.child("name").getValue(String::class.java)
+                    val customerId = customerSnapshot.key
+                    if (customerName != null && customerId != null) {
+                        customerList.add(customerName)
+                        customerIds.add(customerId)
+                    }
+                }
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinCustomer.adapter = adapter
+
+                // Store customer IDs for reference when saving vehicle
+                spinCustomer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                        selectedCustomerId = customerIds[position]
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {}
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Failed to load customers", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
     private fun registerVehicle() {
-        val owner = spinCustomer.selectedItem.toString()
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
         val vehicleModel = edtVehicleModel.text.toString().trim()
         val vinNumber = edtVinNumber.text.toString().trim()
         val vehicleKms = edtVehicleKms.text.toString().trim()
 
-        if (owner.isEmpty() || vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vinNumber.isEmpty() || vehicleKms.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT)
-                .show()
+        // Error checking
+        if (vehicleNoPlate.isEmpty()) {
+            edtVehicleNoPlate.error = "Please enter the vehicle number plate"
+            return
+        }
+        if (vehicleModel.isEmpty()) {
+            edtVehicleModel.error = "Please enter the vehicle model"
+            return
+        }
+        if (vinNumber.isEmpty()) {
+            edtVinNumber.error = "Please enter the VIN number"
+            return
+        }
+        if (vehicleKms.isEmpty()) {
+            edtVehicleKms.error = "Please enter the vehicle kilometers"
             return
         }
 
-        // Create a map to store vehicle data
-        val vehicleData = hashMapOf(
-            "owner" to owner,
-            "vehicleNoPlate" to vehicleNoPlate,
-            "vehicleModel" to vehicleModel,
-            "vinNumber" to vinNumber,
-            "vehicleKms" to vehicleKms
+        // Create vehicle data object
+        val vehicle = VehicleData(
+            VehicleOwner = selectedCustomerId, // Link vehicle with customer ID
+            VehicleNumPlate = vehicleNoPlate,
+            VehicleModel = vehicleModel,
+            VinNumber = vinNumber,
+            VehicleKms = vehicleKms
         )
 
-        // Push the map to Firebase
-        val newVehicleRef = database.push()
-        newVehicleRef.setValue(vehicleData)
-            .addOnSuccessListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Vehicle registered successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            .addOnFailureListener {
-                Toast.makeText(
-                    requireContext(),
-                    "Failed to register vehicle: ${it.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+        // Save vehicle data in Firebase under the customer node
+        database.child(selectedCustomerId).child("Vehicles").push().setValue(vehicle)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                    //clear input fields
+                    edtVehicleNoPlate.text.clear()
+                    edtVehicleModel.text.clear()
+                    edtVinNumber.text.clear()
+                    edtVehicleKms.text.clear()
+                } else {
+                    Toast.makeText(context, "Failed to register vehicle. Try again.", Toast.LENGTH_SHORT).show()
+                }
             }
     }
+
 }
 

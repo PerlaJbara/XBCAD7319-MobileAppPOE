@@ -209,7 +209,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btnSubmitRegCustomer"
+                    android:id="@+id/btnSubmitRegVehicle"
                     android:layout_width="140dp"
                     android:layout_height="50dp"
                     android:backgroundTint="#038A39"

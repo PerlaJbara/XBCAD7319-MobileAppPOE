@@ -77,8 +77,23 @@ class AddCustomerFragment : Fragment() {
             return
         }
 
+        // Generate a unique customer ID
+        val customerId = database.push().key
+
+        // Create a new customer object with the generated ID
+        val customer = customerId?.let {
+            CustomerData(
+                CustomerID = it,
+                CustomerName = name,
+                CustomerSurname = surname,
+                CustomerMobileNum = mobileNum,
+                CustomerEmail = email,
+                CustomerAddress = address
+            )
+        }
+
         // Create a new customer object
-        val customer = CustomerData(name, surname, mobileNum, email, address)
+        //val customer = CustomerData(name, surname, mobileNum, email, address)
 
         // Add customer to Firebase
         database.push().setValue(customer).addOnCompleteListener { task ->
