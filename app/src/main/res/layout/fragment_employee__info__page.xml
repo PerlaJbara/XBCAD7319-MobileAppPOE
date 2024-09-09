@@ -11,7 +11,7 @@
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="206dp"
-        android:background="@drawable/toolboxblack"
+        android:background="@drawable/toolboxv4"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
         android:orientation="vertical"
@@ -308,7 +308,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/svEmployeedetails"
-        app:layout_constraintVertical_bias="0.904" />
+        app:layout_constraintVertical_bias="0.904"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <Button
         android:id="@+id/btnEditEmployeeInfo"
