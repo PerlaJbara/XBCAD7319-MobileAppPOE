@@ -17,6 +17,8 @@
             android:layout_height="181dp"
             android:orientation="vertical">
 
+
+
             <!-- Background Image with See-Through Black Layer -->
             <ImageView
                 android:layout_width="match_parent"

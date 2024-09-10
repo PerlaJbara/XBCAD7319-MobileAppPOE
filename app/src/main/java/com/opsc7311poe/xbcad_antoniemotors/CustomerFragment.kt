@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 class CustomerFragment : Fragment() {
 
     private lateinit var vectorPlusButton: ImageView
+    private lateinit var btnBack: ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,9 +29,17 @@ class CustomerFragment : Fragment() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(AddCustomerFragment())
         }
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener() {
+            replaceFragment(SettingsFragment())
+        }
 
         return view
     }
+
+
+
 
     // Function to replace the current fragment
     private fun replaceFragment(fragment: Fragment) {

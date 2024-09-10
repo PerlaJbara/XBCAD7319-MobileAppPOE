@@ -17,6 +17,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/ivBackButton"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:src="@drawable/vectorback"
+            android:layout_gravity="start"/>
 
         <TextView
             android:id="@+id/txtQuoteOverview"
@@ -24,7 +30,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/fontpoppinssemibold"
             android:gravity="center_horizontal"
-            android:paddingTop="85dp"
+            android:paddingTop="73dp"
             android:text="Receipt Generator"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />

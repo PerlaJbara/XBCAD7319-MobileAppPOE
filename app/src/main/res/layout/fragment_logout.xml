@@ -25,7 +25,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Centered TextView with line breaks -->
+        <ImageView
+            android:id="@+id/ivBackButton"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:src="@drawable/vectorback"
+            android:layout_gravity="start"/>
+
         <TextView
             android:id="@+id/txtSettingsTitle"
             android:layout_width="wrap_content"
