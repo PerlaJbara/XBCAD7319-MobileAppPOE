@@ -11,25 +11,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/linLayoutHeader"
+        <FrameLayout
+            android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/servicesheader"
-            android:orientation="vertical">
+            android:layout_height="160dp">
 
+            <!-- Background Image -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/servicesheader" />
+
+            <!-- Back Button on top of the background image -->
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:src="@drawable/vectorback"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:elevation="4dp" />
+
+            <!-- TextView on top of the background image -->
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="false"
                 android:fontFamily="@font/fontpoppinsmedium"
                 android:text="Add a Service"
                 android:layout_marginTop="80dp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="38sp" />
-        </LinearLayout>
+                android:textSize="38sp"
+                android:elevation="4dp" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/linLayoutBody"
