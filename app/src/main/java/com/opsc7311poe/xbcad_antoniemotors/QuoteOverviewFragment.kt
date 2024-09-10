@@ -22,7 +22,7 @@ class QuoteOverviewFragment : Fragment() {
         btnPdf = view.findViewById(R.id.btnMakePDF)
 
         btnPdf.setOnClickListener(){
-            replaceFragment(HomeFragment())
+            replaceFragment(QuoteGenFragment())
         }
 
         return view

@@ -23,13 +23,13 @@ class AddServiceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         var view = inflater.inflate(R.layout.fragment_add_service, container, false)
 
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener() {
-            replaceFragment(SettingsFragment())
+            replaceFragment(ServicesFragment())
         }
 
         return view

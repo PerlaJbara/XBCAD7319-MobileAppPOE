@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DatabaseReference
@@ -22,6 +23,8 @@ class AddCustomerFragment : Fragment() {
     private lateinit var emailField: EditText
     private lateinit var addressField: EditText
     private lateinit var submitButton: Button
+
+    private lateinit var btnBack: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,9 +47,22 @@ class AddCustomerFragment : Fragment() {
         submitButton.setOnClickListener {
             addCustomer()
         }
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener() {
+            replaceFragment(HomeFragment())
+        }
 
         return view
     }
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
+    }
+
+
 
     private fun addCustomer() {
         val name = nameField.text.toString().trim()

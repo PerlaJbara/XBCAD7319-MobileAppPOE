@@ -27,7 +27,7 @@ class CustomerDetailsFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener() {
-            replaceFragment(SettingsFragment())
+            replaceFragment(CustomerFragment())
         }
 
         return view

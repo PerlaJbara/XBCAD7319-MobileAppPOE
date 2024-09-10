@@ -21,6 +21,8 @@ class RegisterVehicleFragment : Fragment() {
     private lateinit var btnSubmitRegVehicle: Button
     private var selectedCustomerId: String = ""
 
+    private lateinit var btnBack: ImageView
+
     // Firebase database reference
     private val database = FirebaseDatabase.getInstance().getReference("Vehicles")
 
@@ -46,8 +48,16 @@ class RegisterVehicleFragment : Fragment() {
             registerVehicle()
         }
 
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener(){
+            replaceFragment(HomeFragment())
+        }
+
         return view
     }
+
+
 
 
     private fun loadCustomerNames() {
@@ -133,6 +143,12 @@ class RegisterVehicleFragment : Fragment() {
                     Toast.makeText(context, "Failed to register vehicle. Try again.", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
     }
 
 }

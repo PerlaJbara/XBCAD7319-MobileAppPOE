@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.Firebase
@@ -24,6 +25,8 @@ class Employee_Info_Page : Fragment() {
     lateinit var txtRemainingLeave: TextView
     lateinit var txtSal: TextView
 
+    private lateinit var btnBack: ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +38,11 @@ class Employee_Info_Page : Fragment() {
         //retrieve employee info
         val employeeName = arguments?.getString("employeeName")
 
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener(){
+            replaceFragment(EmployeeFragment())
+        }
         //get rest of employee info based on name from DB
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 

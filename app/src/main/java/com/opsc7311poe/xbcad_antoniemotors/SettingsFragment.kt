@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 
 class SettingsFragment : Fragment() {
@@ -14,6 +15,8 @@ class SettingsFragment : Fragment() {
     private lateinit var btnChangePass: TextView
     private lateinit var btnDelAcc: TextView
     private lateinit var btnLogout: TextView
+
+    private lateinit var btnBack: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +53,16 @@ class SettingsFragment : Fragment() {
             replaceFragment(LogoutFragment())
         }
 
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener(){
+            replaceFragment(HomeFragment())
+        }
+
         return view
     }
 
-       private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
             .commit()
