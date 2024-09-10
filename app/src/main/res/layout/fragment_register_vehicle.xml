@@ -11,13 +11,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/linLayoutHeader"
+        <FrameLayout
+            android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="181dp"
             android:orientation="vertical">
-
-
 
             <!-- Background Image with See-Through Black Layer -->
             <ImageView
@@ -28,8 +26,17 @@
                 android:background="@drawable/rounded_image"
                 android:clipToOutline="true"/>
 
+            <!-- Back Button on top of the background image -->
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:src="@drawable/vectorback"
+                android:layout_gravity="start|top"
+                android:layout_margin="16dp" />
 
-        </LinearLayout>
+
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/linLayoutBody"

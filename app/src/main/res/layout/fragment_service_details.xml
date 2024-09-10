@@ -11,27 +11,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/linLayoutHeader"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/servicesheader"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
+            <!-- Background Image -->
+            <ImageView
+                android:id="@+id/ivHeaderImage"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/servicesheader" />
 
+            <!-- TextView on top of the ImageView -->
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="30dp"
                 android:clickable="false"
-                android:layout_marginTop="80dp"
                 android:fontFamily="@font/fontpoppinsmedium"
                 android:text="Service Details"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="38sp" />
 
-        </LinearLayout>
+            <!-- Back Button on top of the background image -->
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start|top"
+                android:layout_margin="16dp"
+                android:src="@drawable/vectorback" />
+
+        </FrameLayout>
+
 
         <LinearLayout
             android:id="@+id/linLayoutBody"
