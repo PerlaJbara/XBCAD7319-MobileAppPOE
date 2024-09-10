@@ -14,7 +14,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewCustomersBtn: Button
     private lateinit var btnSettings: ImageView
-    private lateinit var btnRegVehicle: ImageView
+    private lateinit var btnRegVehicle: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
