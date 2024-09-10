@@ -1,22 +1,27 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
-
+import com.google.firebase.auth.FirebaseAuth
+import androidx.fragment.app.Fragment
 
 class LogoutFragment : Fragment() {
 
     private lateinit var btnBack: ImageView
+    private lateinit var btnYes: Button
+    private lateinit var btnNo: Button
+
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
     }
 
     override fun onCreateView(
@@ -27,12 +32,29 @@ class LogoutFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_logout, container, false)
 
         btnBack = view.findViewById(R.id.ivBackButton)
+        btnYes = view.findViewById(R.id.btnLogout)
+        btnNo = view.findViewById(R.id.btnStayLoggedIn)
 
-        btnBack.setOnClickListener(){
+        btnBack.setOnClickListener {
             replaceFragment(SettingsFragment())
         }
 
+        btnYes.setOnClickListener {
+            logoutUser()
+        }
+
+        btnNo.setOnClickListener {
+            replaceFragment(HomeFragment())
+        }
+
         return view
+    }
+
+    private fun logoutUser() {
+        auth.signOut()
+        val intent = Intent(activity, Login::class.java)
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun replaceFragment(fragment: Fragment) {
