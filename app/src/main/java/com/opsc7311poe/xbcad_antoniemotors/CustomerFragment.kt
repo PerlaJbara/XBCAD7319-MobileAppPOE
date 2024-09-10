@@ -32,7 +32,7 @@ class CustomerFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener() {
-            replaceFragment(SettingsFragment())
+            replaceFragment(HomeFragment())
         }
 
         return view
