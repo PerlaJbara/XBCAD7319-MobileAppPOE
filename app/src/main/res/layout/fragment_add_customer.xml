@@ -12,26 +12,32 @@
         android:orientation="vertical">
 
 
-        <LinearLayout
-            android:id="@+id/linLayoutHeader"
+        <!-- Header Section with a FrameLayout for overlapping the background and back button -->
+        <FrameLayout
+            android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="181dp"
-            android:orientation="vertical">
+            android:layout_height="181dp">
 
-
-            <!-- Background Image with See-Through Black Layer -->
+            <!-- Background Image -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/addcustomerfragmentheader"
                 android:background="@drawable/rounded_image"
-                android:clipToOutline="true"/>
+                android:clipToOutline="true" />
 
-
-
-
-        </LinearLayout>
+            <!-- Back Button on top of the background image -->
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:src="@drawable/vectorback"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:elevation="4dp" />
+        </FrameLayout>
 
         <LinearLayout
             android:id="@+id/linLayoutBody"
