@@ -32,6 +32,7 @@ class QuoteOverviewFragment : Fragment() {
         Log.d("QuoteOverviewFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

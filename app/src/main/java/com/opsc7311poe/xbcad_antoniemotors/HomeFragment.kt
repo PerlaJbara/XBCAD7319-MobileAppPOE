@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
         Log.d("HomeFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

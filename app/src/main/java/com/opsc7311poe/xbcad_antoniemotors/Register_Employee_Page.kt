@@ -90,6 +90,7 @@ class Register_Employee_Page : Fragment() {
         Log.d("Register_Employee_Page", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "Replacing fragment: ${fragment::class.java.simpleName}")
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

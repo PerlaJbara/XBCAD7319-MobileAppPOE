@@ -36,6 +36,7 @@ class ReceiptOverviewFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }
