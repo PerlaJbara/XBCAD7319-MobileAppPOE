@@ -8,7 +8,6 @@
     android:background="@drawable/carsideprofile"
     tools:context=".HomeFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,10 +27,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="horizontal"
             android:paddingBottom="15dp">
-
 
             <TextView
                 android:id="@+id/txtWelcome"
@@ -57,13 +54,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical"
             android:paddingBottom="60dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -91,15 +87,23 @@
             <ScrollView
                 android:id="@+id/svHomeReminders"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" >
+                android:layout_height="300dp"
+                android:fillViewport="true">
 
-                <TextView
-                    android:id="@+id/txtNotasksTpDisplay"
+                <LinearLayout
+                    android:id="@+id/taskContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="18dp"
-                    android:text="No tasks to display here"
-                    android:textColor="@color/white" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtNotasksToDisplay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="18dp"
+                        android:text="No tasks to display here"
+                        android:textColor="@color/white" />
+                </LinearLayout>
             </ScrollView>
         </LinearLayout>
 
@@ -132,9 +136,6 @@
                 android:text="Register Vehicles" />
         </LinearLayout>
 
-
     </LinearLayout>
 
-
 </FrameLayout>
-
