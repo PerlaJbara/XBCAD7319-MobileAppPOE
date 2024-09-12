@@ -73,12 +73,12 @@
                     android:paddingLeft="18dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
-                    android:text="Reminders:"
+                    android:text="To Do List:"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
                 <ImageView
-                    android:id="@+id/ivAddReminder"
+                    android:id="@+id/ivGoToAddTask"
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -94,11 +94,11 @@
                 android:layout_height="300dp" >
 
                 <TextView
-                    android:id="@+id/textView8"
+                    android:id="@+id/txtNotasksTpDisplay"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="18dp"
-                    android:text="No reminders to display here."
+                    android:text="No tasks to display here"
                     android:textColor="@color/white" />
             </ScrollView>
         </LinearLayout>
