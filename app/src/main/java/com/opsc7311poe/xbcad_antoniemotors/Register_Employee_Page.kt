@@ -51,8 +51,7 @@ class Register_Employee_Page : Fragment() {
                 //checking if info is entered correctly
                 if(txtName.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtAddress.text.isBlank())
                 {
-                    TODO("Figure out how to do toasts in fragments")
-                    //Toast.makeText(baseContext, "Please enter correct project information.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please enter correct project information.", Toast.LENGTH_SHORT).show()
                 }
                 else
                 {
@@ -66,10 +65,10 @@ class Register_Employee_Page : Fragment() {
 
                         empRef.push().setValue(emp)
                             .addOnSuccessListener {
-                                //Toast.makeText(baseContext, "Project successfully added", Toast.LENGTH_LONG).show()
+                                Toast.makeText(requireContext(), "Employee successfully added", Toast.LENGTH_LONG).show()
                             }
                             .addOnFailureListener {
-                                //Toast.makeText(baseContext, "An error occured while adding a project:" + it.toString() , Toast.LENGTH_LONG).show()
+                                Toast.makeText(requireContext(), "An error occurred while adding an employee:" + it.toString() , Toast.LENGTH_LONG).show()
                             }
                     }
 
