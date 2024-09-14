@@ -241,7 +241,9 @@
                             android:paddingVertical="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView6"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:hint="Select Date"
+                            android:focusable="false"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -271,7 +273,9 @@
                             android:paddingVertical="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView2"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:hint="Select Date"
+                            android:focusable="false"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView

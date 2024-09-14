@@ -1,27 +1,38 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.TextView
+import java.util.Calendar
+import java.util.Locale
 
 
 class AddServiceFragment : Fragment() {
     private lateinit var spinStatus: Spinner
     private lateinit var btnBack: ImageView
+    private lateinit var spinCust: Spinner
+    private lateinit var txtName: TextView
+    private lateinit var txtDateReceived: TextView
+    private lateinit var txtDateReturned: TextView
+    private lateinit var txtAllParts: TextView
+    private lateinit var txtPartName: TextView
+    private lateinit var txtPartCost: TextView
+    private lateinit var txtLabourCost: TextView
+    private lateinit var btnAddPart: Button
+    private lateinit var btnAdd: Button
 
+    //list of parts entered
+    private var partsEntered: MutableList<Part> = mutableListOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,10 +58,45 @@ class AddServiceFragment : Fragment() {
         spinStatus.adapter = adapter
 
         //customer spinner
+        // TODO: link customer spinner to DB
 
+        //date picking functionality to date-based textviews
+        txtDateReceived = view.findViewById(R.id.txtDateCarReceived)
+        txtDateReturned = view.findViewById(R.id.txtDateCarReturned)
 
+        txtDateReceived.setOnClickListener{
+            pickDate(txtDateReceived)
+        }
+        txtDateReturned.setOnClickListener{
+            pickDate(txtDateReturned)
+        }
+
+        //functionality to add a part
+        btnAddPart = view.findViewById(R.id.btnAddPart)
+
+        btnAddPart.setOnClickListener{
+            //adding part to list of parts
+            txtPartName = view.findViewById(R.id.txtPartName)
+            txtPartCost = view.findViewById(R.id.txtPartCost)
+            txtAllParts = view.findViewById(R.id.txtAllParts)
+
+            partsEntered.add(Part(txtPartName.text.toString(), txtPartCost.text.toString().toDouble()))
+
+            //displaying updated list to user
+            var allPartsString: String = ""
+            for(part in partsEntered)
+            {
+                 allPartsString += "${part.name}             R${String.format(Locale.getDefault(), "%.2f", part.cost)}"
+                allPartsString += "\n"
+            }
+
+            txtAllParts.text = allPartsString
+
+        }
 
         return view
+
+
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -59,5 +105,26 @@ class AddServiceFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
+
+    //method for picking dates
+    fun pickDate(edittxt: TextView)
+    {
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+
+        val datePickDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
+                edittxt.setText(selectedDate)
+            }, year, month, day
+        )
+
+        datePickDialog.show()
+    }
+
+
 
 }
