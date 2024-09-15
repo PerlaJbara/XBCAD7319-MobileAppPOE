@@ -136,9 +136,18 @@ class AddServiceFragment : Fragment() {
                 val dateReceived: Date? = dateFormatter.parse(txtDateReceived.text.toString())
                 val dateReturned: Date? = dateFormatter.parse(txtDateReturned.text.toString())
 
+                //totalling cost in order to save
+                //totalling parts
+                var totalCost: Double = 0.0
+                for(part in partsEntered)
+                {
+                    totalCost += part.cost!!
+                }
+                //adding labour cost
+                totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble())
+                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble(), totalCost)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
