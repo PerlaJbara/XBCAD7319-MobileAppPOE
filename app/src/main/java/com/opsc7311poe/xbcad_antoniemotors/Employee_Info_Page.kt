@@ -80,7 +80,7 @@ class Employee_Info_Page : Fragment() {
 
                 override fun onCancelled(databaseError: DatabaseError)
                 {
-                    //Toast.makeText(baseContext, "Error reading from the database: " + databaseError.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error reading from the database: " + databaseError.toString(), Toast.LENGTH_SHORT).show()
                 }
             })
         }

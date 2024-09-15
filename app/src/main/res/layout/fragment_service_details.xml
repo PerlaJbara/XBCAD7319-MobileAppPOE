@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/txtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="80dp"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/button"
+                    android:id="@+id/btnCustName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Name Surname"
@@ -285,7 +285,8 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="120dp">
 
                         <TextView
                             android:id="@+id/textView11"

@@ -1,6 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-import android.graphics.Color
+
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -8,14 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.res.ResourcesCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,7 +20,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.logging.SimpleFormatter
 
 class ServicesFragment : Fragment() {
 
@@ -82,10 +77,24 @@ class ServicesFragment : Fragment() {
                         // Set the status ImageView based on status
                         val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
                         when (service?.status) {
-                            "Done" -> statusImageView.setImageResource(R.drawable.vectorstatuscompleted)
+                            "Completed" -> statusImageView.setImageResource(R.drawable.vectorstatuscompleted)
                             "Busy" -> statusImageView.setImageResource(R.drawable.vectorstatusbusy)
                             "Not Started" -> statusImageView.setImageResource(R.drawable.vectorstatusnotstrarted)
                         }
+
+                        //functionality to go details page when card is tapped
+                        cardView.setOnClickListener {
+
+                            val serviceInfoFragment = ServiceDetailsFragment()
+                            //transferring service info using a bundle
+                            val bundle = Bundle()
+                            bundle.putString("serviceID", pulledOrder.key)
+                            serviceInfoFragment.arguments = bundle
+                            //changing to service info fragment
+                            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                            replaceFragment(serviceInfoFragment)
+                        }
+
 
                         // Add the card to the container
                         linLay.addView(cardView)
