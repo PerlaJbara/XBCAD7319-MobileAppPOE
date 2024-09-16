@@ -4,15 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:paddingBottom="5dp"
     tools:context=".SettingsFragment">
 
+    <!-- Background Image -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/carsunset"
+        android:scaleType="centerCrop" />
+
+    <!-- Semi-transparent black overlay -->
+    <View
+        android:id="@+id/blackOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bgblackdark" />
+
+    <!-- Content layout with black overlay applied -->
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="411dp"
         android:layout_height="227dp"
-        android:background="@drawable/carinterior"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
         android:gravity="center"
@@ -29,7 +42,7 @@
             android:layout_width="55dp"
             android:layout_height="40dp"
             android:src="@drawable/vectorback"
-            android:layout_gravity="start"/>
+            android:layout_gravity="start" />
 
         <TextView
             android:id="@+id/txtSettingsTitle"
@@ -37,7 +50,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
-            android:paddingTop="80dp"
+            android:paddingTop="40dp"
             android:text="Settings"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
@@ -84,7 +97,7 @@
             android:paddingTop="20dp"
             android:textColor="@color/white"
             android:textSize="27sp"
-            android:text="Logout"/>
+            android:text="Logout" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

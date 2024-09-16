@@ -19,6 +19,7 @@ class Register_Employee_Page : Fragment() {
 
     private lateinit var btnSubmit : Button
     private lateinit var txtName : TextView
+    private lateinit var txtSurname : TextView
     private lateinit var txtSal : TextView
     private lateinit var txtTotalLeave : TextView
     private lateinit var txtLeaveLeft : TextView
@@ -38,6 +39,7 @@ class Register_Employee_Page : Fragment() {
         btnSubmit.setOnClickListener(){
             //save button
             txtName = view.findViewById(R.id.txtEmpname)
+            txtSurname = view.findViewById(R.id.txtEmpsurname)
             txtSal = view.findViewById(R.id.txtEmpsalary)
             txtTotalLeave = view.findViewById(R.id.txtTotal)
             txtLeaveLeft = view.findViewById(R.id.txtleft)
@@ -49,7 +51,7 @@ class Register_Employee_Page : Fragment() {
             btnSubmit.setOnClickListener()
             {
                 //checking if info is entered correctly
-                if(txtName.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtAddress.text.isBlank())
+                if(txtName.text.isBlank() || txtSurname.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtAddress.text.isBlank())
                 {
                     Toast.makeText(requireContext(), "Please enter correct project information.", Toast.LENGTH_SHORT).show()
                 }
@@ -60,7 +62,7 @@ class Register_Employee_Page : Fragment() {
                     if (userId != null)
                     {
                         var database = Firebase.database
-                        var emp = Employee(txtName.text.toString(), txtSal.text.toString(), txtTotalLeave.text.toString(), txtLeaveLeft.text.toString(), txtNum.text.toString(), txtEmail.text.toString(), txtAddress.text.toString())
+                        var emp = Employee(txtName.text.toString(),txtSurname.text.toString(), txtSal.text.toString(), txtTotalLeave.text.toString(), txtLeaveLeft.text.toString(), txtNum.text.toString(), txtEmail.text.toString(), txtAddress.text.toString())
                         val empRef = database.getReference(userId).child("Employees")
 
                         empRef.push().setValue(emp)
@@ -97,14 +99,21 @@ class Register_Employee_Page : Fragment() {
 //employee data class
 data class Employee(
     var name: String?,
+    var surname: String?,
     var salary: String?,
     var totalLeave: String?,
     var leaveLeft: String?,
     var number: String?,
     var email: String?,
-    var address: String?
+    var address: String?,
+    var familyLeaveStart: String? = null,
+    var familyLeaveEnd: String? = null,
+    var holidayStart: String? = null,
+    var holidayEnd: String? = null
 ){
     // No-argument constructor (required by Firebase)
-    constructor() : this(null, null, null, null, null, null, null)
+    constructor() : this(null, null, null, null, null, null, null, null, null,null,null,null,)
+
+
 }
 

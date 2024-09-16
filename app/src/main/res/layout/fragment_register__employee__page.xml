@@ -91,6 +91,37 @@
                 app:layout_constraintWidth_percent="0.8"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
+            <!-- Surname Field -->
+            <TextView
+                android:id="@+id/txtEmpSurname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="left"
+                android:paddingLeft="30dp"
+                android:text="Surname"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtEmpname" />
+
+            <EditText
+                android:id="@+id/txtEmpsurname"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/spingradientgtor"
+                android:inputType="text"
+                android:paddingLeft="0dp"
+                android:paddingBottom="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.195"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtEmpSurname"
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
 
             <TextView
                 android:id="@+id/txtMonthlySalary"
@@ -104,7 +135,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtEmpname" />
+                app:layout_constraintTop_toBottomOf="@+id/txtEmpsurname" />
 
             <EditText
                 android:id="@+id/txtEmpsalary"
@@ -278,13 +309,14 @@
         android:id="@+id/btnregEmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="#038A39"
         android:text="Submit"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintWidth_percent="0.8" />
 </androidx.constraintlayout.widget.ConstraintLayout>

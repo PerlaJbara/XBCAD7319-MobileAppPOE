@@ -6,27 +6,33 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
-import com.google.firebase.Firebase
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class Employee_Info_Page : Fragment() {
 
-    lateinit var txtName : TextView
-    lateinit var txtNum : TextView
-    lateinit var txtEmail : TextView
+    lateinit var txtName: TextView
+    lateinit var txtNum: TextView
+    lateinit var txtEmail: TextView
     lateinit var txtAddress: TextView
     lateinit var txtRemainingLeave: TextView
     lateinit var txtSal: TextView
 
     private lateinit var btnBack: ImageView
+    private lateinit var btnDeleteEmployee: Button
 
+    // New UI elements for family and holiday leave
+    lateinit var txtFamilyStartDate: EditText
+    lateinit var txtFamilyEndDate: EditText
+    lateinit var txtHolidayStartDate: EditText
+    lateinit var txtHolidayEndDate: EditText
+    lateinit var btnSavefamLeave: Button
+    lateinit var btnSaveholLeave: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,35 +41,43 @@ class Employee_Info_Page : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_employee__info__page, container, false)
 
-        //retrieve employee info
+        // Retrieve employee info
         val employeeName = arguments?.getString("employeeName")
 
         btnBack = view.findViewById(R.id.ivBackButton)
 
-        btnBack.setOnClickListener(){
+        btnBack.setOnClickListener() {
             replaceFragment(EmployeeFragment())
         }
-        //get rest of employee info based on name from DB
+
+        // Initialize delete button
+        btnDeleteEmployee = view.findViewById(R.id.btnDeleteEmp)
+
+        // Initialize leave and holiday UI elements
+        txtFamilyStartDate = view.findViewById(R.id.txtStartDate)
+        txtFamilyEndDate = view.findViewById(R.id.txtEndDate)
+        txtHolidayStartDate = view.findViewById(R.id.txtHolidayStartDate)
+        txtHolidayEndDate = view.findViewById(R.id.txtHolidayEndDate)
+        btnSavefamLeave = view.findViewById(R.id.btnSavefamLeave)
+        btnSaveholLeave = view.findViewById(R.id.btnSaveholLeave)
+
+        // Get employee info from DB based on name
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        if (userId != null)
-        {
+        if (userId != null) {
             val database = Firebase.database
             val empRef = database.getReference(userId).child("Employees")
 
-            // Query the database to find the project with the matching name
+            // Query the database to find the employee with the matching name
             val query = empRef.orderByChild("name").equalTo(employeeName)
-            query.addListenerForSingleValueEvent(object : ValueEventListener
-            {
-                override fun onDataChange(dataSnapshot: DataSnapshot)
-                {
-                    for (projectSnapshot in dataSnapshot.children)
-                    {
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    for (projectSnapshot in dataSnapshot.children) {
                         val fetchedEmp = projectSnapshot.getValue(Employee::class.java)
                         if (fetchedEmp != null) {
-                            //assigning fetched employee info to text views
+                            // Assign fetched employee info to text views
                             txtName = view.findViewById(R.id.txtheaderempname)
-                            txtName.text = fetchedEmp.name
+                            txtName.text = fetchedEmp.name + " " + fetchedEmp.surname
                             txtNum = view.findViewById(R.id.txtempcell)
                             txtNum.text = fetchedEmp.number
                             txtEmail = view.findViewById(R.id.txtempEmail)
@@ -74,17 +88,71 @@ class Employee_Info_Page : Fragment() {
                             txtRemainingLeave.text = fetchedEmp.leaveLeft
                             txtSal = view.findViewById(R.id.txtmonthly)
                             txtSal.text = fetchedEmp.salary
+
+                            // Populate existing leave and holiday dates if available
+                            txtFamilyStartDate.setText(fetchedEmp.familyLeaveStart ?: "")
+                            txtFamilyEndDate.setText(fetchedEmp.familyLeaveEnd ?: "")
+                            txtHolidayStartDate.setText(fetchedEmp.holidayStart ?: "")
+                            txtHolidayEndDate.setText(fetchedEmp.holidayEnd ?: "")
+
+                            // Save family leave dates
+                            btnSavefamLeave.setOnClickListener {
+                                val familyLeaveStart = txtFamilyStartDate.text.toString()
+                                val familyLeaveEnd = txtFamilyEndDate.text.toString()
+
+                                if (familyLeaveStart.isNotEmpty() && familyLeaveEnd.isNotEmpty()) {
+                                    projectSnapshot.ref.child("familyLeaveStart").setValue(familyLeaveStart)
+                                    projectSnapshot.ref.child("familyLeaveEnd").setValue(familyLeaveEnd)
+                                    Toast.makeText(requireContext(), "Family leave dates saved!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            // Save holiday dates
+                            btnSaveholLeave.setOnClickListener {
+                                val holidayStart = txtHolidayStartDate.text.toString()
+                                val holidayEnd = txtHolidayEndDate.text.toString()
+
+                                if (holidayStart.isNotEmpty() && holidayEnd.isNotEmpty()) {
+                                    projectSnapshot.ref.child("holidayStart").setValue(holidayStart)
+                                    projectSnapshot.ref.child("holidayEnd").setValue(holidayEnd)
+                                    Toast.makeText(requireContext(), "Holiday dates saved!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            // Delete employee record
+                            btnDeleteEmployee.setOnClickListener {
+                                projectSnapshot.ref.removeValue().addOnSuccessListener {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Employee deleted successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    replaceFragment(EmployeeFragment())  // Navigate back to employee list
+                                }.addOnFailureListener { e ->
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Failed to delete employee: ${e.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+
+
+
+
                         }
                     }
                 }
 
-                override fun onCancelled(databaseError: DatabaseError)
-                {
-                    Toast.makeText(requireContext(), "Error reading from the database: " + databaseError.toString(), Toast.LENGTH_SHORT).show()
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error reading from the database: ${databaseError.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }
-
 
         return view
     }
