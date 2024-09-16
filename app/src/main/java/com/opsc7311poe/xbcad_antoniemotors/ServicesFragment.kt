@@ -1,6 +1,5 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -25,7 +24,6 @@ class ServicesFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
     private lateinit var linLay: LinearLayout
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
