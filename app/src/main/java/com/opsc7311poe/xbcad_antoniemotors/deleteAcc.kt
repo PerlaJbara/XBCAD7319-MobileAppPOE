@@ -34,7 +34,7 @@ class deleteAcc : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_delete_acc, container, false)
+        return inflater.inflate(R.layout.fragment_deleteacc, container, false)
     }
 
     companion object {
