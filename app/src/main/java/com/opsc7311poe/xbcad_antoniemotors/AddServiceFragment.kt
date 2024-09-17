@@ -106,6 +106,7 @@ class AddServiceFragment : Fragment() {
                     allPartsString += "\n"
                 }
 
+                txtAllParts.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                 txtAllParts.text = allPartsString
             }
 

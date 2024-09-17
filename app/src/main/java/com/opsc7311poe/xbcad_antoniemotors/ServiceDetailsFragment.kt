@@ -1,7 +1,9 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.ktx.database
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
@@ -28,10 +32,14 @@ class ServiceDetailsFragment : Fragment() {
    private lateinit var btnSave: Button
    private lateinit var btnDelete: Button
    private lateinit var imgStatus: ImageView
+   private lateinit var imgChangeStatus: ImageView
    private lateinit var txtDateCarReceived: TextView
    private lateinit var txtDateCarReturned: TextView
    private lateinit var txtParts: TextView
    private lateinit var txtLabourCost: TextView
+
+   private lateinit var currentStatus: String
+   private lateinit var fetchedService: ServiceData
 
     val database = Firebase.database
     val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -70,13 +78,13 @@ class ServiceDetailsFragment : Fragment() {
             query.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Directly fetch the service object without looping
-                    val fetchedService = dataSnapshot.getValue(ServiceData::class.java)
+                    fetchedService = dataSnapshot.getValue(ServiceData::class.java)!!
 
                     if (fetchedService != null) {
                         // Assign fetched service info to text views
                         txtName.text = fetchedService.name
                         btnCust.text = fetchedService.custID
-                        txtLabourCost.text = " R ${fetchedService.labourCost}"
+                        txtLabourCost.text = "${fetchedService.labourCost}"
 
                         // Convert dates to string values
                         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -92,9 +100,18 @@ class ServiceDetailsFragment : Fragment() {
 
                         // Handle status display
                         when (fetchedService.status) {
-                            "Completed" -> imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
-                            "Busy" -> imgStatus.setImageResource(R.drawable.vectorstatusbusy)
-                            "Not Started" -> imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
+                            "Completed" -> {
+                                imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
+                                currentStatus = "Completed"
+                            }
+                            "Busy" -> {
+                                imgStatus.setImageResource(R.drawable.vectorstatusbusy)
+                                currentStatus = "Busy"
+                            }
+                            "Not Started" -> {
+                                imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
+                                currentStatus = "Not Started"
+                            }
                         }
                     } else {
                         Toast.makeText(requireContext(), "Service not found", Toast.LENGTH_SHORT).show()
@@ -107,10 +124,92 @@ class ServiceDetailsFragment : Fragment() {
             })
         }
 
+        //change status button functionality
+        imgChangeStatus = view.findViewById(R.id.imgChangeStatus)
+        imgChangeStatus.setOnClickListener(){
+            //status changes when button is tapped
+            if (currentStatus == "Completed")
+            {
+                imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
+                currentStatus = "Not Started"
+            }
+            else if (currentStatus == "Busy")
+            {
+                imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
+                currentStatus = "Completed"
+            }
+            else if(currentStatus == "Not Started")
+            {
+                imgStatus.setImageResource(R.drawable.vectorstatusbusy)
+                currentStatus = "Busy"
+            }
+        }
+
+        //date pickers functionality
+        txtDateCarReceived = view.findViewById(R.id.txtDateCarReceived)
+        txtDateCarReturned = view.findViewById(R.id.txtDateCarReturned)
+
+        txtDateCarReceived.setOnClickListener{
+            pickDate(txtDateCarReceived)
+        }
+        txtDateCarReturned.setOnClickListener{
+            pickDate(txtDateCarReturned)
+        }
+
         //save button functionality
         btnSave = view.findViewById(R.id.btnSave)
         btnSave.setOnClickListener(){
+            lateinit var serviceEntered: ServiceData
 
+            //checking all fields are filled
+            if(txtName.text.toString().isBlank() ||
+                txtDateCarReceived.text.toString().isBlank() ||
+                txtDateCarReturned.text.toString().isBlank() ||
+                txtLabourCost.text.toString().isBlank() )
+            {
+                Toast.makeText( requireContext(), "Please ensure all service information is filled correctly.", Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                //converting date texts to date values
+                val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val dateReceived: Date? = dateFormatter.parse(txtDateCarReceived.text.toString())
+                val dateReturned: Date? = dateFormatter.parse(txtDateCarReturned.text.toString())
+
+                //totalling cost in order to save
+                //totalling parts
+                var totalCost: Double = 0.0
+                for(part in fetchedService.parts!!)
+                {
+                    totalCost += part.cost!!
+                }
+                //adding labour cost
+                totalCost += txtLabourCost.text.toString().toDouble()
+
+                //making service object
+                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
+
+                //adding service object to db
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                if (userId != null  && serviceID != null)
+                {
+                    var database = com.google.firebase.ktx.Firebase.database
+                    val empRef = database.getReference(userId).child("Services").child(serviceID)
+
+                    empRef.setValue(serviceEntered)
+                        .addOnSuccessListener {
+                            Toast.makeText(requireContext(), "Service successfully updated", Toast.LENGTH_LONG).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), "An error occurred while adding a updated:" + it.toString() , Toast.LENGTH_LONG).show()
+                        }
+                }
+
+
+                //go back to service landing page
+                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                replaceFragment(ServicesFragment())
+            }
         }
 
         //delete button functionality
@@ -168,5 +267,28 @@ class ServiceDetailsFragment : Fragment() {
             .replace(R.id.frame_container, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    //method for picking dates
+    fun pickDate(edittxt: TextView)
+    {
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+
+        val datePickDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+
+                val formattedDay = String.format("%02d", selectedDay)
+                val formattedMonth = String.format("%02d", selectedMonth + 1)
+
+                val selectedDate = "$formattedDay/${formattedMonth}/$selectedYear"
+                edittxt.setText(selectedDate)
+            }, year, month, day
+        )
+
+        datePickDialog.show()
     }
 }
