@@ -41,6 +41,8 @@ dependencies {
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    //for the biometrics
+    implementation ("androidx.biometric:biometric:1.2.0-alpha04")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
