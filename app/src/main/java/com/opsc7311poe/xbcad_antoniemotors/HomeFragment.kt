@@ -21,8 +21,13 @@ class HomeFragment : Fragment() {
     private lateinit var btnSettings: ImageView
     private lateinit var btnRegVehicle: Button
     private lateinit var btnGoToTask: ImageView
-    private lateinit var taskContainer: LinearLayout // Changed to LinearLayout
+    private lateinit var taskContainer: LinearLayout
     private lateinit var noTasksMessage: TextView
+
+    private lateinit var txtBusy: TextView
+    private lateinit var txtToStart: TextView
+    private lateinit var txtCompleted: TextView
+
     private lateinit var userId: String
 
     override fun onCreateView(
@@ -31,12 +36,17 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // Ensure all IDs are correct and present in fragment_home.xml
         viewCustomersBtn = view.findViewById(R.id.btnViewCustomers)
         btnSettings = view.findViewById(R.id.ivSettings)
         btnRegVehicle = view.findViewById(R.id.btnRegisterVehicle)
         btnGoToTask = view.findViewById(R.id.ivGoToAddTask)
         taskContainer = view.findViewById(R.id.taskContainer)
         noTasksMessage = view.findViewById(R.id.txtNotasksToDisplay)
+
+        txtBusy = view.findViewById(R.id.txtCarsInProgress)
+        txtToStart = view.findViewById(R.id.txtCarsToBeDone)
+        txtCompleted = view.findViewById(R.id.txtCarsCompleted)
 
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
@@ -61,6 +71,7 @@ class HomeFragment : Fragment() {
         }
 
         loadTasks()
+        loadServiceStatuses()
 
         return view
     }
@@ -70,7 +81,10 @@ class HomeFragment : Fragment() {
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                taskContainer.removeAllViews() // Clear the LinearLayout before adding new tasks
+                // Ensure inflater is used only when fragment is attached
+                if (!isAdded) return
+
+                taskContainer.removeAllViews()
 
                 if (!snapshot.exists()) {
                     noTasksMessage.visibility = View.VISIBLE
@@ -85,7 +99,6 @@ class HomeFragment : Fragment() {
                     val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
 
                     if (taskId != null && taskDescription != null) {
-                        // Create a task view with a checkbox
                         val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
                         val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
                         taskCheckBox.text = taskDescription
@@ -103,7 +116,6 @@ class HomeFragment : Fragment() {
                             }
                         }
 
-                        // Add the task view to the LinearLayout
                         taskContainer.addView(taskView)
                     }
                 }
@@ -111,6 +123,52 @@ class HomeFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
+            }
+        })
+    }
+
+    private fun loadServiceStatuses() {
+        val database = Firebase.database.reference.child(userId).child("services")
+
+        var busyCount = 0
+        var completedCount = 0
+        var notStartedCount = 0
+
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
+
+                busyCount = 0
+                completedCount = 0
+                notStartedCount = 0
+
+                if (!snapshot.exists()) {
+                    txtToStart.text = "Nothing To Be Started"
+                    txtBusy.text = "Nothing Is In Progress"
+                    txtCompleted.text = "Nothing Is Completed"
+                    return
+                }
+
+                for (serviceSnapshot in snapshot.children) {
+                    val status = serviceSnapshot.child("status").getValue(String::class.java)
+                    Log.d("HomeFragment", "Status for service: $status")
+
+                    when (status) {
+                        "Busy" -> busyCount++
+                        "Completed" -> completedCount++
+                        "Not Started" -> notStartedCount++
+                    }
+                }
+
+                activity?.runOnUiThread {
+                    txtToStart.text = "$notStartedCount Cars To Start"
+                    txtBusy.text = "$busyCount Cars In Progress"
+                    txtCompleted.text = "$completedCount Cars Completed"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
             }
         })
     }

@@ -147,7 +147,7 @@
                     android:id="@+id/txtCarsCompleted"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1900 Cars Completed"
+                    android:text=" "
                     android:paddingLeft="18dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
@@ -165,7 +165,7 @@
                     android:id="@+id/txtCarsInProgress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1900 Cars In progress"
+                    android:text=" "
                     android:paddingLeft="18dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
@@ -185,10 +185,10 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="12dp"
                     android:paddingBottom="12dp"
-                    android:text="1900 Cars Need To Be Started"
+                    android:text=" "
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:paddingStart="85dp"/>
+                    android:paddingStart="120dp"/>
             </LinearLayout>
         </ScrollView>
 
@@ -213,7 +213,8 @@
                     android:layout_marginEnd="16dp"
                     android:backgroundTint="#787771"
                     android:text="View Customers"
-                    android:textStyle="bold" /> <!-- Space between buttons -->
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btnRegisterVehicle"
@@ -221,6 +222,7 @@
                     android:layout_height="wrap_content"
                     android:backgroundTint="#787771"
                     android:text="Register Vehicles"
+                    android:textColor="@color/white"
                     android:textStyle="bold"/>
             </LinearLayout>
 

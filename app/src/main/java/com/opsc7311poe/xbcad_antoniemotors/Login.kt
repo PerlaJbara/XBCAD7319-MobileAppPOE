@@ -44,6 +44,17 @@ class Login : AppCompatActivity() {
         executor = ContextCompat.getMainExecutor(this)
         biometricManager = BiometricManager.from(this)
 
+        btnLogin.setOnClickListener(){
+            val userEmail = email.text.toString().trim()
+            val userPassword = password.text.toString().trim()
+
+            if (userEmail.isEmpty() || userPassword.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+            } else {
+                signIn(userEmail, userPassword)
+            }
+        }
+
         // Check if biometrics are available
         when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
@@ -59,6 +70,8 @@ class Login : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun setupNormalLogin() {
         // Set up normal login button click listener
