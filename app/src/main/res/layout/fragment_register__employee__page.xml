@@ -300,7 +300,8 @@
                 app:layout_constraintHorizontal_bias="0.195"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtPhysicalAddress"
-                app:layout_constraintWidth_percent="0.9" />
+                app:layout_constraintWidth_percent="0.9"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

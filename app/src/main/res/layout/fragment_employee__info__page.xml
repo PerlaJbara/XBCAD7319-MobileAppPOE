@@ -91,11 +91,20 @@
                     android:textSize="18sp"/>
 
                 <TextView
-                    android:id="@+id/txtempcell"
+                    android:id="@+id/txtempcell_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="074 352 1145"
                     android:textSize="18sp"/>
+
+                <EditText
+                    android:id="@+id/txtupdatecell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/roundcorneredt"
+                    android:visibility="gone"
+                    android:hint="Enter new phone number" />
 
                 <TextView
                     android:id="@+id/textViewEmailLabel"
@@ -107,11 +116,20 @@
                     android:layout_marginTop="8dp"/>
 
                 <TextView
-                    android:id="@+id/txtempEmail"
+                    android:id="@+id/txtempEmail_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="cviljoen3@gmail.com"
                     android:textSize="18sp"/>
+
+                <EditText
+                    android:id="@+id/txtupdateEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/roundcorneredt"
+                    android:visibility="gone"
+                    android:hint="Enter new Email" />
 
                 <TextView
                     android:id="@+id/textViewAddressLabel"
@@ -123,11 +141,22 @@
                     android:layout_marginTop="8dp"/>
 
                 <TextView
-                    android:id="@+id/txtempAddress"
+                    android:id="@+id/txtempAddress_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
                     android:textSize="18sp"/>
+
+
+                <EditText
+                    android:id="@+id/txtupdateAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/roundcorneredt"
+                    android:visibility="gone"
+                    android:hint="Enter new Address" />
+
             </LinearLayout>
 
             <!-- Employee Information Section -->
@@ -168,11 +197,20 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/txtleave"
+                            android:id="@+id/txtleave_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1 Days"
                             android:textSize="18sp" />
+
+                        <EditText
+                            android:id="@+id/txtupdateLeaveRemain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/roundcorneredt"
+                            android:visibility="gone"
+                            android:hint="Enter new leave" />
 
                         <TextView
                             android:id="@+id/txtmonsal"
@@ -184,14 +222,38 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/txtmonthly"
+                            android:id="@+id/txtmonthly_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="R16 000"
                             android:textSize="18sp" />
+
+
+                        <EditText
+                            android:id="@+id/txtupdateMonthly"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/roundcorneredt"
+                            android:visibility="gone"
+                            android:hint="Enter new Salary" />
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>
+
+
+
+            <!-- Save Button (Initially Hidden) -->
+            <Button
+                android:id="@+id/btnSaveEmployeeInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="#CA2F2E"
+                android:text="Save"
+                android:textSize="18sp"
+                android:visibility="gone" /> <!-- Initially hidden -->
+
 
             <!-- Future Leave Section -->
             <TextView
@@ -310,6 +372,10 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
+
+
     </ScrollView>
 
     <Button
