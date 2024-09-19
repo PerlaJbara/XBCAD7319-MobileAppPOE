@@ -10,8 +10,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import com.opsc7311poe.timewize_progpoe.CustomerData
 
 class AddCustomerFragment : Fragment() {
@@ -23,7 +26,6 @@ class AddCustomerFragment : Fragment() {
     private lateinit var emailField: EditText
     private lateinit var addressField: EditText
     private lateinit var submitButton: Button
-
     private lateinit var btnBack: ImageView
 
     override fun onCreateView(
@@ -33,21 +35,22 @@ class AddCustomerFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add_customer, container, false)
 
         // Initializing Firebase Database
-        database = FirebaseDatabase.getInstance().reference.child("Customers")
+        //database = FirebaseDatabase.getInstance().reference.child("Customers")
 
-        // Initialize Views
+        // Initialize Firebase Database and Views
+        database = FirebaseDatabase.getInstance().reference
         nameField = view.findViewById(R.id.edttxtRegName)
         surnameField = view.findViewById(R.id.edttxtRegSurname)
         mobileNumField = view.findViewById(R.id.edttxtRegMobNumber)
         emailField = view.findViewById(R.id.edttxtEmail)
         addressField = view.findViewById(R.id.edttxtAddress)
         submitButton = view.findViewById(R.id.btnSubmitRegCustomer)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Set onClickListener for the submit button
         submitButton.setOnClickListener {
             addCustomer()
         }
-        btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener() {
             replaceFragment(HomeFragment())
@@ -94,40 +97,49 @@ class AddCustomerFragment : Fragment() {
             return
         }
 
-        // Generate a unique customer ID
-        val customerId = database.push().key
+        // Get the current logged-in user's UID from FirebaseAuth
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
-        // Create a new customer object with the generated ID
-        val customer = customerId?.let {
-            CustomerData(
-                CustomerID = it,
-                CustomerName = name,
-                CustomerSurname = surname,
-                CustomerMobileNum = mobileNum,
-                CustomerEmail = email,
-                CustomerAddress = address
-            )
-        }
+        // Ensure the user is logged in before proceeding
+        if (currentUserUid != null) {
+            // Generate a unique customer ID under the user's node
+            val customerId = database.child(currentUserUid).child("Customers").push().key
 
-        // Create a new customer object
-        //val customer = CustomerData(name, surname, mobileNum, email, address)
-
-        // Add customer to Firebase
-        database.push().setValue(customer).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show()
-
-                // Clear the input fields after successful submission
-                nameField.text.clear()
-                surnameField.text.clear()
-                mobileNumField.text.clear()
-                emailField.text.clear()
-                addressField.text.clear()
-
-            } else {
-                Toast.makeText(context, "Failed to add customer. Try again.", Toast.LENGTH_SHORT).show()
+            // Create a new customer object
+            val customer = customerId?.let {
+                CustomerData(
+                    CustomerID = it,
+                    CustomerName = name,
+                    CustomerSurname = surname,
+                    CustomerMobileNum = mobileNum,
+                    CustomerEmail = email,
+                    CustomerAddress = address
+                )
             }
+
+            // Saving the customer under the current user's UID in Firebase
+            if (customerId != null) {
+                database.child(currentUserUid).child("Customers").child(customerId)
+                    .setValue(customer).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show()
+
+                            // Clear the input fields after successful submission
+                            nameField.text.clear()
+                            surnameField.text.clear()
+                            mobileNumField.text.clear()
+                            emailField.text.clear()
+                            addressField.text.clear()
+                        } else {
+                            Toast.makeText(context, "Failed to add customer. Try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        } else {
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 }
 

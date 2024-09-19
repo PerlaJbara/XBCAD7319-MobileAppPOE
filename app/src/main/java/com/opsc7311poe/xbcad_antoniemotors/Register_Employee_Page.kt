@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,8 @@ class Register_Employee_Page : Fragment() {
     private lateinit var txtEmail: TextView
     private lateinit var txtAddress: TextView
 
+    private lateinit var btnBack: ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +38,7 @@ class Register_Employee_Page : Fragment() {
         val view = inflater.inflate(R.layout.fragment_register__employee__page, container, false)
 
         btnSubmit = view.findViewById(R.id.btnregEmp)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         btnSubmit.setOnClickListener(){
             //save button
@@ -47,6 +51,10 @@ class Register_Employee_Page : Fragment() {
             txtEmail = view.findViewById(R.id.txtEmailInput)
             txtAddress = view.findViewById(R.id.txtAddressInput)
 
+
+            btnBack.setOnClickListener(){
+               replaceFragment(EmployeeFragment())
+            }
 
             btnSubmit.setOnClickListener()
             {
