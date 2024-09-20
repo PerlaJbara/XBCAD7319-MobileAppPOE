@@ -41,8 +41,6 @@ dependencies {
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
-    //for the biometrics
-    implementation ("androidx.biometric:biometric:1.2.0-alpha04")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -52,7 +50,6 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

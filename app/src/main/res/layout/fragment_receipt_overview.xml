@@ -25,13 +25,13 @@
             android:layout_gravity="start"/>
 
         <TextView
-            android:id="@+id/txtEmployeeReg"
+            android:id="@+id/txtReceiptHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/fontpoppinssemibold"
             android:gravity="center_horizontal"
             android:paddingTop="73dp"
-            android:text="Receipt Generator"
+            android:text="Receipt Overview"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />
 
@@ -284,46 +284,15 @@
                             android:text="Parts" />
 
                     </TableRow>
-
-                    <TableRow
+                    <LinearLayout
+                        android:id="@+id/layoutParts"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
-                        <TextView
-                            android:id="@+id/txtVehiclePart1Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Part 1:" />
-
-                        <TextView
-                            android:id="@+id/txtVehiclePart2Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="R3 500" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtPart2textRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Part 2:" />
-
-                        <TextView
-                            android:id="@+id/txtPart2Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="R55 000" />
-                    </TableRow>
 
                 </TableLayout>
+
 
 
             </ScrollView>
