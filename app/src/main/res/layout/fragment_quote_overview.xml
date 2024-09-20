@@ -281,53 +281,19 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/txtHeadParttext"
+                            android:id="@+id/txtHeadParttextRec"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/fontpoppinssemibold"
                             android:text="Parts" />
 
-
                     </TableRow>
-
-
-                    <TableRow
+                    <LinearLayout
+                        android:id="@+id/layoutParts"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
 
-                        <TextView
-                            android:id="@+id/txtVehiclePart1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Part 1:" />
-
-                        <TextView
-                            android:id="@+id/txtVehiclePart2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="R3 500" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtPart2text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Part 2:" />
-
-                        <TextView
-                            android:id="@+id/txtPart2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="R55 000" />
-                    </TableRow>
                 </TableLayout>
 
 

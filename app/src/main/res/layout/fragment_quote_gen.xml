@@ -124,17 +124,54 @@
                 app:layout_constraintTop_toBottomOf="@+id/btnServiceTypes" />
 
             <EditText
-                android:id="@+id/edttxtParts"
-                android:layout_width="310dp"
-                android:layout_height="80dp"
-                android:layout_marginTop="8dp"
+                android:id="@+id/edtPartName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
                 android:background="@drawable/spingradientgtor"
-                android:fontFamily="@font/fontpoppinsregular"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                android:hint="Part Name"
+                android:padding="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtParts"
-                app:layout_constraintWidth_default="wrap" />
+                app:layout_constraintTop_toBottomOf="@+id/txtParts" />
+
+            <EditText
+                android:id="@+id/edtPartCost"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="256dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/spingradientgtor"
+                android:hint="Part Cost"
+                android:inputType="numberDecimal"
+                android:padding="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtParts" />
+
+            <Button
+                android:id="@+id/btnAddPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Part"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:backgroundTint="@color/red"
+                app:layout_constraintTop_toBottomOf="@+id/edtPartName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/txtPartsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="Parts List"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@+id/btnAddPart" />
 
             <TextView
                 android:id="@+id/txtLabourCost"
@@ -147,7 +184,7 @@
                 android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edttxtParts" />
+                app:layout_constraintTop_toBottomOf="@+id/txtPartsList" />
 
             <EditText
                 android:id="@+id/edttxtLabour"
