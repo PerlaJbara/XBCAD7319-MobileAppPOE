@@ -42,21 +42,26 @@ class Login : AppCompatActivity() {
         executor = ContextCompat.getMainExecutor(this)
         biometricManager = BiometricManager.from(this)
 
-        setupNormalLogin()
+        btnLogin.setOnClickListener {
+            val userEmail = email.text.toString().trim()
+            val userPassword = password.text.toString().trim()
 
-        // Check if biometrics are available
-        when (biometricManager.canAuthenticate()) {
-            BiometricManager.BIOMETRIC_SUCCESS -> {
-                // Biometrics are available
-                setupBiometricPrompt()
-                promptForBiometricLogin()
+            if (userEmail.isEmpty() || userPassword.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+            } else {
+                signIn(userEmail, userPassword)
             }
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                // No biometrics available, fallback to normal login
-                setupNormalLogin()
-            }
+        }
+
+        // Check if user is already signed in
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // User is already signed in, prompt for biometric login
+            setupBiometricPrompt()
+            promptForBiometricLogin()
+        } else {
+            // User is not signed in, setup normal login
+            setupNormalLogin()
         }
     }
 
@@ -79,7 +84,7 @@ class Login : AppCompatActivity() {
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
                 // User authenticated successfully with biometrics
-                signInWithBiometrics()
+                updateUI(auth.currentUser)
             }
 
             override fun onAuthenticationFailed() {
