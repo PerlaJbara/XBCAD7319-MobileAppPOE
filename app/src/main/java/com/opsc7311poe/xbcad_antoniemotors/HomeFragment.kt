@@ -130,22 +130,20 @@ class HomeFragment : Fragment() {
     private fun loadServiceStatuses() {
         val database = Firebase.database.reference.child(userId).child("services")
 
-        var busyCount = 0
-        var completedCount = 0
-        var notStartedCount = 0
-
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
 
-                busyCount = 0
-                completedCount = 0
-                notStartedCount = 0
+                var busyCount = 0
+                var completedCount = 0
+                var notStartedCount = 0
 
                 if (!snapshot.exists()) {
-                    txtToStart.text = "Nothing To Be Started"
-                    txtBusy.text = "Nothing Is In Progress"
-                    txtCompleted.text = "Nothing Is Completed"
+                    if (isAdded) {
+                        txtToStart.text = "Nothing To Be Started"
+                        txtBusy.text = "Nothing Is In Progress"
+                        txtCompleted.text = "Nothing Is Completed"
+                    }
                     return
                 }
 
@@ -160,7 +158,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                activity?.runOnUiThread {
+                if (isAdded) {
                     txtToStart.text = "$notStartedCount Cars To Start"
                     txtBusy.text = "$busyCount Cars In Progress"
                     txtCompleted.text = "$completedCount Cars Completed"

@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.opsc7311poe.xbcad_antoniemotors"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.opsc7311poe.xbcad_antoniemotors"
         minSdk = 27
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -41,6 +41,8 @@ dependencies {
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation("androidx.biometric:biometric:1.4.0-alpha02")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -50,6 +52,10 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.biometric.ktx)
+    implementation (libs.androidx.biometric)
+    implementation (libs.firebase.auth.ktx.v2101)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

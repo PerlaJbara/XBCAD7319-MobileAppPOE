@@ -1,6 +1,5 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-import android.content.pm.PackageManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,15 +7,14 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.biometric.BiometricManager
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.ktx.auth
 import java.util.concurrent.Executor
-
 
 class Login : AppCompatActivity() {
 
@@ -44,21 +42,10 @@ class Login : AppCompatActivity() {
         executor = ContextCompat.getMainExecutor(this)
         biometricManager = BiometricManager.from(this)
 
-        btnLogin.setOnClickListener(){
-            val userEmail = email.text.toString().trim()
-            val userPassword = password.text.toString().trim()
-
-            if (userEmail.isEmpty() || userPassword.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show()
-            } else {
-                signIn(userEmail, userPassword)
-            }
-        }
-
         // Check if biometrics are available
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
+        when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
-                // Biometrics are available, prioritize fingerprint if both are present
+                // Biometrics are available
                 setupBiometricPrompt()
                 promptForBiometricLogin()
             }
@@ -70,8 +57,6 @@ class Login : AppCompatActivity() {
             }
         }
     }
-
-
 
     private fun setupNormalLogin() {
         // Set up normal login button click listener
@@ -113,6 +98,7 @@ class Login : AppCompatActivity() {
     }
 
     private fun signInWithBiometrics() {
+        // Directly sign in using your normal sign-in method if biometrics are successful
         val currentUser = auth.currentUser
 
         if (currentUser != null) {
@@ -120,7 +106,7 @@ class Login : AppCompatActivity() {
             Log.d(TAG, "User already signed in with Firebase")
             updateUI(currentUser)
         } else {
-            // This case may not usually occur if biometrics are only used for users already authenticated
+            // Attempt to sign in with Firebase using stored credentials
             Toast.makeText(this, "Authentication failed. Please use normal login.", Toast.LENGTH_SHORT).show()
         }
     }
