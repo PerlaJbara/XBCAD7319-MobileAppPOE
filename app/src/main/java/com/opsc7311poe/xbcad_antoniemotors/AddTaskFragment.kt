@@ -161,14 +161,19 @@ class AddTaskFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val vehicleNumbers = mutableListOf<String>() // To store vehicle number plates for the spinner
 
+                    Log.d("VehicleData", "Snapshot data: ${snapshot.value}")
+
                     if (!snapshot.exists()) {
                         Toast.makeText(requireContext(), "No vehicles found for this user", Toast.LENGTH_SHORT).show()
                         return
                     }
 
                     for (vehicleSnapshot in snapshot.children) {
-                        val numberPlate = vehicleSnapshot.child("numberPlate").getValue(String::class.java) ?: continue
-                        vehicleNumbers.add(numberPlate)
+                        val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                        Log.d("VehicleData", "Number Plate: $numberPlate")
+                        if (numberPlate != null) {
+                            vehicleNumbers.add(numberPlate)
+                        }
                     }
 
                     if (vehicleNumbers.isEmpty()) {
@@ -178,19 +183,7 @@ class AddTaskFragment : Fragment() {
 
                     val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, vehicleNumbers)
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
                     carSelected.adapter = adapter
-
-                    carSelected.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                            val selectedNumberPlate = parent.getItemAtPosition(position).toString()
-                            // Handle selected vehicle (e.g., update UI, load vehicle details)
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>) {
-                            // Handle case where nothing is selected if necessary
-                        }
-                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -201,6 +194,7 @@ class AddTaskFragment : Fragment() {
             Toast.makeText(requireContext(), "Please log in to access vehicles.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()

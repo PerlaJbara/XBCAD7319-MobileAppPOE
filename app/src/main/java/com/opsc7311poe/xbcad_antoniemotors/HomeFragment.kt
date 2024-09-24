@@ -98,12 +98,12 @@ class HomeFragment : Fragment() {
                 // To store colors for number plates
                 val plateColorMap = mutableMapOf<String, Int>()
                 var colorIndex = 0
-                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW)
+                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
 
                 for (taskSnapshot in snapshot.children) {
                     val taskId = taskSnapshot.key
                     val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                    val numberPlate = taskSnapshot.child("numberPlate").getValue(String::class.java)
+                    val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
 
                     if (taskId != null && taskDescription != null && numberPlate != null) {
                         val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
