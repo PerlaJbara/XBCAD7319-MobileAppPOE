@@ -7,4 +7,12 @@
     <color name="red">#CA2F2E</color>
     <color name="green">#038A39</color>
 
+
+
+        <color name="plateColor1">#FF5722</color> <!-- Example color -->
+        <color name="plateColor2">#4CAF50</color> <!-- Example color -->
+        <color name="plateColor3">#2196F3</color> <!-- Example color -->
+        <color name="plateColor4">#9C27B0</color> <!-- Example color -->
+
+
 </resources>

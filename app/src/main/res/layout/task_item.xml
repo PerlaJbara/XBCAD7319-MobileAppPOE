@@ -1,13 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- task_item.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="10dp">
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/task_item_background">
 
+    <!-- Task Checkbox -->
     <CheckBox
         android:id="@+id/taskCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Task description" />
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <!-- Number Plate Text -->
+    <TextView
+        android:id="@+id/numberPlateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:layout_marginStart="8dp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:background="@drawable/number_plate_background" />
+
+    <!-- Task Description Text -->
+    <TextView
+        android:id="@+id/taskDescriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@android:color/black" />
+
 </LinearLayout>

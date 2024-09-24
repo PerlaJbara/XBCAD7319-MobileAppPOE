@@ -9,9 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -20,6 +22,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.ktx.Firebase
+import android.widget.ArrayAdapter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class AddTaskFragment : Fragment() {
 
@@ -29,6 +36,7 @@ class AddTaskFragment : Fragment() {
     private lateinit var charCount: TextView
     private lateinit var db: FirebaseFirestore
     private lateinit var userId: String
+    private lateinit var carSelected: Spinner
 
     private val MAX_CHAR_LIMIT = 400
 
@@ -50,6 +58,7 @@ class AddTaskFragment : Fragment() {
         txtTask = view.findViewById(R.id.txtTaskDescription)
         btnSubmit = view.findViewById(R.id.btnAddTask)
         charCount = view.findViewById(R.id.charCount)
+        carSelected = view.findViewById(R.id.spChooseVehicle)
 
 
         db = FirebaseFirestore.getInstance()
@@ -77,6 +86,7 @@ class AddTaskFragment : Fragment() {
             submitTask()
         }
 
+        loadVehicles()
         return view
     }
 
@@ -86,6 +96,13 @@ class AddTaskFragment : Fragment() {
 
         if (taskDescription.isBlank()) {
             Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Check if a vehicle is selected
+        val selectedVehicle = carSelected.selectedItem?.toString() ?: ""
+        if (selectedVehicle.isBlank()) {
+            Toast.makeText(requireContext(), "Please select a vehicle.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -99,9 +116,11 @@ class AddTaskFragment : Fragment() {
 
             entryId?.let { id ->
 
+                // Add the selected vehicle number plate to the task entry
                 val entry = Tasks(
                     taskID = id,
-                    taskDescription = taskDescription
+                    taskDescription = taskDescription,
+                    vehicleNumberPlate = selectedVehicle // Add the selected vehicle number plate
                 )
 
                 // Create a reference to the specific entry in the database
@@ -131,6 +150,57 @@ class AddTaskFragment : Fragment() {
         }
     }
 
+
+    private fun loadVehicles() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid
+            val vehicleRef = FirebaseDatabase.getInstance().getReference(userId).child("Vehicles")
+
+            vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val vehicleNumbers = mutableListOf<String>() // To store vehicle number plates for the spinner
+
+                    if (!snapshot.exists()) {
+                        Toast.makeText(requireContext(), "No vehicles found for this user", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    for (vehicleSnapshot in snapshot.children) {
+                        val numberPlate = vehicleSnapshot.child("numberPlate").getValue(String::class.java) ?: continue
+                        vehicleNumbers.add(numberPlate)
+                    }
+
+                    if (vehicleNumbers.isEmpty()) {
+                        Toast.makeText(requireContext(), "No vehicles found", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, vehicleNumbers)
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                    carSelected.adapter = adapter
+
+                    carSelected.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                            val selectedNumberPlate = parent.getItemAtPosition(position).toString()
+                            // Handle selected vehicle (e.g., update UI, load vehicle details)
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>) {
+                            // Handle case where nothing is selected if necessary
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(requireContext(), "Failed to load vehicles: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "Please log in to access vehicles.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()

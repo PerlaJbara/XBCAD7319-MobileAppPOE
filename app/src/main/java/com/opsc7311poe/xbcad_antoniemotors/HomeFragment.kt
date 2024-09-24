@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import android.graphics.Color
 
 class HomeFragment : Fragment() {
 
@@ -81,7 +82,7 @@ class HomeFragment : Fragment() {
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Ensure inflater is used only when fragment is attached
+                // Ensure the fragment is attached before inflating views
                 if (!isAdded) return
 
                 taskContainer.removeAllViews()
@@ -94,15 +95,37 @@ class HomeFragment : Fragment() {
 
                 noTasksMessage.visibility = View.GONE
 
+                // To store colors for number plates
+                val plateColorMap = mutableMapOf<String, Int>()
+                var colorIndex = 0
+                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW)
+
                 for (taskSnapshot in snapshot.children) {
                     val taskId = taskSnapshot.key
                     val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                    val numberPlate = taskSnapshot.child("numberPlate").getValue(String::class.java)
 
-                    if (taskId != null && taskDescription != null) {
+                    if (taskId != null && taskDescription != null && numberPlate != null) {
                         val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
                         val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
-                        taskCheckBox.text = taskDescription
+                        val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+                        val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
 
+                        // Set task description and checkbox
+                        taskDescriptionText.text = taskDescription
+                        taskCheckBox.text = ""
+
+                        // Assign a color to the number plate and reuse it if it has been assigned before
+                        if (!plateColorMap.containsKey(numberPlate)) {
+                            plateColorMap[numberPlate] = colors[colorIndex % colors.size]
+                            colorIndex++
+                        }
+
+                        // Set the number plate text and background color
+                        numberPlateText.text = numberPlate
+                        numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
+
+                        // Checkbox listener to remove the task when checked
                         taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
                             if (isChecked) {
                                 database.child(taskId).removeValue()
@@ -116,6 +139,7 @@ class HomeFragment : Fragment() {
                             }
                         }
 
+                        // Add the view to the task container
                         taskContainer.addView(taskView)
                     }
                 }
@@ -127,49 +151,61 @@ class HomeFragment : Fragment() {
         })
     }
 
+
     private fun loadServiceStatuses() {
-        val database = Firebase.database.reference.child(userId).child("services")
+        // Get the current user's ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
+        // Check if userId is not null
+        userId?.let { uid ->
+            // Reference the services node under the current user's ID
+            val database = Firebase.database.reference.child(uid).child("services")
 
-                var busyCount = 0
-                var completedCount = 0
-                var notStartedCount = 0
+            database.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
 
-                if (!snapshot.exists()) {
+                    var busyCount = 0
+                    var completedCount = 0
+                    var notStartedCount = 0
+
+                    if (!snapshot.exists()) {
+                        if (isAdded) {
+                            txtToStart.text = "Nothing To Be Started"
+                            txtBusy.text = "Nothing Is In Progress"
+                            txtCompleted.text = "Nothing Is Completed"
+                        }
+                        return
+                    }
+
+                    for (serviceSnapshot in snapshot.children) {
+                        val status = serviceSnapshot.child("status").getValue(String::class.java)
+                        Log.d("HomeFragment", "Status for service: $status")
+
+                        when (status) {
+                            "Busy" -> busyCount++
+                            "Completed" -> completedCount++
+                            "Not Started" -> notStartedCount++
+                        }
+                    }
+
                     if (isAdded) {
-                        txtToStart.text = "Nothing To Be Started"
-                        txtBusy.text = "Nothing Is In Progress"
-                        txtCompleted.text = "Nothing Is Completed"
-                    }
-                    return
-                }
-
-                for (serviceSnapshot in snapshot.children) {
-                    val status = serviceSnapshot.child("status").getValue(String::class.java)
-                    Log.d("HomeFragment", "Status for service: $status")
-
-                    when (status) {
-                        "Busy" -> busyCount++
-                        "Completed" -> completedCount++
-                        "Not Started" -> notStartedCount++
+                        txtToStart.text = "$notStartedCount Cars To Start"
+                        txtBusy.text = "$busyCount Cars In Progress"
+                        txtCompleted.text = "$completedCount Cars Completed"
                     }
                 }
 
-                if (isAdded) {
-                    txtToStart.text = "$notStartedCount Cars To Start"
-                    txtBusy.text = "$busyCount Cars In Progress"
-                    txtCompleted.text = "$completedCount Cars Completed"
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
                 }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
-            }
-        })
+            })
+        } ?: run {
+            Log.e("HomeFragment", "User ID is null.")
+            // Handle the case where userId is null, although it's less likely in this context
+        }
     }
+
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()

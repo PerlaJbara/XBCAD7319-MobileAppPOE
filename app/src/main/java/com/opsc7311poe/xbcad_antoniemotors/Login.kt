@@ -42,6 +42,8 @@ class Login : AppCompatActivity() {
         executor = ContextCompat.getMainExecutor(this)
         biometricManager = BiometricManager.from(this)
 
+        setupNormalLogin()
+
         // Check if biometrics are available
         when (biometricManager.canAuthenticate()) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
@@ -125,9 +127,14 @@ class Login : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
+            // User is successfully logged in
+            Log.d("login", "User logged in: ${user.uid}")
             val intent = Intent(this@Login, MainActivity::class.java)
             startActivity(intent)
             finish()
+        } else {
+            // Handle failed login scenario (optional)
+            Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
         }
     }
 
