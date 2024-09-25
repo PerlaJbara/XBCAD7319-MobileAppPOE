@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navReceipt"
+        android:id="@+id/navDocument"
         android:icon="@drawable/vectorreceipt"
-        android:title="Receipts"
+        android:title="Documents"
         />
     <item
-        android:id="@+id/navQuoteGen"
-        android:icon="@drawable/vectorquote"
-        android:title="Quotes"
+        android:id="@+id/navCustomers"
+        android:icon="@drawable/vector_customer"
+        android:title="Customers"
         />
 
     <item
@@ -19,9 +19,9 @@
         />
 
     <item
-        android:id="@+id/navServices"
+        android:id="@+id/navVehicles"
         android:icon="@drawable/vectorcar"
-        android:title="Services"
+        android:title="Vehicles"
         />
     <item
         android:id="@+id/navEmployees"

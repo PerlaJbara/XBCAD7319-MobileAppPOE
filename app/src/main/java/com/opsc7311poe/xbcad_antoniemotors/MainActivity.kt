@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(HomeFragment())
                     true
                 }
-                R.id.navReceipt -> {
+                R.id.navDocument -> {
                     replaceFragment(ReceiptGeneratorFragment())
                     true
                 }
@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(EmployeeFragment())
                     true
                 }
-                R.id.navServices -> {
+                R.id.navVehicles -> {
                     replaceFragment(ServicesFragment())
                     true
                 }
-                R.id.navQuoteGen -> {
+                R.id.navCustomers -> {
                     replaceFragment(QuoteGenFragment())
                     true
                 }
