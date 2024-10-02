@@ -187,7 +187,7 @@ class ServiceDetailsFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
+                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", "<<VehicleID>>", currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid

@@ -1,20 +1,26 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.DatePickerDialog
-import android.app.Service
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
@@ -27,18 +33,21 @@ class AddServiceFragment : Fragment() {
     private lateinit var spinStatus: Spinner
     private lateinit var btnBack: ImageView
     private lateinit var spinCust: Spinner
+    private lateinit var spinVeh: Spinner
     private lateinit var txtName: TextView
     private lateinit var txtDateReceived: TextView
     private lateinit var txtDateReturned: TextView
     private lateinit var txtAllParts: TextView
-    private lateinit var txtPartName: TextView
-    private lateinit var txtPartCost: TextView
+    private lateinit var txtPartName: EditText
+    private lateinit var txtPartCost: EditText
     private lateinit var txtLabourCost: TextView
     private lateinit var btnAddPart: Button
     private lateinit var btnAdd: Button
 
     //list of parts entered
     private var partsEntered: MutableList<Part> = mutableListOf()
+    private var selectedCustomerId: String = ""
+    private var selectedVehicleId: String = ""
 
 
     override fun onCreateView(
@@ -46,7 +55,7 @@ class AddServiceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        var view = inflater.inflate(R.layout.fragment_add_service, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_service, container, false)
 
         //handling back button
         btnBack = view.findViewById(R.id.ivBackButton)
@@ -65,7 +74,16 @@ class AddServiceFragment : Fragment() {
         spinStatus.adapter = adapter
 
         //customer spinner
-        // TODO: link customer spinner to DB
+        spinCust = view.findViewById(R.id.spinCustomer)
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let { populateCustomerSpinner() }
+
+        //vehicle spinner
+        spinVeh = view.findViewById(R.id.spinVeh)
+
+        userId?.let { populateVehicleSpinner(selectedCustomerId) }
+
 
         //date picking functionality to date-based textviews
         txtDateReceived = view.findViewById(R.id.txtDateCarReceived)
@@ -95,11 +113,10 @@ class AddServiceFragment : Fragment() {
             }
             else
             {
-
                 partsEntered.add(Part(txtPartName.text.toString(), txtPartCost.text.toString().toDouble()))
 
                 //displaying updated list to user
-                var allPartsString: String = ""
+                var allPartsString = ""
                 for(part in partsEntered)
                 {
                     allPartsString += "${part.name}             R${String.format(Locale.getDefault(), "%.2f", part.cost)}"
@@ -108,6 +125,10 @@ class AddServiceFragment : Fragment() {
 
                 txtAllParts.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                 txtAllParts.text = allPartsString
+
+                //erasing content just entered in txt fields
+                txtPartName.text.clear()
+                txtPartCost.text.clear()
             }
 
         }
@@ -139,7 +160,7 @@ class AddServiceFragment : Fragment() {
 
                 //totalling cost in order to save
                 //totalling parts
-                var totalCost: Double = 0.0
+                var totalCost = 0.0
                 for(part in partsEntered)
                 {
                     totalCost += part.cost!!
@@ -148,13 +169,13 @@ class AddServiceFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble(), totalCost)
+                serviceEntered = ServiceData( txtName.text.toString(), selectedCustomerId, selectedVehicleId,spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble(), totalCost)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
                 if (userId != null)
                 {
-                    var database = Firebase.database
+                    val database = Firebase.database
                     val empRef = database.getReference(userId).child("Services")
 
                     empRef.push().setValue(serviceEntered)
@@ -207,6 +228,153 @@ class AddServiceFragment : Fragment() {
 
         datePickDialog.show()
     }
+
+    private fun populateCustomerSpinner() {
+        // Get the current logged-in user ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Query the database for customers directly under the current user's ID
+        val customerRef = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
+
+        customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val customerMap = mutableMapOf<String, String>()
+                val customerNames = mutableListOf<String>()
+
+                // Check if there are customers associated with the user
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No customers found for this user", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Loop through all customers associated with this user
+                for (customerSnapshot in snapshot.children) {
+                    val customerId = customerSnapshot.key // Get customer ID
+                    val firstName = customerSnapshot.child("customerName").getValue(String::class.java)
+                    val lastName = customerSnapshot.child("customerSurname").getValue(String::class.java)
+
+                    // Log data to check if it's being fetched correctly
+                    Log.d("FirebaseData", "Customer: $firstName $lastName, ID: $customerId")
+
+                    // Only add customer if names are not null or empty
+                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
+                        val fullName = "$firstName $lastName"
+                        customerMap[customerId] = fullName
+                        customerNames.add(fullName) // Add full name to spinner options
+                    }
+                }
+
+                // Check if the list is empty
+                if (customerNames.isEmpty()) {
+                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Set up the spinner with the list of customer names
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinCust.adapter = adapter
+
+                // Handle customer selection from the spinner
+                spinCust.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                        val selectedCustomerName = parent.getItemAtPosition(position).toString()
+                        selectedCustomerId = customerMap.filterValues { it == selectedCustomerName }.keys.firstOrNull().orEmpty()
+                        //populate vehicle spinner when customer is selected
+                        populateVehicleSpinner(selectedCustomerId)
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {
+                        // Handle case where nothing is selected if necessary
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error loading customer data: ${error.message}")
+                Toast.makeText(requireContext(), "Error loading customer data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun populateVehicleSpinner(selectedCust: String) {
+        // Get the current logged-in user ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Query the database for vehicles directly under the current user's ID
+        val vehRef = FirebaseDatabase.getInstance().getReference(userId).child("Vehicles")
+
+        vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val vehicleMap = mutableMapOf<String, String>()
+                val vehicleNames = mutableListOf<String>()
+
+                // Check if there are vehicles associated with the user
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No vehicles found for this user", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Loop through all vehicles
+                for (vehSnapshot in snapshot.children) {
+                    val foundCustomerId = vehSnapshot.child("customerID").getValue(String::class.java)
+                    val vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                    val vehModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
+
+                    // Check if the vehicle belongs to the desired customer
+                    Log.d("CustomerIDOfVehicle", "Found customer id: $foundCustomerId Selected customer id: $selectedCust")
+                    if (foundCustomerId == selectedCust && !vehNumPlate.isNullOrEmpty() && !vehModel.isNullOrEmpty()) {
+                        val vehicleDisplay = "$vehNumPlate ($vehModel)"
+
+                        // Use vehSnapshot.key as the unique ID for the vehicle
+                        val vehicleID = vehSnapshot.key ?: ""
+                        vehicleMap[vehicleID] = vehicleDisplay
+                        vehicleNames.add(vehicleDisplay)
+                    }
+                }
+
+                // Check if the list is empty
+                if (vehicleNames.isEmpty()) {
+                    Toast.makeText(requireContext(), "No vehicles found for this customer", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Set up the spinner with the list of vehicle names
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, vehicleNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinVeh.adapter = adapter
+
+                // Handle vehicle selection from the spinner
+                spinVeh.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                        val selectedVehicleName = parent.getItemAtPosition(position).toString()
+
+                        // Get the selected vehicle ID based on the vehicle name
+                        selectedVehicleId = vehicleMap.filterValues { it == selectedVehicleName }.keys.firstOrNull().orEmpty()
+
+                        Log.d("SelectedVehicleID", "Selected Vehicle ID: $selectedVehicleId")
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {
+                        // Handle case where nothing is selected if necessary
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle database error here
+            }
+        })
+    }
+
 
 
 

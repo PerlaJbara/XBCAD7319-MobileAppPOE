@@ -62,10 +62,13 @@ class ServicesFragment : Fragment() {
 
                         val cardView = LayoutInflater.from(requireContext()).inflate(R.layout.card_service, linLay, false) as CardView
                         // Populate the card with service data
-                        cardView.findViewById<TextView>(R.id.txtCustName).text = service?.custID
-                        //cardView.findViewById<TextView>(R.id.txtVehicleName).text = service.
-                        cardView.findViewById<TextView>(R.id.txtServiceName).text = service?.name
-                        cardView.findViewById<TextView>(R.id.txtCost).text = "R ${service?.totalCost.toString()}"
+                        //populate the customer data
+                        fetchCustNameAndSurname(service!!.custID!!, cardView)
+                        //populate vehicle data
+                        fetchVehicleNameAndModel(service!!.vehicleID!!, cardView)
+                        //cardView.findViewById<TextView>(R.id.txtVehicleName).text = fetchVehicleNameAndModel
+                        cardView.findViewById<TextView>(R.id.txtServiceName).text = service.name
+                        cardView.findViewById<TextView>(R.id.txtCost).text = "R ${service.totalCost.toString()}"
 
                         //changing date values to string
                         val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
@@ -97,6 +100,61 @@ class ServicesFragment : Fragment() {
                         // Add the card to the container
                         linLay.addView(cardView)
 
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database error here
+                }
+            })
+        }
+    }
+
+    private fun fetchCustNameAndSurname(custID: String, cv: CardView )
+    {
+        //fetching name and surname of cust using cust ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId != null) {
+            val database = Firebase.database
+            val custRef = database.getReference(userId).child("Customers")
+
+            custRef.addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (customerSnapshot in snapshot.children) {
+                        if(customerSnapshot.key == custID){
+                            Log.d("CustomerIDForServiceCard", "CustIDInput: $custID CustIDFound: ${customerSnapshot.key}")
+                            var custName = customerSnapshot.child("customerName").getValue(String::class.java)
+                            var custSurname = customerSnapshot.child("customerSurname").getValue(String::class.java)
+                            cv.findViewById<TextView>(R.id.txtCustName).text = "$custName $custSurname"
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database error here
+                }
+            })
+        }
+    }
+
+    private fun fetchVehicleNameAndModel(vehID: String, cv: CardView){
+        //fetching name and surname of cust using cust ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId != null) {
+            val database = Firebase.database
+            val vehRef = database.getReference(userId).child("Vehicles")
+
+            vehRef.addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (vehSnapshot in snapshot.children) {
+                        if(vehSnapshot.key == vehID){
+                            Log.d("VehicleIDForServiceCard", "VehIDInput: $vehID VehIDFound: ${vehSnapshot.key}")
+                            var vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                            var vehicleModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
+                            cv.findViewById<TextView>(R.id.txtVehicleName).text = "$vehNumPlate ($vehicleModel)"
+                        }
                     }
                 }
 
