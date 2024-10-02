@@ -61,8 +61,9 @@
 
                 <TextView
                     android:id="@+id/txtName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
                     android:layout_marginStart="80dp"
                     android:layout_marginTop="25dp"
                     android:layout_marginEnd="80dp"
@@ -219,11 +220,11 @@
                                 android:text="Vehicle:" />
 
                             <TextView
-                                android:id="@+id/txtVehicle"
+                                android:id="@+id/txtVehicleModel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/fontpoppinsmedium"
-                                android:text="2002 Honda Civic" />
+                                android:text="No info found" />
                         </TableRow>
                         <TableRow
                             android:layout_width="match_parent"
@@ -241,7 +242,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/fontpoppinsmedium"
-                                android:text="1EFCV1F65JA522134" />
+                                android:text="No info found" />
                         </TableRow>
                         <TableRow
                             android:layout_width="match_parent"
@@ -252,14 +253,14 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/fontpoppinsregular"
-                                android:text="VIN:" />
+                                android:text="Number Plate:" />
 
                             <TextView
-                                android:id="@+id/txtKilometers"
+                                android:id="@+id/txtNumPlate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/fontpoppinsmedium"
-                                android:text="351 112.98 km" />
+                                android:text="No info found" />
                         </TableRow>
                     </TableLayout>
 
@@ -354,12 +355,14 @@
                     android:id="@+id/btnSave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Save"
+                    android:layout_marginBottom="5dp"
                     android:backgroundTint="@color/green"
                     android:fontFamily="@font/fontpoppinsmedium"
                     android:paddingHorizontal="45dp"
                     android:paddingVertical="5dp"
-                    android:textSize="20dp"
+                    android:text="Save"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -367,10 +370,12 @@
                     android:id="@+id/btnDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delete Service"
+                    android:layout_marginBottom="5dp"
                     android:backgroundTint="@color/red"
                     android:fontFamily="@font/fontpoppinsmedium"
-                    android:textSize="15dp"
+                    android:text="Delete Service"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>

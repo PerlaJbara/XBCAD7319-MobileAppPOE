@@ -37,12 +37,17 @@ class ServiceDetailsFragment : Fragment() {
    private lateinit var txtDateCarReturned: TextView
    private lateinit var txtParts: TextView
    private lateinit var txtLabourCost: TextView
+   private lateinit var txtVehicleModel: TextView
+   private lateinit var txtVin: TextView
+   private lateinit var txtNumPlate: TextView
 
    private lateinit var currentStatus: String
    private lateinit var fetchedService: ServiceData
 
     val database = Firebase.database
     val userId = FirebaseAuth.getInstance().currentUser?.uid
+    var vehicleID: String = ""
+    var custID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +71,9 @@ class ServiceDetailsFragment : Fragment() {
         txtDateCarReturned = view.findViewById(R.id.txtDateCarReturned)
         txtParts = view.findViewById(R.id.txtParts)
         txtLabourCost = view.findViewById(R.id.txtLabourCost)
+        txtVehicleModel = view.findViewById(R.id.txtVehicleModel)
+        txtVin = view.findViewById(R.id.txtVin)
+        txtNumPlate = view.findViewById(R.id.txtNumPlate)
 
         val serRef = database.getReference(userId!!).child("Services")
         val serviceID = arguments?.getString("serviceID")
@@ -83,7 +91,6 @@ class ServiceDetailsFragment : Fragment() {
                     if (fetchedService != null) {
                         // Assign fetched service info to text views
                         txtName.text = fetchedService.name
-                        btnCust.text = fetchedService.custID
                         txtLabourCost.text = "${fetchedService.labourCost}"
 
                         // Convert dates to string values
@@ -113,6 +120,15 @@ class ServiceDetailsFragment : Fragment() {
                                 currentStatus = "Not Started"
                             }
                         }
+
+                        //populating vehicle info
+                        vehicleID = fetchedService.vehicleID!!
+                        getVehInfo(vehicleID)
+
+                        //populating cust info
+                        custID = fetchedService.custID!!
+                        getCustName(custID)
+
                     } else {
                         Toast.makeText(requireContext(), "Service not found", Toast.LENGTH_SHORT).show()
                     }
@@ -187,7 +203,7 @@ class ServiceDetailsFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), "<<CustomerID>>", "<<VehicleID>>", currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
+                serviceEntered = ServiceData( txtName.text.toString(), custID, vehicleID, currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -260,6 +276,38 @@ class ServiceDetailsFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun getCustName(custID: String){
+        val vehRef = database.getReference(userId!!).child("Customers/$custID")
+
+        vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //fetching and assigning vehicle info
+                var custFName = dataSnapshot.child("customerName").getValue(String::class.java)
+                var custSurname = dataSnapshot.child("customerSurname").getValue(String::class.java)
+                btnCust.text = "$custFName $custSurname"
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(requireContext(), "Error reading from the database: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun getVehInfo(vehID: String) {
+        val vehRef = database.getReference(userId!!).child("Vehicles/$vehID")
+
+        vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                //fetching and assigning vehicle info
+                txtVehicleModel.text = dataSnapshot.child("vehicleModel").getValue(String::class.java)
+                txtNumPlate.text = dataSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                txtVin.text = dataSnapshot.child("vinNumber").getValue(String::class.java)
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(requireContext(), "Error reading from the database: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun replaceFragment(fragment: Fragment) {
