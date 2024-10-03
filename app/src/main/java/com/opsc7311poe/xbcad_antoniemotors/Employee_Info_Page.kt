@@ -36,8 +36,8 @@ class Employee_Info_Page : Fragment() {
     lateinit var txtFamilyEndDate: EditText
     lateinit var txtHolidayStartDate: EditText
     lateinit var txtHolidayEndDate: EditText
-    lateinit var btnSavefamLeave: Button
-    lateinit var btnSaveholLeave: Button
+    lateinit var btnManLeave: Button
+
 
     // New fields for editing
     lateinit var btnEditEmp: Button
@@ -79,12 +79,8 @@ class Employee_Info_Page : Fragment() {
         btnDeleteEmployee = view.findViewById(R.id.btnDeleteEmp)
 
         // Initialize leave and holiday UI elements
-        txtFamilyStartDate = view.findViewById(R.id.txtStartDate)
-        txtFamilyEndDate = view.findViewById(R.id.txtEndDate)
-        txtHolidayStartDate = view.findViewById(R.id.txtHolidayStartDate)
-        txtHolidayEndDate = view.findViewById(R.id.txtHolidayEndDate)
-        btnSavefamLeave = view.findViewById(R.id.btnSavefamLeave)
-        btnSaveholLeave = view.findViewById(R.id.btnSaveholLeave)
+
+        btnManLeave = view.findViewById(R.id.btnManLeave)
 
         //seting up date picker for the textviews
 
@@ -171,59 +167,9 @@ class Employee_Info_Page : Fragment() {
 
 
 
-                            // Save family leave dates
-                            btnSavefamLeave.setOnClickListener {
-                                val familyLeaveStartStr = txtFamilyStartDate.text.toString()
-                                val familyLeaveEndStr = txtFamilyEndDate.text.toString()
 
-                                if (familyLeaveStartStr.isNotEmpty() && familyLeaveEndStr.isNotEmpty()) {
-                                    try {
-                                        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                        val familyLeaveStartDate: Date? = dateFormatter.parse(familyLeaveStartStr)
-                                        val familyLeaveEndDate: Date? = dateFormatter.parse(familyLeaveEndStr)
 
-                                        // Save to Firebase if the dates are successfully parsed
-                                        if (familyLeaveStartDate != null && familyLeaveEndDate != null) {
-                                            projectSnapshot.ref.child("familyLeaveStart").setValue(familyLeaveStartStr)
-                                            projectSnapshot.ref.child("familyLeaveEnd").setValue(familyLeaveEndStr)
-                                            Toast.makeText(requireContext(), "Family leave dates saved!", Toast.LENGTH_SHORT).show()
-                                        } else {
-                                            Toast.makeText(requireContext(), "Invalid date format!", Toast.LENGTH_SHORT).show()
-                                        }
-                                    } catch (e: Exception) {
-                                        Toast.makeText(requireContext(), "Error parsing dates: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                } else {
-                                    Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
-                                }
-                            }
 
-                            // Save holiday dates
-                            btnSaveholLeave.setOnClickListener {
-                                val holidayStartStr = txtHolidayStartDate.text.toString()
-                                val holidayEndStr = txtHolidayEndDate.text.toString()
-
-                                if (holidayStartStr.isNotEmpty() && holidayEndStr.isNotEmpty()) {
-                                    try {
-                                        val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                        val holidayStartDate: Date? = dateFormatter.parse(holidayStartStr)
-                                        val holidayEndDate: Date? = dateFormatter.parse(holidayEndStr)
-
-                                        // Save to Firebase if the dates are successfully parsed
-                                        if (holidayStartDate != null && holidayEndDate != null) {
-                                            projectSnapshot.ref.child("holidayStart").setValue(holidayStartStr)
-                                            projectSnapshot.ref.child("holidayEnd").setValue(holidayEndStr)
-                                            Toast.makeText(requireContext(), "Holiday dates saved!", Toast.LENGTH_SHORT).show()
-                                        } else {
-                                            Toast.makeText(requireContext(), "Invalid date format!", Toast.LENGTH_SHORT).show()
-                                        }
-                                    } catch (e: Exception) {
-                                        Toast.makeText(requireContext(), "Error parsing dates: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                } else {
-                                    Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
-                                }
-                            }
 
                             // Delete employee record
                             btnDeleteEmployee.setOnClickListener {

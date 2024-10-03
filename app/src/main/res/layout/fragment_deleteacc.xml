@@ -70,22 +70,32 @@
         app:layout_constraintVertical_bias="1.0">
 
         <TextView
-            android:id="@+id/txtChangePassword"
+            android:id="@+id/txtwarning"
             android:layout_width="match_parent"
-            android:layout_height="111dp"
+            android:layout_height="112dp"
             android:paddingTop="0dp"
-            android:text="Are you sure you want to delete \n your account?"
+            android:text="Are you sure you want to delete \n your account? \n (cannot be undone)"
             android:textAlignment="center"
             android:textColor="#ffff"
             android:textSize="24sp" />
 
+        <EditText
+            android:id="@+id/txtconfirmdelete"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/txtgradientgtor"
+            android:ems="10"
+            android:inputType="text"
+            android:textAlignment="center"
+            tools:ignore="SpeakableTextPresentCheck" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:paddingTop="50dp">
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="100dp">
 
             <Button
                 android:id="@+id/btnConfirm"
@@ -100,8 +110,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="No"
-                android:backgroundTint="@color/red"/>
+                android:backgroundTint="@color/red"
+                android:text="No" />
         </LinearLayout>
 
     </LinearLayout>

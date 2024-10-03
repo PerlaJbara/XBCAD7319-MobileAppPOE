@@ -256,120 +256,27 @@
 
 
             <!-- Future Leave Section -->
-            <TextView
-                android:id="@+id/lblFamilyleave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Family Leave"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:layout_marginBottom="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/customer_cards"
                 android:orientation="vertical"
                 android:padding="16dp">
 
                 <!-- Start Date and End Date -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <EditText
-                        android:id="@+id/txtStartDate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/roundcorneredt"
-                        android:inputType="date"
-                        android:hint="Start Date" />
-
-                    <EditText
-                        android:id="@+id/txtEndDate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/roundcorneredt"
-                        android:inputType="date"
-                        android:hint="End Date" />
-                </LinearLayout>
 
                 <Button
-                    android:id="@+id/btnSavefamLeave"
+                    android:id="@+id/btnManLeave"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:backgroundTint="#CA2F2E"
-                    android:text="Save"
+                    android:backgroundTint="#038A39"
+                    android:text="Manage Leave"
                     android:textSize="18sp" />
             </LinearLayout>
 
             <!-- Holiday Section -->
-            <TextView
-                android:id="@+id/lblHolidayLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="Holiday"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:layout_marginBottom="16dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/customer_cards"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Start Date and End Date for Holiday -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:weightSum="2">
-
-                    <EditText
-                        android:id="@+id/txtHolidayStartDate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/roundcorneredt"
-                        android:inputType="date"
-                        android:hint="Start Date" />
-
-                    <EditText
-                        android:id="@+id/txtHolidayEndDate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/roundcorneredt"
-                        android:inputType="date"
-                        android:hint="End Date" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnSaveholLeave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:backgroundTint="#CA2F2E"
-                    android:text="Save"
-                    android:textSize="18sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
