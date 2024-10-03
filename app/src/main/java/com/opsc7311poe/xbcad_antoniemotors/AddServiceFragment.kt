@@ -43,6 +43,7 @@ class AddServiceFragment : Fragment() {
     private lateinit var txtLabourCost: TextView
     private lateinit var btnAddPart: Button
     private lateinit var btnAdd: Button
+    private lateinit var btnManageServiceTypes: Button
 
     //list of parts entered
     private var partsEntered: MutableList<Part> = mutableListOf()
@@ -61,8 +62,18 @@ class AddServiceFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(ServicesFragment())
         }
+
+        //handling manage service types button
+        btnManageServiceTypes = view.findViewById(R.id.btnManageServiceTypes)
+
+        btnManageServiceTypes.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(ManageServiceTypesFragment())
+        }
+
 
         //populating spinners
         //status spinner

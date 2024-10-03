@@ -27,3 +27,12 @@ data class Part(
     constructor() : this(null, null)
 }
 
+data class ServiceTypeData(
+    var name: String?,
+    var parts: List<Part>? ,
+    var labourCost: Double?,
+
+){
+    constructor() : this(null, null , null)
+}
+
