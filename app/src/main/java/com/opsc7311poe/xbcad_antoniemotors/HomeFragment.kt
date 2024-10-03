@@ -154,58 +154,54 @@ class HomeFragment : Fragment() {
 
     private fun loadServiceStatuses() {
         // Get the current user's ID
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        // Check if userId is not null
-        userId?.let { uid ->
-            // Reference the services node under the current user's ID
-            val database = Firebase.database.reference.child(uid).child("services")
+        // Reference the services node under the current user's ID
+        val database = Firebase.database.reference.child(userId).child("Services")
 
-            database.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
 
-                    var busyCount = 0
-                    var completedCount = 0
-                    var notStartedCount = 0
+                var busyCount = 0
+                var completedCount = 0
+                var notStartedCount = 0
 
-                    if (!snapshot.exists()) {
-                        if (isAdded) {
-                            txtToStart.text = "Nothing To Be Started"
-                            txtBusy.text = "Nothing Is In Progress"
-                            txtCompleted.text = "Nothing Is Completed"
-                        }
-                        return
-                    }
-
-                    for (serviceSnapshot in snapshot.children) {
-                        val status = serviceSnapshot.child("status").getValue(String::class.java)
-                        Log.d("HomeFragment", "Status for service: $status")
-
-                        when (status) {
-                            "Busy" -> busyCount++
-                            "Completed" -> completedCount++
-                            "Not Started" -> notStartedCount++
-                        }
-                    }
-
+                // Check if the snapshot has children (services)
+                if (!snapshot.exists()) {
                     if (isAdded) {
-                        txtToStart.text = "$notStartedCount Cars To Start"
-                        txtBusy.text = "$busyCount Cars In Progress"
-                        txtCompleted.text = "$completedCount Cars Completed"
+                        txtToStart.text = "Nothing To Be Started"
+                        txtBusy.text = "Nothing Is In Progress"
+                        txtCompleted.text = "Nothing Is Completed"
+                    }
+                    return
+                }
+
+                for (serviceSnapshot in snapshot.children) {
+                    val status = serviceSnapshot.child("status").getValue(String::class.java)
+                    Log.d("HomeFragment", "Status for service: $status")
+
+                    when (status) {
+                        "Busy" -> busyCount++
+                        "Completed" -> completedCount++
+                        "Not Started" -> notStartedCount++
                     }
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
+                // Check if the fragment is still attached to avoid crashes when updating UI
+                if (isAdded) {
+                    // Set text based on counts
+                    txtToStart.text = if (notStartedCount == 0) "Nothing To Be Started" else "$notStartedCount Cars To Start"
+                    txtBusy.text = if (busyCount == 0) "Nothing Is In Progress" else "$busyCount Cars In Progress"
+                    txtCompleted.text = if (completedCount == 0) "Nothing Is Completed" else "$completedCount Cars Completed"
                 }
-            })
-        } ?: run {
-            Log.e("HomeFragment", "User ID is null.")
-            // Handle the case where userId is null, although it's less likely in this context
-        }
-    }
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
+            }
+        })
+    }
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
