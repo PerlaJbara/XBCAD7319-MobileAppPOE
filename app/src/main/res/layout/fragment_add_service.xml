@@ -380,6 +380,7 @@
                             android:fontFamily="@font/fontpoppinsregular"
                             android:text="Part Name:"
                             android:textSize="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -411,6 +412,7 @@
                             android:fontFamily="@font/fontpoppinsregular"
                             android:text="Part Cost:"
                             android:textSize="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -476,8 +478,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Labour:"
-                            android:textSize="16dp"
+                            android:text="Labour:  R"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -485,7 +488,7 @@
                             android:id="@+id/txtLabourCost"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="5dp"
                             android:background="@drawable/txtgradientgtor"
                             android:fontFamily="@font/fontpoppinsregular"
                             android:paddingHorizontal="10dp"
