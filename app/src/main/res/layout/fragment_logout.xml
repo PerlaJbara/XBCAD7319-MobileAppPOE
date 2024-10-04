@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,14 +5,32 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:background="@color/white"
-    android:paddingBottom="5dp"
     tools:context=".LogoutFragment">
 
+    <!-- Background Image with updated constraints and scaleType -->
+    <ImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+    android:src="@drawable/carsunset"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Semi-transparent black overlay -->
+    <View
+        android:id="@+id/blackOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bgblackdark" />
+
+    <!-- Header Layout -->
     <LinearLayout
         android:id="@+id/layoutHeader"
-        android:layout_width="411dp"
-        android:layout_height="227dp"
-        android:background="@drawable/carinterior"
+        android:layout_width="434dp"
+        android:layout_height="241dp"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
         android:gravity="center"
@@ -21,7 +38,6 @@
         android:paddingTop="10dp"
         android:paddingRight="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,8 +45,8 @@
             android:id="@+id/ivBackButton"
             android:layout_width="55dp"
             android:layout_height="40dp"
-            android:src="@drawable/vectorback"
-            android:layout_gravity="start"/>
+            android:layout_gravity="start"
+            android:src="@drawable/vectorback" />
 
         <TextView
             android:id="@+id/txtSettingsTitle"
@@ -43,7 +59,6 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="60sp" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -64,13 +79,12 @@
             android:paddingLeft="37dp"
             android:paddingTop="40dp"
             android:text="Are you sure you want to logout?"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="24sp" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="423dp"
             android:orientation="horizontal"
             android:paddingTop="50dp">
 
@@ -79,9 +93,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="80dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="60dp"
-                android:layout_marginLeft="60dp"
                 android:backgroundTint="@color/red"
                 android:text="Yes" />
 
@@ -90,11 +104,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="30dp"
                 android:layout_marginTop="30dp"
-                android:text="No"
-                android:backgroundTint="@color/red"/>
+                android:backgroundTint="@color/red"
+                android:text="No" />
         </LinearLayout>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
