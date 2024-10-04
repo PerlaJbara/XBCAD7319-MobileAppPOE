@@ -51,7 +51,7 @@
             android:paddingBottom="25dp"
             android:text="Brake Pads:               R 2000.00"
             android:textColor="@color/black"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginHorizontal="15dp" />
 
         <TextView
@@ -62,7 +62,7 @@
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Typical Labour Cost"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:paddingHorizontal="15dp" />
 
         <TextView
@@ -74,7 +74,7 @@
             android:paddingVertical="5dp"
             android:text="R 1200.00"
             android:textColor="@color/black"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_marginHorizontal="15dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,7 +83,7 @@
             android:layout_marginVertical="5dp">
 
             <Button
-                android:id="@+id/btnSave"
+                android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/red"

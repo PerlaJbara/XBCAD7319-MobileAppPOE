@@ -63,6 +63,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="470dp">
 
+                <LinearLayout
+                    android:id="@+id/linlayServiceTypeCards"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardviewServiceType"
                     android:layout_width="match_parent"
@@ -102,7 +108,7 @@
                             android:fontFamily="@font/fontpoppinssemibold"
                             android:text="Typical Parts"
                             android:textColor="@color/black"
-                            android:textSize="18dp"
+                            android:textSize="18sp"
                             android:paddingHorizontal="15dp"/>
 
                         <TextView
@@ -115,7 +121,7 @@
                             android:paddingBottom="25dp"
                             android:text="Part:               R 0000.00"
                             android:textColor="@color/black"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:layout_marginHorizontal="15dp"/>
 
                         <TextView
@@ -125,7 +131,7 @@
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/fontpoppinssemibold"
                             android:text="Typical Labour Cost"
-                            android:textSize="18dp"
+                            android:textSize="18sp"
                             android:paddingHorizontal="15dp"/>
 
                         <TextView
@@ -136,7 +142,7 @@
                             android:paddingHorizontal="15dp"
                             android:paddingVertical="5dp"
                             android:text="R 1200.00"
-                            android:textSize="16dp"
+                            android:textSize="16sp"
                             android:layout_marginHorizontal="15dp"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -163,6 +169,8 @@
 
 
                 </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
 
 
             </ScrollView>

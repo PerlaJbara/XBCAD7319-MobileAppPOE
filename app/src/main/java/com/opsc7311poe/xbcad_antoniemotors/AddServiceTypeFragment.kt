@@ -119,7 +119,7 @@ class AddServiceTypeFragment : Fragment() {
 
                 //go back to service types page
                 it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-                replaceFragment(ServicesFragment())
+                replaceFragment(AddServiceFragment())
             }
         }
 

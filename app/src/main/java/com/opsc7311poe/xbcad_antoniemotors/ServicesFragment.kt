@@ -65,8 +65,8 @@ class ServicesFragment : Fragment() {
                         //populate the customer data
                         fetchCustNameAndSurname(service!!.custID!!, cardView)
                         //populate vehicle data
-                        fetchVehicleNameAndModel(service!!.vehicleID!!, cardView)
-                        //cardView.findViewById<TextView>(R.id.txtVehicleName).text = fetchVehicleNameAndModel
+                        fetchVehicleNameAndModel(service.vehicleID!!, cardView)
+
                         cardView.findViewById<TextView>(R.id.txtServiceName).text = service.name
                         cardView.findViewById<TextView>(R.id.txtCost).text = "R ${service.totalCost.toString()}"
 
@@ -77,7 +77,7 @@ class ServicesFragment : Fragment() {
                         cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
                         // Set the status ImageView based on status
                         val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
-                        when (service?.status) {
+                        when (service.status) {
                             "Completed" -> statusImageView.setImageResource(R.drawable.vectorstatuscompleted)
                             "Busy" -> statusImageView.setImageResource(R.drawable.vectorstatusbusy)
                             "Not Started" -> statusImageView.setImageResource(R.drawable.vectorstatusnotstrarted)
@@ -124,8 +124,8 @@ class ServicesFragment : Fragment() {
                     for (customerSnapshot in snapshot.children) {
                         if(customerSnapshot.key == custID){
                             Log.d("CustomerIDForServiceCard", "CustIDInput: $custID CustIDFound: ${customerSnapshot.key}")
-                            var custName = customerSnapshot.child("customerName").getValue(String::class.java)
-                            var custSurname = customerSnapshot.child("customerSurname").getValue(String::class.java)
+                            val custName = customerSnapshot.child("customerName").getValue(String::class.java)
+                            val custSurname = customerSnapshot.child("customerSurname").getValue(String::class.java)
                             cv.findViewById<TextView>(R.id.txtCustName).text = "$custName $custSurname"
                         }
                     }
@@ -151,8 +151,8 @@ class ServicesFragment : Fragment() {
                     for (vehSnapshot in snapshot.children) {
                         if(vehSnapshot.key == vehID){
                             Log.d("VehicleIDForServiceCard", "VehIDInput: $vehID VehIDFound: ${vehSnapshot.key}")
-                            var vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
-                            var vehicleModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
+                            val vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                            val vehicleModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
                             cv.findViewById<TextView>(R.id.txtVehicleName).text = "$vehNumPlate ($vehicleModel)"
                         }
                     }

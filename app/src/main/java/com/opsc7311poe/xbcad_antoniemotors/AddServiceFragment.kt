@@ -34,6 +34,7 @@ class AddServiceFragment : Fragment() {
     private lateinit var btnBack: ImageView
     private lateinit var spinCust: Spinner
     private lateinit var spinVeh: Spinner
+    private lateinit var spinServiceType: Spinner
     private lateinit var txtName: TextView
     private lateinit var txtDateReceived: TextView
     private lateinit var txtDateReturned: TextView
@@ -49,6 +50,7 @@ class AddServiceFragment : Fragment() {
     private var partsEntered: MutableList<Part> = mutableListOf()
     private var selectedCustomerId: String = ""
     private var selectedVehicleId: String = ""
+    private var selectedServiceTypeId: String = ""
 
 
     override fun onCreateView(
@@ -57,6 +59,12 @@ class AddServiceFragment : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_add_service, container, false)
+
+        txtName = view.findViewById(R.id.txtServiceName)
+        txtLabourCost = view.findViewById(R.id.txtLabourCost)
+        txtPartName = view.findViewById(R.id.txtPartName)
+        txtPartCost = view.findViewById(R.id.txtPartCost)
+        txtAllParts = view.findViewById(R.id.txtAllParts)
 
         //handling back button
         btnBack = view.findViewById(R.id.ivBackButton)
@@ -95,6 +103,11 @@ class AddServiceFragment : Fragment() {
 
         userId?.let { populateVehicleSpinner(selectedCustomerId) }
 
+        //Service type spinner
+        spinServiceType = view.findViewById(R.id.spinDefaultServiceType)
+
+        userId?.let { populateServiceTypeSpinner() }
+
 
         //date picking functionality to date-based textviews
         txtDateReceived = view.findViewById(R.id.txtDateCarReceived)
@@ -113,9 +126,6 @@ class AddServiceFragment : Fragment() {
         btnAddPart.setOnClickListener{
 
             //adding part to list of parts
-            txtPartName = view.findViewById(R.id.txtPartName)
-            txtPartCost = view.findViewById(R.id.txtPartCost)
-            txtAllParts = view.findViewById(R.id.txtAllParts)
 
             //checking all fields are filled
             if(txtPartName.text.toString().isBlank() || txtPartCost.text.toString().isBlank())
@@ -149,9 +159,6 @@ class AddServiceFragment : Fragment() {
 
         btnAdd.setOnClickListener{
             lateinit var serviceEntered: ServiceData
-
-            txtName = view.findViewById(R.id.txtServiceName)
-            txtLabourCost = view.findViewById(R.id.txtLabourCost)
 
             //checking all fields are filled
             if(txtName.text.toString().isBlank() ||
@@ -386,7 +393,116 @@ class AddServiceFragment : Fragment() {
         })
     }
 
+    private fun populateServiceTypeSpinner() {
+        // Get the current logged-in user ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
+        // Query the database for service types under the current user's ID
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference(userId).child("ServiceTypes")
+
+        serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val serviceTypeMap = mutableMapOf<String, String>()
+                val serviceTypeNames = mutableListOf("Select a service type") // Add placeholder at the first position
+
+                // Check if there are service types associated with the user
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No service types found for this user", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Loop through all service types associated with this user
+                for (serviceTypeSnapshot in snapshot.children) {
+                    val serviceTypeId = serviceTypeSnapshot.key
+                    val serviceTypeName = serviceTypeSnapshot.child("name").getValue(String::class.java)
+
+                    // Log data to check if it's being fetched correctly
+                    Log.d("FirebaseData", "ServiceType: $serviceTypeName, ID: $serviceTypeId")
+
+                    // Only add service type if names are not null or empty
+                    if (!serviceTypeName.isNullOrEmpty() && serviceTypeId != null) {
+                        serviceTypeMap[serviceTypeId] = serviceTypeName
+                        serviceTypeNames.add(serviceTypeName) // Add service type name to spinner options
+                    }
+                }
+
+                // Check if the list is empty after fetching service types
+                if (serviceTypeNames.size == 1) { // Only placeholder exists
+                    Toast.makeText(requireContext(), "No service types found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Set up the spinner with the list of service type names
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, serviceTypeNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinServiceType.adapter = adapter
+
+                // Set spinner to show the placeholder by default
+                spinServiceType.setSelection(0)
+
+                // Handle service type selection from the spinner
+                spinServiceType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                        if (position != 0) {
+                            // Ignore the first item (placeholder) and proceed with service type selection
+                            val selectedServiceTypeName = parent.getItemAtPosition(position).toString()
+                            selectedServiceTypeId = serviceTypeMap.filterValues { it == selectedServiceTypeName }.keys.firstOrNull().orEmpty()
+                            // Populate other fields when a service type is selected
+                            populateFieldsWithServiceTypeData(selectedServiceTypeId)
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {
+                        // Handle if nothing is selected
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error loading service type data: ${error.message}")
+                Toast.makeText(requireContext(), "Error loading service type data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun populateFieldsWithServiceTypeData(selectedServiceTypeId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference(userId!!).child("ServiceTypes/$selectedServiceTypeId")
+
+        serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                val fetchedSerType = snapshot.getValue(ServiceTypeData::class.java)
+
+                txtName.text = fetchedSerType!!.name
+
+                //displaying part list to user
+                var allPartsString = ""
+                for(part in fetchedSerType.parts!!)
+                {
+                    allPartsString += "${part.name}             R${String.format(Locale.getDefault(), "%.2f", part.cost)}"
+                    allPartsString += "\n"
+                }
+
+                txtAllParts.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                txtAllParts.text = allPartsString
+
+                txtLabourCost.text = fetchedSerType.labourCost.toString()
+
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error loading service type data: ${error.message}")
+                Toast.makeText(requireContext(), "Error loading service type data", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
 
 
 }
