@@ -1,11 +1,14 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -13,21 +16,23 @@ import java.util.*
 class QuoteGenFragment : Fragment() {
 
     private lateinit var spinCustomer: Spinner
-    private lateinit var spinQuote: Spinner
+    private lateinit var spinServiceType: Spinner
     private lateinit var edtParts: EditText
     private lateinit var edtLabour: EditText
-    private lateinit var txtRvalue: TextView
-    private lateinit var btnGenerateReceipt: Button
+    private lateinit var txtFinalQuote: TextView
+    private lateinit var btnFinalReview: Button
     private lateinit var btnBack: ImageView
     private lateinit var edtPartName: EditText
     private lateinit var edtPartCost: EditText
     private lateinit var txtPartsList: TextView
     private lateinit var btnAddPart: Button
 
-    private lateinit var partsList: MutableList<Map<String, String>> // List to store parts and their costs
+    private lateinit var partsList: MutableList<Map<String, String>>  // List to store parts and their costs
+    private var totalPartsCost: Double = 0.0
+    private var totalLabourCost: Double = 0.0
 
-    private var selectedCustomerId: String = ""
-    private var selectedServiceTypeId: String = ""
+    private var selectedCustomerName: String = ""
+    private var selectedServiceTypeName: String = ""
 
     // Firebase database reference
     private val database = FirebaseDatabase.getInstance()
@@ -36,34 +41,32 @@ class QuoteGenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_receipt_generator, container, false)
+        val view = inflater.inflate(R.layout.fragment_quote_gen, container, false)
 
         // Initialize views
         spinCustomer = view.findViewById(R.id.spinCustomer)
-        spinQuote = view.findViewById(R.id.spinQuote)
+        spinServiceType = view.findViewById(R.id.spinQuote)
         edtPartName = view.findViewById(R.id.edtPartName)
         edtPartCost = view.findViewById(R.id.edtPartCost)
         txtPartsList = view.findViewById(R.id.txtPartsList)
         btnAddPart = view.findViewById(R.id.btnAddPart)
         edtLabour = view.findViewById(R.id.edttxtLabour)
-        txtRvalue = view.findViewById(R.id.txtRvalue)
-        btnGenerateReceipt = view.findViewById(R.id.btnServiceTypes)
+        txtFinalQuote = view.findViewById(R.id.txtFinalQuote)
         btnBack = view.findViewById(R.id.ivBackButton)
+        btnFinalReview = view.findViewById(R.id.btnFinalReview)
 
         partsList = mutableListOf()
 
-        // Load customer names and service types into spinners
-        loadCustomerNames()
-        loadServiceTypes()
+        // Populate Spinner with customer names
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        userId?.let { populateCustomerSpinner() }
+
+        val userIds = FirebaseAuth.getInstance().currentUser?.uid
+        userIds?.let { populateServiceTypeSpinner() }
 
         // Handle back button press
         btnBack.setOnClickListener {
-            replaceFragment(HomeFragment())
-        }
-
-        // Set up receipt generation button
-        btnGenerateReceipt.setOnClickListener {
-            generateReceipt()
+            replaceFragment(DocumentationFragment())
         }
 
         // Set up add part button
@@ -71,32 +74,68 @@ class QuoteGenFragment : Fragment() {
             addPart()
         }
 
+        // Add TextWatcher to update total when labor changes
+        edtLabour.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                totalLabourCost = s.toString().toDoubleOrNull() ?: 0.0
+                updateTotalQuote()
+            }
+        })
+
+        // Set up final review button
+        btnFinalReview.setOnClickListener {
+            generateReceipt()  // Generate and save receipt to Firebase
+            replaceFragment(QuoteOverviewFragment())  // Navigate to the receipt overview fragment
+        }
+
         return view
     }
 
-    private fun loadCustomerNames() {
-        val customerList = mutableListOf<String>()
-        val customerIds = mutableListOf<String>()
-        val customerRef = database.getReference("Customers")
+    private fun populateCustomerSpinner() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
+        val customerRef = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                val customerMap = mutableMapOf<String, String>()
+                val customerNames = mutableListOf<String>()
+
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No customers found for this user", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
                 for (customerSnapshot in snapshot.children) {
-                    val customerName = customerSnapshot.child("name").getValue(String::class.java)
                     val customerId = customerSnapshot.key
-                    if (customerName != null && customerId != null) {
-                        customerList.add(customerName)
-                        customerIds.add(customerId)
+                    val firstName = customerSnapshot.child("customerName").getValue(String::class.java)
+                    val lastName = customerSnapshot.child("customerSurname").getValue(String::class.java)
+
+                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
+                        val fullName = "$firstName $lastName"
+                        customerMap[customerId] = fullName
+                        customerNames.add(fullName)
                     }
                 }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerList)
+
+                if (customerNames.isEmpty()) {
+                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinCustomer.adapter = adapter
 
-                // Store customer IDs for reference when generating the receipt
                 spinCustomer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        selectedCustomerId = customerIds[position] // Assign selected customer ID here
+                        selectedCustomerName = parent.getItemAtPosition(position).toString()
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -104,34 +143,51 @@ class QuoteGenFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load customers", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load customers", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun loadServiceTypes() {
-        val serviceList = mutableListOf<String>()
-        val serviceTypeIds = mutableListOf<String>()
-        val serviceRef = database.getReference("Services")
+    private fun populateServiceTypeSpinner() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        serviceRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference(userId).child("ServiceTypes")
+        serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (serviceSnapshot in snapshot.children) {
-                    val serviceName = serviceSnapshot.child("name").getValue(String::class.java)
-                    val serviceTypeId = serviceSnapshot.key
-                    if (serviceName != null && serviceTypeId != null) {
-                        serviceList.add(serviceName)
-                        serviceTypeIds.add(serviceTypeId)
+                val serviceTypeMap = mutableMapOf<String, String>()
+                val serviceTypeNames = mutableListOf<String>()
+
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No service types found.", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                for (serviceTypeSnapshot in snapshot.children) {
+                    val serviceTypeId = serviceTypeSnapshot.key
+                    val serviceName = serviceTypeSnapshot.child("name").getValue(String::class.java)
+
+                    if (!serviceName.isNullOrEmpty() && serviceTypeId != null) {
+                        serviceTypeMap[serviceTypeId] = serviceName
+                        serviceTypeNames.add(serviceName)
                     }
                 }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, serviceList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinQuote.adapter = adapter
 
-                // Store service IDs for reference when generating the receipt
-                spinQuote.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                if (serviceTypeNames.isEmpty()) {
+                    Toast.makeText(requireContext(), "No service types found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, serviceTypeNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinServiceType.adapter = adapter
+
+                spinServiceType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        selectedServiceTypeId = serviceTypeIds[position] // Assign selected service ID here
+                        selectedServiceTypeName = parent.getItemAtPosition(position).toString()
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -139,7 +195,7 @@ class QuoteGenFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load service types", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load service types", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -149,92 +205,71 @@ class QuoteGenFragment : Fragment() {
         val partCost = edtPartCost.text.toString().trim()
 
         if (partName.isNotEmpty() && partCost.isNotEmpty()) {
-            // Add part data to partsList
-            val partData = mapOf(
-                "name" to partName,
-                "cost" to partCost
-            )
+            val partData = mapOf("name" to partName, "cost" to partCost)
             partsList.add(partData)
-            updatePartsList()
 
-            // Clear inputs
+            // Update the total parts cost
+            totalPartsCost += partCost.toDouble()
+
+            // Update parts list and total quote
+            updatePartsList()
+            updateTotalQuote()
+
             edtPartName.text.clear()
             edtPartCost.text.clear()
-
-            // Ensure selectedCustomerId is available
-            if (selectedCustomerId.isNotEmpty()) {
-                val currentDate = SimpleDateFormat("yyyyMMdd_HH", Locale.getDefault()).format(Date()) // Format current date
-                val receiptId = "currentDate"
-
-                // Save parts to Firebase under the generated receipt ID
-                database.getReference("Receipts").child(receiptId).child("Parts").setValue(partsList)
-                    .addOnSuccessListener {
-                        Toast.makeText(context, "Parts saved successfully!", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, "Failed to save parts: ${it.message}", Toast.LENGTH_SHORT).show()
-                    }
-            } else {
-                Toast.makeText(context, "Please select a customer before adding parts.", Toast.LENGTH_SHORT).show()
-            }
         } else {
             Toast.makeText(context, "Please enter both part name and cost", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun updatePartsList() {0
-        val partsStringBuilder = StringBuilder()
-        for (part in partsList) {
-            partsStringBuilder.append("${part["name"]}: R${part["cost"]}\n")
-        }
-        txtPartsList.text = partsStringBuilder.toString()
+    private fun updatePartsList() {
+        val partsText = partsList.joinToString(separator = "\n") { "${it["name"]}: \$${it["cost"]}" }
+        txtPartsList.text = partsText
+    }
+
+    private fun updateTotalQuote() {
+        // Calculate the total quote by adding parts and labor
+        val totalQuote = totalPartsCost + totalLabourCost
+        txtFinalQuote.text = "Total: $totalQuote"
     }
 
     private fun generateReceipt() {
-        val partsCost = edtParts.text.toString().trim()
-        val labourCost = edtLabour.text.toString().trim()
+        if (selectedCustomerName.isNotEmpty() && selectedServiceTypeName.isNotEmpty()) {
+            // Get current date for receipt timestamp
+            val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
-        // Check if inputs are valid
-        if (partsCost.isEmpty() || labourCost.isEmpty()) {
-            Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Calculate final quote
-        val finalQuote = partsCost.toDouble() + labourCost.toDouble()
-
-        // Display final quote
-        txtRvalue.text = "Final Quote: R$finalQuote"
-
-        // Save receipt in Firebase
-        if (selectedCustomerId.isNotEmpty()) {
-            val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            //val receiptId = "$selectedCustomerId_$currentDate"
-            val receiptId = "currentDate"
-
-            val receiptRef = database.getReference("Receipts").child(receiptId)
-            val receipt = mapOf(
-                "serviceType" to selectedServiceTypeId,
-                "partsCost" to partsCost,
-                "labourCost" to labourCost,
-                "finalQuote" to finalQuote.toString()
+            // Create a receipt object
+            val receiptData = mapOf(
+                "customerName" to selectedCustomerName,
+                "serviceTypeName" to selectedServiceTypeName,
+                "parts" to partsList,
+                "labourCost" to totalLabourCost,
+                "finalQuote" to (totalPartsCost + totalLabourCost).toString(),
+                "date" to currentDate
             )
 
-            receiptRef.setValue(receipt).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(context, "Receipt generated successfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, "Failed to generate receipt", Toast.LENGTH_SHORT).show()
-                }
+            // Save receipt data to Firebase
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            userId?.let {
+                val receiptsRef = database.getReference(it).child("Quotes")
+                val newReceiptRef = receiptsRef.push() // Create a new entry
+                newReceiptRef.setValue(receiptData)
+                    .addOnSuccessListener {
+                        Toast.makeText(context, "Quote generated successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(context, "Quote to generate receipt: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
         } else {
-            Toast.makeText(context, "Please select a customer before generating the receipt.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Please select a customer and a service type", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, fragment)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

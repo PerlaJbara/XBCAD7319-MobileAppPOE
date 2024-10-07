@@ -200,6 +200,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
                 app:layout_constraintWidth_default="wrap" />
 
+            <Button
+                android:id="@+id/btnFinalReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:text="Review"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:backgroundTint="#038A39"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
+
             <TextView
                 android:id="@+id/txtFinalQuote"
                 android:layout_width="0dp"
@@ -210,7 +222,7 @@
                 android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
+                app:layout_constraintTop_toBottomOf="@+id/btnFinalReview" />
 
             <LinearLayout
                 android:id="@+id/layoutQuote"
@@ -240,7 +252,6 @@
                 android:id="@+id/txtRvalue"
                 android:layout_width="192dp"
                 android:layout_height="32dp"
-                android:text="TextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:background="@drawable/greenboderbackground"

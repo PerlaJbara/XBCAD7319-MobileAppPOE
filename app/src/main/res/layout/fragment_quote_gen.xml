@@ -49,13 +49,13 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/txtSelecctCustomer"
+                android:id="@+id/txtSelectCustomer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:fontFamily="@font/fontpoppinsmedium"
                 android:text="Select Customer"
                 android:textSize="25sp"
-                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +70,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer"
+                app:layout_constraintTop_toBottomOf="@+id/txtSelectCustomer"
                 app:layout_constraintWidth_default="wrap" />
 
             <TextView
@@ -80,8 +80,8 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="Select Service Type"
-                android:textSize="25sp"
                 android:fontFamily="@font/fontpoppinsmedium"
+                android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spinCustomer" />
@@ -101,11 +101,12 @@
 
             <Button
                 android:id="@+id/btnServiceTypes"
-                android:layout_width="191dp"
-                android:layout_height="53dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:text="Manage Service Types"
+                android:fontFamily="@font/fontpoppinsmedium"
                 android:backgroundTint="@color/red"
-                android:text="Edit Service"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spinQuote" />
@@ -117,11 +118,12 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:text="Parts"
-                android:textSize="25sp"
                 android:fontFamily="@font/fontpoppinsmedium"
+                android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnServiceTypes" />
+
 
             <EditText
                 android:id="@+id/edtPartName"
@@ -191,7 +193,6 @@
                 android:layout_width="310dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
-                android:fontFamily="@font/fontpoppinsregular"
                 android:background="@drawable/spingradientgtor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -199,17 +200,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
                 app:layout_constraintWidth_default="wrap" />
 
+            <Button
+                android:id="@+id/btnFinalReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:text="Review"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:backgroundTint="#038A39"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
+
             <TextView
                 android:id="@+id/txtFinalQuote"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Final Amount"
+                android:text="Final Quote"
                 android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
+                app:layout_constraintTop_toBottomOf="@+id/btnFinalReview" />
 
             <LinearLayout
                 android:id="@+id/layoutQuote"
@@ -225,12 +238,12 @@
 
             <Button
                 android:id="@+id/btnReview"
-                android:layout_width="138dp"
-                android:layout_height="54dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
-                android:backgroundTint="#038A39"
                 android:text="Review"
                 android:fontFamily="@font/fontpoppinsmedium"
+                android:backgroundTint="#038A39"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutQuote" />
@@ -239,11 +252,9 @@
                 android:id="@+id/txtRvalue"
                 android:layout_width="192dp"
                 android:layout_height="32dp"
-                android:background="@drawable/greenboderbackground"
-                android:text="TextView"
-                android:fontFamily="@font/fontpoppinsregular"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/greenboderbackground"
                 app:layout_constraintTop_toTopOf="@+id/layoutQuote" />
 
             <TextView
@@ -252,7 +263,6 @@
                 android:layout_height="42dp"
                 android:text="R"
                 android:textSize="30dp"
-                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toStartOf="@+id/txtRvalue"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote" />

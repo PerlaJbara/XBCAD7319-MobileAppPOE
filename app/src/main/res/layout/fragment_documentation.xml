@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/carsideprofile">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="191dp"
+        android:orientation="vertical"
+        android:paddingTop="30dp"
+        android:background="@drawable/bgseethroughblack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+
+        <TextView
+            android:id="@+id/txtQuoteOverview"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:fontFamily="@font/fontheader"
+            android:gravity="center_horizontal"
+            android:text="Documentation"
+            android:textColor="#FFFFFF"
+            android:textSize="45dp" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="411dp"
+        android:layout_height="537dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
+        android:background="@drawable/bgseethroughblack">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtSelecctCustomer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:gravity="center"
+                android:text="Quotations"
+                android:textSize="30sp"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btnGenQuote"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="17dp"
+                android:backgroundTint="#787771"
+                android:text="Generate Quote"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer" />
+
+            <Button
+                android:id="@+id/btnPastQuotes"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="17dp"
+                android:backgroundTint="#787771"
+                android:text="View Past Quotes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnGenQuote" />
+
+            <TextView
+                android:id="@+id/txtReceipts"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:gravity="center"
+                android:text="Receipts"
+                android:textSize="30sp"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnPastQuotes"/>
+
+            <Button
+                android:id="@+id/btnGenReciept"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="17dp"
+                android:backgroundTint="#787771"
+                android:text="Generate Receipt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtReceipts" />
+
+            <Button
+                android:id="@+id/btnReviewReceipt"
+                android:layout_width="191dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="17dp"
+                android:backgroundTint="#787771"
+                android:text="View Past Quotes"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnGenReciept" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

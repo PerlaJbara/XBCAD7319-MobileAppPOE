@@ -1,122 +1,112 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.firebase.database.*
+import com.google.firebase.database.FirebaseDatabase
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class ReceiptOverviewFragment : Fragment() {
 
-    private lateinit var customerNameTextView: TextView
-    private lateinit var customerPhoneTextView: TextView
-    private lateinit var vehicleDetailsTextView: TextView
-    private lateinit var txtVinRec: TextView
-    private lateinit var kilometersTextView: TextView
-    private lateinit var issueDateTextView: TextView
-    private lateinit var layoutParts: LinearLayout
-    private lateinit var btnBack: ImageView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var ownerName: TextView
+    private lateinit var vehicleMake: TextView
+    private lateinit var address: TextView
+    private lateinit var registration: TextView
+    private lateinit var partsLayout: LinearLayout
+    private lateinit var laborLayout: LinearLayout
+    private lateinit var scrollView: ScrollView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_receipt_overview, container, false)
+        val view = inflater.inflate(R.layout.fragment_quote_overview, container, false)
 
-        // Initialize views
-        customerNameTextView = view.findViewById(R.id.txtNameRec)
-        customerPhoneTextView = view.findViewById(R.id.txtCellRec)
-        vehicleDetailsTextView = view.findViewById(R.id.txtVehicleRec)
-        txtVinRec = view.findViewById(R.id.txtVinRec)
-        kilometersTextView = view.findViewById(R.id.txtKiloRec)
-        issueDateTextView = view.findViewById(R.id.txtDateRec)
-        layoutParts = view.findViewById(R.id.layoutParts)
-        btnBack = view.findViewById(R.id.ivBackButton)
+        // Initialize the views
+        ownerName = view.findViewById(R.id.tvOwnerName)
+        vehicleMake = view.findViewById(R.id.tvVehicleMake)
+        address = view.findViewById(R.id.tvAddress)
+        registration = view.findViewById(R.id.tvRegistration)
+        partsLayout = view.findViewById(R.id.addparts)
+        laborLayout = view.findViewById(R.id.llHoursLabour)
+        scrollView = view.findViewById(R.id.svQuoteOverview)  // Ensure your ScrollView has this ID
 
-        btnBack.setOnClickListener {
-            replaceFragment(ReceiptGeneratorFragment())
+        // Load data from Firebase
+        loadDataFromFirebase()
+
+        // Handle Make PDF Button click
+        view.findViewById<View>(R.id.btnMakePDF).setOnClickListener {
+            createPDF()
         }
-
-        // Fetch data from Firebase
-        fetchDataFromFirebase()
 
         return view
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.frame_container, fragment)
-            .addToBackStack(null)
-            .commit()
+    private fun loadDataFromFirebase() {
+        val database = FirebaseDatabase.getInstance().getReference("Receipts")
+
+        // Load Owner and Vehicle Details
+        database.child("Receipts").get().addOnSuccessListener { dataSnapshot ->
+            ownerName.text = dataSnapshot.child("customerName").value.toString()
+            vehicleMake.text = dataSnapshot.child("vehicleMake").value.toString()
+            address.text = dataSnapshot.child("address").value.toString()
+            registration.text = dataSnapshot.child("registration").value.toString()
+
+            // Load Parts
+            val partsList = dataSnapshot.child("parts").children
+            for (part in partsList) {
+                val partView = TextView(context)
+                partView.text = part.value.toString()
+                partsLayout.addView(partView)
+            }
+
+            // Load Labor
+            val laborList = dataSnapshot.child("labor").children
+            for (labor in laborList) {
+                val laborView = TextView(context)
+                laborView.text = labor.value.toString()
+                laborLayout.addView(laborView)
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Failed to load data", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun fetchDataFromFirebase() {
-        val receiptId = arguments?.getString("receiptId") ?: return
+    private fun createPDF() {
+        // Create a new PdfDocument
+        val pdfDocument = PdfDocument()
+        val pageInfo = PdfDocument.PageInfo.Builder(scrollView.width, scrollView.height, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
 
-        // Reference to the Firebase Database
-        val databaseRef = FirebaseDatabase.getInstance().getReference("Receipts").child(receiptId)
+        // Capture the ScrollView content into the PDF
+        scrollView.draw(page.canvas)
+        pdfDocument.finishPage(page)
 
-        // Fetch customer details
-        databaseRef.child("customerDetails").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                customerNameTextView.text = snapshot.child("name").value.toString()
-                customerPhoneTextView.text = snapshot.child("phone").value.toString()
-            }
+        // Save the document to external storage
+        val directory = File(Environment.getExternalStorageDirectory(), "QuotesPDFs")
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
 
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Error fetching customer details: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        // Fetch vehicle details
-        databaseRef.child("vehicleDetails").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                vehicleDetailsTextView.text = snapshot.child("model").value.toString()
-                txtVinRec.text = snapshot.child("vin").value.toString()
-                kilometersTextView.text = snapshot.child("kilometers").value.toString()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Error fetching vehicle details: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        // Fetch parts details (dynamic number of parts)
-        databaseRef.child("parts").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                layoutParts.removeAllViews() // Clear previous views if any
-
-                for (partSnapshot in snapshot.children) {
-                    val partName = partSnapshot.child("name").value.toString()
-                    val partCost = partSnapshot.child("cost").value.toString()
-
-                    // Create a TextView dynamically for each part
-                    val partTextView = TextView(context)
-                    partTextView.text = "Part: $partName, Cost: $partCost"
-                    partTextView.textSize = 16f
-                    partTextView.setPadding(16, 16, 16, 16)
-
-                    // Add TextView to the LinearLayout
-                    layoutParts.addView(partTextView)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Error fetching parts: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        /*// Set the current date for the issued quote
-        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
-        issueDateTextView.text = currentDate*/
+        val file = File(directory, "quote_${System.currentTimeMillis()}.pdf")
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            Toast.makeText(context, "PDF saved to ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(context, "Error saving PDF: ${e.message}", Toast.LENGTH_SHORT).show()
+        } finally {
+            pdfDocument.close()
+        }
     }
 }

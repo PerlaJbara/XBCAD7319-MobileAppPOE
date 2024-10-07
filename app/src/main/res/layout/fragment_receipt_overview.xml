@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="191dp"
-        android:background="@drawable/carwheelheader"
+        android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
         android:paddingTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <ImageView
             android:id="@+id/ivBackButton"
             android:layout_width="55dp"
@@ -25,7 +25,7 @@
             android:layout_gravity="start"/>
 
         <TextView
-            android:id="@+id/txtReceiptHeader"
+            android:id="@+id/txtEmployeeReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/fontpoppinssemibold"
@@ -37,19 +37,21 @@
 
     </LinearLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="411dp"
+        android:layout_height="540dp"
         android:layout_below="@id/layoutHeader"
-        android:layout_marginTop="160dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
 
         <LinearLayout
             android:id="@+id/linearLayoutContent"
-            android:layout_width="418dp"
-            android:layout_height="450dp"
-            android:layout_marginTop="44dp"
+            android:layout_width="419dp"
+            android:layout_height="443dp"
+            android:layout_marginTop="32dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.6"
@@ -60,282 +62,252 @@
             <ScrollView
                 android:id="@+id/svQuoteOverview"
                 android:layout_width="325dp"
-                android:layout_height="352dp"
+                android:layout_height="397dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp">
 
-                <TableLayout
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/layoutOverview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="5dp"
-                    android:stretchColumns="0,1">
+                    android:orientation="vertical">
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/txtDatetextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Date:" />
-
-                        <TextView
-                            android:id="@+id/txtDateRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="20/05/2002 eg" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtGap3Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                        <TextView
-                            android:id="@+id/txtGap4Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtHeadRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:fontFamily="@font/fontpoppinssemibold"
-                            android:text="Customer Details" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtnametextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Name:" />
-
-                        <TextView
-                            android:id="@+id/txtNameRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="Example" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtCelltextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Status:" />
-
-                        <TextView
-                            android:id="@+id/txtCellRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="060 960 2183" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtGap1Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                        <TextView
-                            android:id="@+id/txtGap2Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtHeadtextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
-                            android:text="Vehicle" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtvehicletextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Vehicle:" />
-
-                        <TextView
-                            android:id="@+id/txtVehicleRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="Car name" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtVintextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Vin:" />
-
-                        <TextView
-                            android:id="@+id/txtVinRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="NAXTRC654651" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtKiloTextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="Kilometers:" />
-
-                        <TextView
-                            android:id="@+id/txtKiloRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsmedium"
-                            android:text="123 145" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtGap5Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                        <TextView
-                            android:id="@+id/txtGap6Rec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
-                            android:text="" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/txtHeadParttextRec"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
-                            android:text="Parts" />
-
-                    </TableRow>
                     <LinearLayout
-                        android:id="@+id/layoutParts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:background="@android:color/white"
+                        android:divider="?android:dividerVertical"
+                        android:dividerPadding="4dp"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <!-- Header -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <!-- Business Info (Left) -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Antonie Motors cc"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Repairs, Services\nAnd Car Sales"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="263 Main Reef Road\nBenoni, Johannesburg\n2014"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <!-- Job Info (Right) -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="right"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Date: 16 09 2024"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Vehicle and Owner Info -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingTop="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OWNER:"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <TextView
+                                    android:id="@+id/tvOwnerName"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Owner Name"
+                                    android:textSize="14sp" />
+
+                                <TextView
+                                    android:id="@+id/serviceTypeName"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Service Type"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Address and Registration -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingTop="8dp"
+                                android:weightSum="2"/>
+                        </LinearLayout>
 
 
-                </TableLayout>
+                        <!-- Hours Labour Section -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="HOURS LABOUR"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
+                        <LinearLayout
+                            android:id="@+id/llHoursLabour"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                        <!-- Spares & Materials Section -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp"
+                            android:text="Parts, SPARES and MATERIALS"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/addparts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </LinearLayout>
+
+
+                    <!-- Totals Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:text="Total"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvTotal"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0.00"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"
+                                android:text="VAT Amount"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvVatAmount"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="0.00"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3" />
+
+                        <!-- Disclaimer -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="20dp"
+                            android:text="We are not responsible for any loss or damage beyond our control."
+                            android:textAlignment="center"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
 
             </ScrollView>
 
             <!-- TextViews -->
-            <TextView
-                android:id="@+id/txtFinal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="2dp"
-                android:fontFamily="@font/fontpoppinssemibold"
-                android:text="Final Quote"
-                android:textSize="25sp" />
-
-            <TextView
-                android:id="@+id/txtAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/redborder"
-                android:fontFamily="@font/fontpoppinsmedium"
-                android:text="R 85 500"
-                android:textSize="25sp" />
 
             <!-- Buttons -->
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_width="413dp"
+            android:layout_height="62dp"
+            android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
 
             <Button
                 android:id="@+id/btnMakePDF"
-                android:layout_width="125dp"
-                android:layout_height="wrap_content"
+                android:layout_width="127dp"
+                android:layout_height="53dp"
+                android:fontFamily="@font/fontpoppinsregular"
                 android:text="Make PDF"
-                android:fontFamily="@font/fontpoppinsmedium"
                 android:backgroundTint="#038A39"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btnQuoteOv"
@@ -345,9 +317,9 @@
             <Button
                 android:id="@+id/btnQuoteOv"
                 android:layout_width="125dp"
-                android:layout_height="wrap_content"
+                android:layout_height="53dp"
+                android:fontFamily="@font/fontpoppinsregular"
                 android:text="Edit Quote"
-                android:fontFamily="@font/fontpoppinsmedium"
                 android:backgroundTint="#038A39"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

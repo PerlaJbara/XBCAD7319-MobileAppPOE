@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navDocument -> {
-                    replaceFragment(ReceiptGeneratorFragment())
+                    replaceFragment(DocumentationFragment())
                     true
                 }
                 R.id.navEmployees -> {
