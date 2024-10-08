@@ -19,7 +19,7 @@ class ReceiptGeneratorFragment : Fragment() {
     private lateinit var spinServiceType: Spinner
     private lateinit var edtParts: EditText
     private lateinit var edtLabour: EditText
-    private lateinit var txtFinalQuote: TextView  // Assuming this is the 'txtRvalue'
+    private lateinit var txtRvalue: TextView
     private lateinit var btnFinalReview: Button
     private lateinit var btnBack: ImageView
     private lateinit var edtPartName: EditText
@@ -51,7 +51,7 @@ class ReceiptGeneratorFragment : Fragment() {
         txtPartsList = view.findViewById(R.id.txtPartsList)
         btnAddPart = view.findViewById(R.id.btnAddPart)
         edtLabour = view.findViewById(R.id.edttxtLabour)
-        txtFinalQuote = view.findViewById(R.id.txtFinalQuote)
+        txtRvalue = view.findViewById(R.id.txtRvalue)
         btnBack = view.findViewById(R.id.ivBackButton)
         btnFinalReview = view.findViewById(R.id.btnFinalReview)
 
@@ -230,7 +230,7 @@ class ReceiptGeneratorFragment : Fragment() {
     private fun updateTotalQuote() {
         // Calculate the total quote by adding parts and labor
         val totalQuote = totalPartsCost + totalLabourCost
-        txtFinalQuote.text = "Total: $totalQuote"
+        txtRvalue.text = "Total: $totalQuote"
     }
 
     private fun generateReceipt() {
