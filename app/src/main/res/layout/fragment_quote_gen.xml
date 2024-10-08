@@ -129,7 +129,7 @@
 
             <EditText
                 android:id="@+id/edtPartName"
-                android:paddingHorizontal="5dp"
+                android:paddingHorizontal="7dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="52dp"
@@ -173,7 +173,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:paddingLeft="8dp"
+                android:paddingLeft="20dp"
                 android:text="Parts List"
                 android:textSize="18sp"
                 android:textColor="@color/black"

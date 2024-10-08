@@ -223,7 +223,7 @@ class ReceiptGeneratorFragment : Fragment() {
     }
 
     private fun updatePartsList() {
-        val partsText = partsList.joinToString(separator = "\n") { "${it["name"]}: \$${it["cost"]}" }
+        val partsText = partsList.joinToString(separator = "\n") { "${it["name"]}: R ${it["cost"]}" }
         txtPartsList.text = partsText
     }
 
