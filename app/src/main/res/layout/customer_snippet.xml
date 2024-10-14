@@ -13,7 +13,7 @@
         android:id="@+id/tvCustomerName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#CA2F2E"
+        android:background="@drawable/customernamecorners"
         android:text="Customer Name Surname"
         android:textColor="#FFFFFF"
         android:padding="12dp"

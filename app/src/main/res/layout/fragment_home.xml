@@ -222,27 +222,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_horizontal"
-                android:layout_marginBottom="12dp">
-
-                <Button
-                    android:id="@+id/btnViewCustomers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:backgroundTint="#787771"
-                    android:text="View Customers"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnRegisterVehicle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="#787771"
-                    android:text="Register Vehicles"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+                android:layout_marginBottom="12dp"/>
 
 
         </LinearLayout>

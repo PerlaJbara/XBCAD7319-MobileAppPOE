@@ -34,11 +34,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navVehicles -> {
-                    replaceFragment(ServicesFragment())
+                    replaceFragment(SearchVehiclesFragment())
                     true
                 }
                 R.id.navCustomers -> {
-                    replaceFragment(QuoteGenFragment())
+                    replaceFragment(CustomerFragment())
                     true
                 }
                 else -> false

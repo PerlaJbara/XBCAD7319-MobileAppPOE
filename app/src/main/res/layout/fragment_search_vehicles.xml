@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/vehicles"
     tools:context=".SearchVehiclesFragment">
 
     <LinearLayout
@@ -45,102 +46,51 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!-- Search View -->
             <LinearLayout
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <SearchView
+                    android:id="@+id/vehicleSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </SearchView>
 
             </LinearLayout>
 
-            <ScrollView
+            <!-- RecyclerView without ScrollView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewVehicle"
                 android:layout_width="match_parent"
-                android:layout_height="434dp"
-                android:layout_marginVertical="5dp">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:scrollbars="vertical" />
 
-                <LinearLayout
+            <!-- Plus Button for Adding New Customers -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:gravity="center_vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:background="@drawable/customer_cards"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/btnPlus"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/vectorplusbutton"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cathy Viljoen"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="084 753 6421"
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:background="@drawable/vehicle_label_bg"
-                            android:padding="4dp"
-                            android:text="2002 Honda Civic"
-                            android:textColor="#CA2F2E"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Last Service: 15 July 2024"
-                            android:textColor="@android:color/black"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:gravity="center_vertical">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:id="@+id/btnPlus"
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:src="@drawable/vectorplusbutton"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-            </ScrollView>
-
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

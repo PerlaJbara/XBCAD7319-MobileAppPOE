@@ -46,9 +46,7 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         // Ensure all IDs are correct and present in fragment_home.xml
-        viewCustomersBtn = view.findViewById(R.id.btnViewCustomers)
         btnSettings = view.findViewById(R.id.ivSettings)
-        btnRegVehicle = view.findViewById(R.id.btnRegisterVehicle)
         btnGoToTask = view.findViewById(R.id.ivGoToAddTask)
         taskContainer = view.findViewById(R.id.taskContainer)
         noTasksMessage = view.findViewById(R.id.txtNotasksToDisplay)
@@ -68,20 +66,15 @@ class HomeFragment : Fragment() {
             replaceFragment(AddTaskFragment())
         }
 
-        viewCustomersBtn.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(CustomerFragment())
-        }
-
         btnSettings.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(SettingsFragment())
         }
 
-        btnRegVehicle.setOnClickListener {
+        /*btnRegVehicle.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(RegisterVehicleFragment())
-        }
+        }*/
 
         // Attach methods to ImageViews
 

@@ -256,6 +256,9 @@ class RegisterVehicleFragment : Fragment() {
                 .child("Vehicles")
                 .push()  // Create a unique ID for the vehicle
 
+            // Assign the generated vehicleId to the VehicleData object
+            vehicle.vehicleId = vehicleRef.key ?: ""
+
             vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     uploadVehicleImages(vehicleRef.key!!)
@@ -265,6 +268,8 @@ class RegisterVehicleFragment : Fragment() {
                     edtVehicleModel.text.clear()
                     edtVinNumber.text.clear()
                     edtVehicleKms.text.clear()
+                    imageUris.clear()
+                    display.setImageResource(R.drawable.camera)
                 } else {
                     Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
                 }
@@ -275,8 +280,33 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-
     private fun uploadVehicleImages(vehicleId: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null && imageUris.isNotEmpty()) {
+            val userId = currentUser.uid
+
+            for (uri in imageUris) {
+                // Set up a unique reference for each image in Firebase Storage
+                val imageRef = storage.child(vehicleId).child(UUID.randomUUID().toString())
+
+                imageRef.putFile(uri).addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { url ->
+                        // Save the image URL under the vehicle's node within the logged-in user's Vehicles node
+                        FirebaseDatabase.getInstance().getReference(userId)
+                            .child("Vehicles")
+                            .child(vehicleId)
+                            .child("images")
+                            .push()
+                            .setValue(url.toString())
+                    }
+                }.addOnFailureListener {
+                    Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+   /* private fun uploadVehicleImages(vehicleId: String) {
         if (imageUris.isNotEmpty()) {
             for (uri in imageUris) {
                 val imageRef = storage.child(vehicleId).child(UUID.randomUUID().toString())
@@ -295,7 +325,7 @@ class RegisterVehicleFragment : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
 
     private fun handleGalleryImages(data: Intent?) {

@@ -9,17 +9,24 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
 
-class CustomerAdapter(private var customerList: List<CustomerData>) :
-    RecyclerView.Adapter<CustomerAdapter.CustomerViewHolder>(), Filterable {
+class CustomerAdapter(private var customerList: List<CustomerData>,
+                      private val onItemClick: (CustomerData) -> Unit // Callback for item clicks
+) : RecyclerView.Adapter<CustomerAdapter.CustomerViewHolder>(), Filterable {
 
     // Original full list of customers for filtering
     private var customerListFull: List<CustomerData> = ArrayList(customerList)
 
     // ViewHolder for Customer items
-    class CustomerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class CustomerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val customerName: TextView = itemView.findViewById(R.id.tvCustomerName)
         val customerMobile: TextView = itemView.findViewById(R.id.tvCustomerMobile)
         val customerAddress: TextView = itemView.findViewById(R.id.tvCustomerAddress)
+
+        init {
+            itemView.setOnClickListener {
+                onItemClick(customerList[adapterPosition]) // Pass selected customer to callback
+            }
+        }
     }
 
     // Creating the ViewHolder
@@ -52,6 +59,33 @@ class CustomerAdapter(private var customerList: List<CustomerData>) :
             val filteredList = ArrayList<CustomerData>()
 
             if (constraint == null || constraint.isEmpty()) {
+                filteredList.addAll(customerListFull)
+            } else {
+                val filterPattern = constraint.toString().lowercase().trim()
+
+                for (customer in customerListFull) {
+                    if (customer.CustomerName.lowercase().contains(filterPattern) ||
+                        customer.CustomerSurname.lowercase().contains(filterPattern)) {
+                        filteredList.add(customer)
+                    }
+                }
+            }
+
+            return FilterResults().apply { values = filteredList }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+            customerList = results?.values as List<CustomerData>
+            notifyDataSetChanged()
+        }
+    }
+
+   /* private val customerFilter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            val filteredList = ArrayList<CustomerData>()
+
+            if (constraint == null || constraint.isEmpty()) {
                 // If there's no input, show the full list
                 filteredList.addAll(customerListFull)
             } else {
@@ -77,5 +111,5 @@ class CustomerAdapter(private var customerList: List<CustomerData>) :
             customerList = results?.values as List<CustomerData>
             notifyDataSetChanged()
         }
-    }
+    }*/
 }

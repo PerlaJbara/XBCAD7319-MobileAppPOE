@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -39,13 +40,13 @@
 
         </FrameLayout>
 
-
         <LinearLayout
             android:id="@+id/linLayoutBody"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!-- Search View -->
             <LinearLayout
                 android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
@@ -55,63 +56,41 @@
                     android:id="@+id/customerSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </SearchView>
 
             </LinearLayout>
 
+            <!-- RecyclerView without ScrollView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCustomers"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:padding="16dp"
+                android:scrollbars="vertical" />
+
+            <!-- Plus Button for Adding New Customers -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp">
+                android:layout_height="80dp"
+                android:gravity="center_vertical">
 
-                <ScrollView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewCustomers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:clipToPadding="false"
-                        android:scrollbars="vertical">
-
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-
-
-                </ScrollView>
-
+                    <ImageView
+                        android:id="@+id/btnPlus"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/vectorplusbutton"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
-
-                   <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:gravity="center_vertical">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:id="@+id/btnPlus"
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:src="@drawable/vectorplusbutton"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"/>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
+        </LinearLayout>
     </LinearLayout>
-
 </FrameLayout>

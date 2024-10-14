@@ -34,7 +34,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingTop="80dp"
-                android:text="Customer Name"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="35sp"
                 android:elevation="4dp" />
@@ -101,7 +101,7 @@
                             android:textSize="18sp"/>
 
                         <TextView
-                            android:id="@+id/textViewCellNumber"
+                            android:id="@+id/txtCellNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="074 352 1145"
@@ -117,7 +117,7 @@
                             android:layout_marginTop="8dp"/>
 
                         <TextView
-                            android:id="@+id/textViewEmail"
+                            android:id="@+id/txtEmail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="cviljoen3@gmail.com"
@@ -133,7 +133,7 @@
                             android:layout_marginTop="8dp"/>
 
                         <TextView
-                            android:id="@+id/textViewAddress"
+                            android:id="@+id/txtAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
@@ -270,141 +270,8 @@
 
                         </ScrollView>
 
-
-
-
-
-
                         <!-- History Information Section -->
                     </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingRight="220dp"
-                        android:text="History"
-                        android:textAlignment="center"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
-
-
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <LinearLayout
-                            android:layout_width="383dp"
-                            android:layout_gravity="center_horizontal"
-                            android:paddingLeft="40dp"
-                            android:paddingRight="40dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="10dp"
-                            android:background="@drawable/customer_cards"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="vehicle Serviced:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="2002 Honda Civic"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"
-                                android:paddingBottom="10dp"/>
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Service:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Basic Service"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Service Notes:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Head light replacment, egine repairs and new whiper blades"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Parts Costs:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Lights: R400\nBlades: R300x3"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"/>
-
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Labour Costs:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="R2000,00"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Total Service Cost:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="R 3300,00"
-                                android:textSize="18sp"
-                                android:layout_marginTop="4dp"/>
-
-                        </LinearLayout>
-
-
-
-
-                    </ScrollView>
-
 
 
                 </LinearLayout>

@@ -23,11 +23,13 @@ class CustomerFragment : Fragment() {
 
     private lateinit var vectorPlusButton: ImageView
     private lateinit var btnBack: ImageView
-    private lateinit var customerSearch: SearchView
     private lateinit var recyclerView: RecyclerView
     private lateinit var database: DatabaseReference
     private lateinit var customerAdapter: CustomerAdapter
-    private val customerList = mutableListOf<CustomerData>()
+    //private val customerList = mutableListOf<CustomerData>()
+    private lateinit var customerList: ArrayList<CustomerData>
+    private lateinit var searchCustomers: SearchView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,8 +40,9 @@ class CustomerFragment : Fragment() {
 
         vectorPlusButton = view.findViewById(R.id.btnPlus)
         btnBack = view.findViewById(R.id.ivBackButton)
-        customerSearch = view.findViewById(R.id.customerSearch)
+        searchCustomers = view.findViewById(R.id.customerSearch)
         recyclerView = view.findViewById(R.id.recyclerViewCustomers)
+
 
         // Set click listener for the "Add Customer" button
         vectorPlusButton.setOnClickListener {
@@ -52,18 +55,18 @@ class CustomerFragment : Fragment() {
             replaceFragment(HomeFragment())
         }
 
-        recyclerView = view.findViewById(R.id.recyclerViewCustomers)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        customerList = ArrayList()
+        //customerAdapter = CustomerAdapter(customerList)
+        customerAdapter = CustomerAdapter(customerList) { selectedCustomer ->
+            openCustomerDetailsFragment(selectedCustomer)
+        }
 
-        customerAdapter = CustomerAdapter(customerList)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = customerAdapter
 
-        // Fetch customer data
-        fetchCustomers()
 
-        // Setup SearchView
-        val searchView = view.findViewById<SearchView>(R.id.customerSearch)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+        searchCustomers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -72,14 +75,56 @@ class CustomerFragment : Fragment() {
                 customerAdapter.filter.filter(newText)
                 return false
             }
-
         })
 
+        // Fetch customer data
+        fetchCustomers()
 
         return view
     }
 
+
     private fun fetchCustomers() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (userId != null) {
+            // Reference to the "Customers" node under the user's UID in Firebase
+            val databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
+
+            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    customerList.clear()
+
+                    // Check if there are any customers saved in Firebase
+                    if (!snapshot.exists()) {
+                        Toast.makeText(requireContext(), "No saved customers found.", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+
+                    // Retrieve each customer and add to the list
+                    for (customerSnapshot in snapshot.children) {
+                        val customer = customerSnapshot.getValue(CustomerData::class.java)
+                        customer?.let {
+                            customerList.add(it)
+                        }
+                    }
+
+                    // Notify the adapter that data has changed
+                    customerAdapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("fetchCustomers", "Error fetching customers: ${error.message}")
+                    Toast.makeText(requireContext(), "Error fetching customers.", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Log.e("fetchCustomers", "User is not logged in or UID is null.")
+            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+   /* private fun fetchCustomers() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userId != null) {
@@ -121,6 +166,23 @@ class CustomerFragment : Fragment() {
             Log.e("fetchCustomers", "User is not logged in or UID is null.")
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
+    }*/
+
+    private fun openCustomerDetailsFragment(customer: CustomerData) {
+        val fragment = CustomerDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putString("customerName", customer.CustomerName)
+                putString("customerSurname", customer.CustomerSurname)
+                putString("customerEmail", customer.CustomerEmail)
+                putString("customerAddress", customer.CustomerAddress)
+                putString("customerMobile", customer.CustomerMobileNum)
+            }
+        }
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
 
