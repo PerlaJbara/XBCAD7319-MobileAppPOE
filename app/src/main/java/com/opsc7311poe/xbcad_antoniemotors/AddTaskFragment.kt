@@ -111,44 +111,62 @@ class AddTaskFragment : Fragment() {
         userId?.let { uid ->
             // Initialize Firebase Database
             val database = Firebase.database
+            val vehicleRef = database.getReference(uid).child("Vehicles")
 
-            val entryId = database.getReference(uid).child("todolist").push().key
+            // Find the selected vehicle by its number plate
+            vehicleRef.orderByChild("vehicleNumPlate").equalTo(selectedVehicle)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            // Loop through the result to get the vehicle node
+                            for (vehicleSnapshot in snapshot.children) {
+                                val vehicleId = vehicleSnapshot.key // Get the vehicle's unique ID
+                                vehicleId?.let { vId ->
+                                    val taskId = database.getReference(uid).child("Vehicles").child(vId).child("Tasks").push().key
 
-            entryId?.let { id ->
+                                    taskId?.let { tId ->
+                                        // Create a task object
+                                        val task = Tasks(
+                                            taskID = tId,
+                                            taskDescription = taskDescription,
+                                            vehicleNumberPlate = selectedVehicle,
+                                            creationDate = System.currentTimeMillis(),  // Add creation date
+                                            completedDate = null                        // Add completed date (optional)
+                                        )
 
-                // Add the selected vehicle number plate to the task entry
-                val entry = Tasks(
-                    taskID = id,
-                    taskDescription = taskDescription,
-                    vehicleNumberPlate = selectedVehicle // Add the selected vehicle number plate
-                )
 
-                // Create a reference to the specific entry in the database
-                val entryRef = database.getReference(uid).child("todolist").child(id)
+                                        // Save the task under the vehicle's "Tasks" node
+                                        val taskRef = vehicleRef.child(vId).child("Tasks").child(tId)
 
-                // Save the task to Firebase
-                entryRef.setValue(entry)
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Task successfully added!", Toast.LENGTH_LONG)
-                            .show()
-                        // Navigate back to MainActivity
-                        val intent = Intent(activity, MainActivity::class.java)
-                        startActivity(intent)
+                                        taskRef.setValue(task)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(requireContext(), "Task successfully added!", Toast.LENGTH_LONG).show()
+                                                // Navigate back to MainActivity or another fragment
+                                                val intent = Intent(activity, MainActivity::class.java)
+                                                startActivity(intent)
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Toast.makeText(requireContext(), "Error saving task: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                    } ?: run {
+                                        Toast.makeText(requireContext(), "Failed to generate task ID.", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "No matching vehicle found.", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(
-                            requireContext(),
-                            "An error occurred while saving the entry: ${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
                     }
-            } ?: run {
-                Toast.makeText(requireContext(), "Failed to generate entry ID.", Toast.LENGTH_SHORT).show()
-            }
+                })
         } ?: run {
             Toast.makeText(requireContext(), "User ID is null.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
     private fun loadVehicles() {

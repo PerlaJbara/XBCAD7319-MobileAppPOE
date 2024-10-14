@@ -15,6 +15,11 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import android.graphics.Color
+import androidx.appcompat.app.AlertDialog
+import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class HomeFragment : Fragment() {
 
@@ -30,6 +35,9 @@ class HomeFragment : Fragment() {
     private lateinit var txtCompleted: TextView
 
     private lateinit var userId: String
+
+    private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,8 +57,12 @@ class HomeFragment : Fragment() {
         txtToStart = view.findViewById(R.id.txtCarsToBeDone)
         txtCompleted = view.findViewById(R.id.txtCarsCompleted)
 
+        val ivHistory = view.findViewById<ImageView>(R.id.ivHistory)
+        val ivFilter = view.findViewById<ImageView>(R.id.ivFilter)
+
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
+        // Attach click listeners
         btnGoToTask.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(AddTaskFragment())
@@ -71,18 +83,89 @@ class HomeFragment : Fragment() {
             replaceFragment(RegisterVehicleFragment())
         }
 
+        // Attach methods to ImageViews
+
+        ivHistory.setOnClickListener {
+            loadCompletedTasksForHistoricalFragment()
+        }
+
+        ivFilter.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+
+            // Show a dialog with filter options
+            val filterOptions = arrayOf("Recently Added", "Earliest Added", "Vehicle Number Plate")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Filter Tasks By")
+                .setItems(filterOptions) { _, which ->
+                    when (which) {
+                        0 -> applyTaskFilter("recent")
+                        1 -> applyTaskFilter("earliest")
+                        2 -> applyTaskFilter("plate")
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+
         loadTasks()
         loadServiceStatuses()
 
         return view
     }
 
+    private fun displayHistoricalTasksFragment(completedTasks: List<Tasks>) {
+        val historicalTasksFragment = HistoricalTasks.newInstance(completedTasks)
+        replaceFragment(historicalTasksFragment)
+    }
+
+    private fun loadCompletedTasksForHistoricalFragment() {
+        val database = Firebase.database.reference.child(userId).child("Vehicles")
+
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val completedTasks = mutableListOf<Tasks>()
+
+                for (vehicleSnapshot in snapshot.children) {
+                    val tasksSnapshot = vehicleSnapshot.child("Tasks")
+                    for (taskSnapshot in tasksSnapshot.children) {
+                        val taskID = taskSnapshot.key
+                        val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                        val vehicleNumberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
+                        val taskCompletedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+
+                        // Add the task to the list if it has been completed
+                        if (taskCompletedDate != null && taskID != null && taskDescription != null && vehicleNumberPlate != null) {
+                            // Use the correct constructor for the Tasks class
+                            val task = Tasks(
+                                taskID = taskID,
+                                taskDescription = taskDescription,
+                                vehicleNumberPlate = vehicleNumberPlate,
+                                creationDate = null, // If creationDate is available, pass it here; otherwise, use null
+                                completedDate = taskCompletedDate
+                            )
+                            completedTasks.add(task)
+                        }
+                    }
+                }
+
+                // Pass the completed tasks to the HistoricalTasksFragment
+                displayHistoricalTasksFragment(completedTasks)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load completed tasks: ${error.message}")
+            }
+        })
+    }
+
+
+
     private fun loadTasks() {
-        val database = Firebase.database.reference.child(userId).child("todolist")
+        val database = Firebase.database.reference.child(userId).child("Vehicles")
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Ensure the fragment is attached before inflating views
                 if (!isAdded) return
 
                 taskContainer.removeAllViews()
@@ -95,52 +178,53 @@ class HomeFragment : Fragment() {
 
                 noTasksMessage.visibility = View.GONE
 
-                // To store colors for number plates
                 val plateColorMap = mutableMapOf<String, Int>()
                 var colorIndex = 0
                 val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
 
-                for (taskSnapshot in snapshot.children) {
-                    val taskId = taskSnapshot.key
-                    val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                    val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
+                for (vehicleSnapshot in snapshot.children) {
+                    val vehicleModel = vehicleSnapshot.child("vehicleModel").getValue(String::class.java)
+                    val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                    val vehicleID = vehicleSnapshot.key
 
-                    if (taskId != null && taskDescription != null && numberPlate != null) {
-                        val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
-                        val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
-                        val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-                        val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+                    if (vehicleID != null && vehicleModel != null && numberPlate != null) {
+                        val tasksSnapshot = vehicleSnapshot.child("Tasks")
+                        for (taskSnapshot in tasksSnapshot.children) {
+                            val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                            val taskId = taskSnapshot.key
+                            val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
+                            val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
 
-                        // Set task description and checkbox
-                        taskDescriptionText.text = taskDescription
-                        taskCheckBox.text = ""
+                            // Only show tasks that do not have a completed date
+                            if (taskId != null && taskDescription != null && completedDate == null) {
+                                // Inflate the task item layout
+                                val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
+                                val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
+                                val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+                                val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
 
-                        // Assign a color to the number plate and reuse it if it has been assigned before
-                        if (!plateColorMap.containsKey(numberPlate)) {
-                            plateColorMap[numberPlate] = colors[colorIndex % colors.size]
-                            colorIndex++
-                        }
+                                taskDescriptionText.text = taskDescription
 
-                        // Set the number plate text and background color
-                        numberPlateText.text = numberPlate
-                        numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
+                                // Assign colors to different vehicles based on number plate
+                                if (!plateColorMap.containsKey(numberPlate)) {
+                                    plateColorMap[numberPlate] = colors[colorIndex % colors.size]
+                                    colorIndex++
+                                }
 
-                        // Checkbox listener to remove the task when checked
-                        taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                            if (isChecked) {
-                                database.child(taskId).removeValue()
-                                    .addOnSuccessListener {
-                                        taskContainer.removeView(taskView)
-                                        Toast.makeText(requireContext(), "Task completed!", Toast.LENGTH_SHORT).show()
+                                numberPlateText.text = "$numberPlate ($vehicleModel)"
+                                numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
+
+                                // Handle task completion
+                                taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                                    if (isChecked) {
+                                        markTaskAsCompleted(vehicleID, taskId, taskView, creationDate ?: System.currentTimeMillis())
                                     }
-                                    .addOnFailureListener {
-                                        Toast.makeText(requireContext(), "Failed to remove task", Toast.LENGTH_SHORT).show()
-                                    }
+                                }
+
+                                // Add the task view to the container
+                                taskContainer.addView(taskView)
                             }
                         }
-
-                        // Add the view to the task container
-                        taskContainer.addView(taskView)
                     }
                 }
             }
@@ -152,22 +236,129 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun loadServiceStatuses() {
-        // Get the current user's ID
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+    private fun markTaskAsCompleted(vehicleID: String, taskId: String, taskView: View, creationDate: Long) {
+        val database = Firebase.database.reference.child(userId).child("Vehicles").child(vehicleID).child("Tasks").child(taskId)
 
-        // Reference the services node under the current user's ID
+        val taskUpdate = mapOf(
+            "taskCompletedDate" to System.currentTimeMillis(), // Add completed date
+            "taskCreatedDate" to creationDate // Ensure original creation date is stored
+        )
+
+        database.updateChildren(taskUpdate)
+            .addOnSuccessListener {
+                taskContainer.removeView(taskView) // Remove the task view from the container
+                Toast.makeText(requireContext(), "Task completed!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to mark task as completed", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+
+    private fun applyTaskFilter(filterType: String) {
+        val database = Firebase.database.reference.child(userId).child("Vehicles")
+
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
+
+                // Clear existing views from taskContainer
+                taskContainer.removeAllViews()
+
+                if (!snapshot.exists()) {
+                    noTasksMessage.visibility = View.VISIBLE
+                    noTasksMessage.text = "No tasks available at the moment."
+                    return
+                }
+
+                noTasksMessage.visibility = View.GONE
+
+                val tasksList = mutableListOf<Tasks>() // List to hold the tasks
+
+                // Extract and add tasks data to the list
+                for (vehicleSnapshot in snapshot.children) {
+                    val vehicleModel = vehicleSnapshot.child("vehicleModel").getValue(String::class.java)
+                    val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                    val vehicleID = vehicleSnapshot.key
+
+                    if (vehicleID != null && vehicleModel != null && numberPlate != null) {
+                        val tasksSnapshot = vehicleSnapshot.child("Tasks")
+                        for (taskSnapshot in tasksSnapshot.children) {
+                            val taskID = taskSnapshot.key
+                            val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                            val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
+                            val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+
+                            // Include only tasks that are not completed, as required in HomeFragment
+                            if (taskID != null && taskDescription != null && completedDate == null) {
+                                val task = Tasks(
+                                    taskID = taskID,
+                                    taskDescription = taskDescription,
+                                    vehicleNumberPlate = numberPlate,
+                                    creationDate = creationDate,
+                                    completedDate = null
+                                )
+                                tasksList.add(task)
+                            }
+                        }
+                    }
+                }
+
+                // Sort or filter tasks based on the selected filter type
+                when (filterType) {
+                    "recent" -> tasksList.sortByDescending { it.creationDate }
+                    "earliest" -> tasksList.sortBy { it.creationDate }
+                    "plate" -> tasksList.sortBy { it.vehicleNumberPlate }
+                }
+
+                // Display the filtered/sorted tasks back in the taskContainer with the same formatting
+                tasksList.forEach { task ->
+                    val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
+
+                    // Get references to the TextViews in each task item layout
+                    val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
+                    val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+                    val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+
+                    // Set data from the task
+                    numberPlateText.text = "${task.vehicleNumberPlate}"
+                    taskDescriptionText.text = task.taskDescription ?: "No Description"
+
+                    // Handle task completion checkbox
+                    taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            markTaskAsCompleted(
+                                vehicleID = task.vehicleNumberPlate ?: "",
+                                taskId = task.taskID ?: "",
+                                taskView = taskView,
+                                creationDate = task.creationDate ?: System.currentTimeMillis()
+                            )
+                        }
+                    }
+
+                    // Add the task view to the container
+                    taskContainer.addView(taskView)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
+            }
+        })
+    }
+
+
+
+    private fun loadServiceStatuses() {
         val database = Firebase.database.reference.child(userId).child("Services")
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("HomeFragment", "Data snapshot received with ${snapshot.childrenCount} services.")
-
                 var busyCount = 0
                 var completedCount = 0
                 var notStartedCount = 0
 
-                // Check if the snapshot has children (services)
                 if (!snapshot.exists()) {
                     if (isAdded) {
                         txtToStart.text = "Nothing To Be Started"
@@ -179,7 +370,6 @@ class HomeFragment : Fragment() {
 
                 for (serviceSnapshot in snapshot.children) {
                     val status = serviceSnapshot.child("status").getValue(String::class.java)
-                    Log.d("HomeFragment", "Status for service: $status")
 
                     when (status) {
                         "Busy" -> busyCount++
@@ -188,9 +378,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                // Check if the fragment is still attached to avoid crashes when updating UI
                 if (isAdded) {
-                    // Set text based on counts
                     txtToStart.text = if (notStartedCount == 0) "Nothing To Be Started" else "$notStartedCount Cars To Start"
                     txtBusy.text = if (busyCount == 0) "Nothing Is In Progress" else "$busyCount Cars In Progress"
                     txtCompleted.text = if (completedCount == 0) "Nothing Is Completed" else "$completedCount Cars Completed"
@@ -202,6 +390,43 @@ class HomeFragment : Fragment() {
             }
         })
     }
+
+   /* private fun loadCompletedTasksForHistoricalFragment() {
+        val database = Firebase.database.reference.child(userId).child("Vehicles")
+
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val completedTasks = mutableListOf<Tasks>()
+
+                for (vehicleSnapshot in snapshot.children) {
+                    val tasksSnapshot = vehicleSnapshot.child("Tasks")
+                    for (taskSnapshot in tasksSnapshot.children) {
+                        val taskID = taskSnapshot.key
+                        val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                        val vehicleNumberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
+                        val taskCompletedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+
+                        // Add the task to the list if it has been completed
+                        if (taskCompletedDate != null && taskID != null && taskDescription != null && vehicleNumberPlate != null) {
+                            val task = Tasks(taskID, taskDescription, vehicleNumberPlate)
+                            completedTasks.add(task)
+                        }
+                    }
+                }
+
+                // Pass the completed tasks to the HistoricalTasksFragment
+                displayHistoricalTasksFragment(completedTasks)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load completed tasks: ${error.message}")
+            }
+        })
+    } */
+
+
+
+
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
