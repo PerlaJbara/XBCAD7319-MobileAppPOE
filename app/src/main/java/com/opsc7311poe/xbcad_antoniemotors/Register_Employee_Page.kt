@@ -26,6 +26,7 @@ class Register_Employee_Page : Fragment() {
     private lateinit var txtLeaveLeft : TextView
     private lateinit var txtNum : TextView
     private lateinit var txtEmail: TextView
+    private lateinit var txtPasswordInput: TextView
     private lateinit var txtAddress: TextView
 
     private lateinit var btnBack: ImageView
@@ -49,6 +50,7 @@ class Register_Employee_Page : Fragment() {
             txtLeaveLeft = view.findViewById(R.id.txtleft)
             txtNum = view.findViewById(R.id.txtnumber)
             txtEmail = view.findViewById(R.id.txtEmailInput)
+            txtPasswordInput = view.findViewById(R.id.txtPasswordInput)
             txtAddress = view.findViewById(R.id.txtAddressInput)
 
 
@@ -59,9 +61,9 @@ class Register_Employee_Page : Fragment() {
             btnSubmit.setOnClickListener()
             {
                 //checking if info is entered correctly
-                if(txtName.text.isBlank() || txtSurname.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtAddress.text.isBlank())
+                if(txtName.text.isBlank() || txtSurname.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtPasswordInput.text.isBlank() ||txtAddress.text.isBlank())
                 {
-                    Toast.makeText(requireContext(), "Please enter correct project information.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please enter all employee information.", Toast.LENGTH_SHORT).show()
                 }
                 else
                 {
@@ -70,7 +72,7 @@ class Register_Employee_Page : Fragment() {
                     if (userId != null)
                     {
                         var database = Firebase.database
-                        var emp = Employee(txtName.text.toString(),txtSurname.text.toString(), txtSal.text.toString(), txtTotalLeave.text.toString(), txtLeaveLeft.text.toString(), txtNum.text.toString(), txtEmail.text.toString(), txtAddress.text.toString())
+                        var emp = Employee(txtName.text.toString(),txtSurname.text.toString(), txtSal.text.toString(), txtTotalLeave.text.toString(), txtLeaveLeft.text.toString(), txtNum.text.toString(), txtEmail.text.toString(), txtPasswordInput.text.toString(),txtAddress.text.toString())
                         val empRef = database.getReference(userId).child("Employees")
 
                         empRef.push().setValue(emp)
@@ -113,6 +115,7 @@ data class Employee(
     var leaveLeft: String?,
     var number: String?,
     var email: String?,
+    var password: String?,
     var address: String?,
     var familyLeaveStart: String? = null,
     var familyLeaveEnd: String? = null,

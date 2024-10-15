@@ -272,6 +272,37 @@
                 app:layout_constraintWidth_percent="0.8"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
+
+            <!-- Password Field -->
+            <TextView
+                android:id="@+id/txtPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="left"
+                android:paddingLeft="30dp"
+                android:text="Password"
+                android:textSize="25sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtEmailInput" />
+
+            <EditText
+                android:id="@+id/txtPasswordInput"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/spingradientgtor"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.195"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtPassword"
+                app:layout_constraintWidth_percent="0.8"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
             <TextView
                 android:id="@+id/txtPhysicalAddress"
                 android:layout_width="0dp"
@@ -284,7 +315,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtEmailInput" />
+                app:layout_constraintTop_toBottomOf="@+id/txtPasswordInput" />
 
             <EditText
                 android:id="@+id/txtAddressInput"
