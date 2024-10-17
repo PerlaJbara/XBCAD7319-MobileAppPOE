@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AssignEmployeeTask">
+
+    <!-- Header -->
+    <FrameLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgHeader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/carenginetodo" />
+
+        <View
+            android:id="@+id/viewTint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/ivBackButton"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:src="@drawable/vectorback" />
+
+            <TextView
+                android:id="@+id/txtEmployee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/albert_sans"
+                android:gravity="center"
+                android:paddingTop="80dp"
+                android:text="Assign Task"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:id="@+id/svAssignTask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintBottom_toTopOf="@+id/btnAssignTask">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/llAssignTask">
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Task Name:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <EditText
+                android:id="@+id/txtTaskName"
+                android:layout_width="350dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/txtgradientgtor"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Task Description:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <EditText
+                android:id="@+id/editTextText2"
+                android:layout_width="350dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/txtgradientgtor"
+                android:ems="10"
+                android:inputType="text"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Select Vehicle:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <Spinner
+                android:id="@+id/spSelectVehicle"
+                android:layout_width="332dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/txtgradientgtor" />
+
+            <TextView
+                android:id="@+id/textView23"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Select Employee:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="332dp"
+                android:layout_height="46dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/txtgradientgtor" />
+
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Select Due Date:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/txtSelectTaskDueDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Choose Date"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/albert_sans"
+                android:text="Task Approval Required:"
+                android:textAlignment="textStart"
+                android:textSize="25sp" />
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:text="Yes/No"
+                android:textSize="18sp"
+                android:fontFamily="@font/albert_sans"
+                android:paddingBottom="20dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Assign Task Button fixed at the bottom -->
+    <Button
+        android:id="@+id/btnAssignTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FF750A0B"
+        android:text="Assign"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
