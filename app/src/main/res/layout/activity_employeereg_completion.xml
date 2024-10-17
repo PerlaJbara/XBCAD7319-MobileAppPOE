@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logincar"
-    tools:context=".Login">
+    tools:context=".EmployeeregCompletion">
 
 
     <LinearLayout
@@ -23,61 +23,44 @@
 
 
         <TextView
-            android:id="@+id/login_heading"
+            android:id="@+id/regheading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:fontFamily="@font/agdasima_bold"
             android:paddingBottom="60dp"
-            android:text="Login"
+            android:text="But First..."
             android:textColor="@android:color/black"
             android:textSize="80sp"
             android:textStyle="bold" />
 
-
         <TextView
-            android:id="@+id/username_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/albert_sans"
-            android:paddingBottom="8dp"
-            android:text="Email"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
-
-
-        <EditText
-            android:id="@+id/txtUsername"
+            android:id="@+id/textView20"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/txtgradientgtor"
-            android:inputType="text"
-            android:padding="12dp"
-            android:textColor="@color/black" />
+            android:fontFamily="@font/albert_sans"
+            android:paddingBottom="20dp"
+            android:text="Upload Profile Picture:"
+            android:textColor="@android:color/black"
+            android:textSize="25sp" />
 
+        <ImageView
+            android:id="@+id/ivEmployeeProfilePicture"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            tools:srcCompat="@drawable/camera" />
 
         <TextView
-            android:id="@+id/password_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/albert_sans"
-            android:paddingTop="12dp"
-            android:paddingBottom="8dp"
-            android:text="Password"
-            android:textColor="@android:color/black"
-            android:textSize="35sp" />
-
-
-        <EditText
-            android:id="@+id/txtPassword"
+            android:id="@+id/txtSelectImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/txtgradientgtor"
-            android:inputType="textPassword"
-            android:padding="12dp"
-            android:textColor="@color/black" />
-
+            android:fontFamily="@font/albert_sans"
+            android:paddingTop="20dp"
+            android:paddingBottom="30dp"
+            android:text="Select Image To Upload"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btnNextPage"
@@ -86,32 +69,11 @@
             android:layout_marginTop="30dp"
             android:backgroundTint="@color/black"
             android:padding="12dp"
-            android:text="Login"
+            android:text="Next"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-
-        <TextView
-            android:id="@+id/txtSignUp"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:fontFamily="@font/agdasima_bold"
-            android:paddingTop="5dp"
-            android:text="No Account? Sign Up"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="316dp"
-            android:layout_height="185dp"
-            android:paddingTop="70dp"
-            android:text="Powered By Tech Fusion"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18dp" />
 
     </LinearLayout>
 

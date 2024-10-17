@@ -1,6 +1,5 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -13,24 +12,26 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class Register_Employee_Page : Fragment() {
 
-    private lateinit var btnSubmit : Button
-    private lateinit var txtName : TextView
-    private lateinit var txtSurname : TextView
-    private lateinit var txtSal : TextView
-    private lateinit var txtTotalLeave : TextView
-    private lateinit var txtLeaveLeft : TextView
-    private lateinit var txtNum : TextView
+    private lateinit var btnSubmit: Button
+    private lateinit var txtName: TextView
+    private lateinit var txtSurname: TextView
+    private lateinit var txtSal: TextView
+    private lateinit var txtTotalLeave: TextView
+    private lateinit var txtLeaveLeft: TextView
+    private lateinit var txtNum: TextView
     private lateinit var txtEmail: TextView
     private lateinit var txtPasswordInput: TextView
     private lateinit var txtAddress: TextView
-
     private lateinit var btnBack: ImageView
 
+    // Firebase instance
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,11 +39,13 @@ class Register_Employee_Page : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_register__employee__page, container, false)
 
+        auth = FirebaseAuth.getInstance()
+
         btnSubmit = view.findViewById(R.id.btnregEmp)
         btnBack = view.findViewById(R.id.ivBackButton)
 
-        btnSubmit.setOnClickListener(){
-            //save button
+        btnSubmit.setOnClickListener {
+            // Get the user input
             txtName = view.findViewById(R.id.txtEmpname)
             txtSurname = view.findViewById(R.id.txtEmpsurname)
             txtSal = view.findViewById(R.id.txtEmpsalary)
@@ -53,49 +56,74 @@ class Register_Employee_Page : Fragment() {
             txtPasswordInput = view.findViewById(R.id.txtPasswordInput)
             txtAddress = view.findViewById(R.id.txtAddressInput)
 
-
-            btnBack.setOnClickListener(){
-               replaceFragment(EmployeeFragment())
+            btnBack.setOnClickListener {
+                replaceFragment(EmployeeFragment())
             }
 
-            btnSubmit.setOnClickListener()
-            {
-                //checking if info is entered correctly
-                if(txtName.text.isBlank() || txtSurname.text.isBlank() || txtSal.text.isBlank() || txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() || txtEmail.text.isBlank() || txtPasswordInput.text.isBlank() ||txtAddress.text.isBlank())
-                {
-                    Toast.makeText(requireContext(), "Please enter all employee information.", Toast.LENGTH_SHORT).show()
-                }
-                else
-                {
-                    //saving employee information to DB
-                    val userId = FirebaseAuth.getInstance().currentUser?.uid
-                    if (userId != null)
-                    {
-                        var database = Firebase.database
-                        var emp = Employee(txtName.text.toString(),txtSurname.text.toString(), txtSal.text.toString(), txtTotalLeave.text.toString(), txtLeaveLeft.text.toString(), txtNum.text.toString(), txtEmail.text.toString(), txtPasswordInput.text.toString(),txtAddress.text.toString())
-                        val empRef = database.getReference(userId).child("Employees")
-
-                        empRef.push().setValue(emp)
-                            .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Employee successfully added", Toast.LENGTH_LONG).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(requireContext(), "An error occurred while adding an employee:" + it.toString() , Toast.LENGTH_LONG).show()
-                            }
-                    }
-
-
-                    //go back to employee landing page
-                    it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-                    replaceFragment(EmployeeFragment())
-                }
-
+            if (txtName.text.isBlank() || txtSurname.text.isBlank() || txtSal.text.isBlank() ||
+                txtTotalLeave.text.isBlank() || txtLeaveLeft.text.isBlank() || txtNum.text.isBlank() ||
+                txtEmail.text.isBlank() || txtPasswordInput.text.isBlank() || txtAddress.text.isBlank()) {
+                Toast.makeText(requireContext(), "Please enter all employee information.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Register the employee with Firebase Auth
+                registerEmployee()
             }
         }
-        // Inflate the layout for this fragment
         return view
     }
 
+    private fun registerEmployee() {
+        val email = txtEmail.text.toString()
+        val password = txtPasswordInput.text.toString()
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val employeeId = auth.currentUser?.uid ?: ""
+                    val user = auth.currentUser
+
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(txtName.text.toString())
+                        .build()
+
+                    user?.updateProfile(profileUpdates)
+
+                    // Save employee info to Firebase Realtime Database
+                    saveEmployeeToDatabase(employeeId)
+                } else {
+                    Toast.makeText(requireContext(), "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun saveEmployeeToDatabase(employeeId: String) {
+        val database = Firebase.database
+        val userRef = database.getReference("Users").child(employeeId)
+
+        val emp = Employee(
+            name = txtName.text.toString(),
+            surname = txtSurname.text.toString(),
+            salary = txtSal.text.toString(),
+            totalLeave = txtTotalLeave.text.toString(),
+            leaveLeft = txtLeaveLeft.text.toString(),
+            number = txtNum.text.toString(),
+            email = txtEmail.text.toString(),
+            password = txtPasswordInput.text.toString(),
+            address = txtAddress.text.toString(),
+            role = "employee", // Assign role as employee
+            businessName = txtName.text.toString(), // Business name set to employee's name
+            profileImage = null // Set profile image to null for now
+        )
+
+        userRef.setValue(emp)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Employee successfully added", Toast.LENGTH_LONG).show()
+                replaceFragment(EmployeeFragment())
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Error adding employee: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+    }
 
     private fun replaceFragment(fragment: Fragment) {
         Log.d("Register_Employee_Page", "Replacing fragment: ${fragment::class.java.simpleName}")
@@ -106,7 +134,7 @@ class Register_Employee_Page : Fragment() {
     }
 }
 
-//employee data class
+// Employee data class
 data class Employee(
     var name: String?,
     var surname: String?,
@@ -117,14 +145,9 @@ data class Employee(
     var email: String?,
     var password: String?,
     var address: String?,
-    var familyLeaveStart: String? = null,
-    var familyLeaveEnd: String? = null,
-    var holidayStart: String? = null,
-    var holidayEnd: String? = null
-){
-    // No-argument constructor (required by Firebase)
-    constructor() : this(null, null, null, null, null, null, null, null, null,null,null,null,)
-
-
+    var role: String?,
+    var businessName: String?,
+    var profileImage: String? = null // Profile image is set to null for now
+) {
+    constructor() : this(null, null, null, null, null, null, null, null, null, null, null)
 }
-

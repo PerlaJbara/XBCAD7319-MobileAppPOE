@@ -22,6 +22,7 @@ class Login : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var email: TextView
     private lateinit var password: TextView
+    private lateinit var signUp: TextView
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var biometricManager: BiometricManager
     private lateinit var executor: Executor
@@ -34,9 +35,16 @@ class Login : AppCompatActivity() {
         auth = Firebase.auth
 
         // Find views
-        btnLogin = findViewById(R.id.btnLogin)
+        btnLogin = findViewById(R.id.btnNextPage)
         email = findViewById(R.id.txtUsername)
         password = findViewById(R.id.txtPassword)
+        signUp = findViewById(R.id.txtSignUp)
+
+        signUp.setOnClickListener(){
+            val intent = Intent(this@Login, SelectRoleReg::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         // Set up executor and Biometric Manager
         executor = ContextCompat.getMainExecutor(this)

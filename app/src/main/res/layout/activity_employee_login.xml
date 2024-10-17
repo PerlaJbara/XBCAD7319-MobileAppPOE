@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logincar"
-    tools:context=".Login">
+    tools:context=".EmployeeLogin">
 
 
     <LinearLayout
@@ -36,6 +36,17 @@
 
 
         <TextView
+            android:id="@+id/textView22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please Use The Login Credentials Provided By Employer"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="15dp"/>
+
+        <TextView
             android:id="@+id/username_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,15 +54,15 @@
             android:paddingBottom="8dp"
             android:text="Email"
             android:textColor="@android:color/black"
-            android:textSize="35sp" />
+            android:textSize="30sp" />
 
 
         <EditText
-            android:id="@+id/txtUsername"
+            android:id="@+id/txtEmployeeEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/txtgradientgtor"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/black" />
 
@@ -66,11 +77,11 @@
             android:paddingBottom="8dp"
             android:text="Password"
             android:textColor="@android:color/black"
-            android:textSize="35sp" />
+            android:textSize="30sp" />
 
 
         <EditText
-            android:id="@+id/txtPassword"
+            android:id="@+id/txtEmployeePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/txtgradientgtor"
@@ -80,7 +91,7 @@
 
 
         <Button
-            android:id="@+id/btnNextPage"
+            android:id="@+id/btnLoginEmployee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -93,21 +104,10 @@
 
 
         <TextView
-            android:id="@+id/txtSignUp"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:fontFamily="@font/agdasima_bold"
-            android:paddingTop="5dp"
-            android:text="No Account? Sign Up"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <TextView
             android:id="@+id/textView6"
             android:layout_width="316dp"
             android:layout_height="185dp"
-            android:paddingTop="70dp"
+            android:paddingTop="50dp"
             android:text="Powered By Tech Fusion"
             android:textAlignment="center"
             android:textColor="@color/black"

@@ -4,10 +4,10 @@
 
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
-
-
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -17,7 +17,6 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -29,35 +28,41 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.XBCADAntonieMotors"
         tools:targetApi="31">
-
+        <activity
+            android:name=".EmpPasswordChange1"
+            android:exported="false" />
+        <activity
+            android:name=".EmployeeregCompletion"
+            android:exported="false" />
+        <activity
+            android:name=".EmployeeLogin"
+            android:exported="false" />
+        <activity
+            android:name=".AdminEnterInfo"
+            android:exported="false" />
+        <activity
+            android:name=".SelectRoleReg"
+            android:exported="false" />
         <activity
             android:name=".Login"
             android:exported="false" />
-
-
         <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.XBCADAntonieMotors.MySplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
-
-
-
 
 </manifest>
