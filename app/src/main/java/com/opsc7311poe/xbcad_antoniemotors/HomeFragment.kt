@@ -23,9 +23,7 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
-    private lateinit var viewCustomersBtn: Button
     private lateinit var btnSettings: ImageView
-    private lateinit var btnRegVehicle: Button
     private lateinit var btnGoToTask: ImageView
     private lateinit var taskContainer: LinearLayout
     private lateinit var noTasksMessage: TextView

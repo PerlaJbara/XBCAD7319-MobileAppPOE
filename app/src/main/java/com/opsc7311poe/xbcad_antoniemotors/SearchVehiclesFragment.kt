@@ -73,7 +73,7 @@ class SearchVehiclesFragment : Fragment() {
     private fun fetchVehicles() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
-            val databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("Vehicles")
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Vehicles")
 
             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

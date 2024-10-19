@@ -89,7 +89,7 @@ class CustomerFragment : Fragment() {
 
         if (userId != null) {
             // Reference to the "Customers" node under the user's UID in Firebase
-            val databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
+            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
 
             databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -124,49 +124,7 @@ class CustomerFragment : Fragment() {
         }
     }
 
-   /* private fun fetchCustomers() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        if (userId != null) {
-            val databaseReference = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
-
-            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    customerList.clear()
-
-                    if (!snapshot.exists()) {
-                        // No customers found, notify the user
-                        Toast.makeText(requireContext(), "No saved customers found.", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-
-                    for (customerSnapshot in snapshot.children) {
-                        val customer = customerSnapshot.getValue(CustomerData::class.java)
-                        customer?.let {
-                            customerList.add(it)
-                        }
-                    }
-
-                    if (customerList.isEmpty()) {
-                        // No customers found, notify the user
-                        Toast.makeText(requireContext(), "No saved customers found.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        // Notify adapter to refresh the list
-                        customerAdapter.notifyDataSetChanged()
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("fetchCustomers", "Error fetching customers: ${error.message}")
-                    Toast.makeText(requireContext(), "Error fetching customers.", Toast.LENGTH_SHORT).show()
-                }
-            })
-        } else {
-            // Handle the case where the user is not logged in or UID is null
-            Log.e("fetchCustomers", "User is not logged in or UID is null.")
-            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
-        }
-    }*/
 
     private fun openCustomerDetailsFragment(customer: CustomerData) {
         val fragment = CustomerDetailsFragment().apply {

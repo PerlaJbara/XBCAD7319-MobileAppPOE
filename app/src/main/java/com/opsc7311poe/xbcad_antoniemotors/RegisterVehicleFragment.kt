@@ -2,6 +2,8 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
+import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,6 +20,8 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,6 +38,8 @@ class RegisterVehicleFragment : Fragment() {
 
     private lateinit var spinCustomer: Spinner
     private lateinit var edtVehicleNoPlate: EditText
+    private lateinit var edtVehicleMake: EditText
+    private lateinit var spnVehiclePOR: Spinner
     private lateinit var edtVehicleModel: EditText
     private lateinit var edtVinNumber: EditText
     private lateinit var edtVehicleKms: EditText
@@ -42,12 +48,20 @@ class RegisterVehicleFragment : Fragment() {
     private lateinit var galleryCars: ImageView
     private lateinit var display: ImageView
     private var selectedCustomerId: String = ""
-    private val imageUris = mutableListOf<Uri>() // To store image URIs
+    private val imageUris = mutableListOf<Uri>()
     private lateinit var btnBack: ImageView
+    private lateinit var vehiclePORList: ArrayList<String> // To store the values (e.g., "CA")
+    private lateinit var vehiclePORAdapter: ArrayAdapter<String>
+    private lateinit var ynpYearPicker : NumberPicker
+
 
     // Firebase references
     // Reference to the Customers node in your database
     val databaseRef = FirebaseDatabase.getInstance().getReference("Customers")
+    val databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
+    // List to hold vehicle makes
+    val vehicleMakesList = mutableListOf<String>()
+
     private val database = FirebaseDatabase.getInstance().getReference("Vehicles")
     private val storage = FirebaseStorage.getInstance().getReference("VehicleImages")
 
@@ -68,25 +82,57 @@ class RegisterVehicleFragment : Fragment() {
         spinCustomer = view.findViewById(R.id.customerspinner)
         edtVehicleNoPlate = view.findViewById(R.id.edttxtVehicleNoPlate)
         edtVehicleModel = view.findViewById(R.id.edttxtVehicleModel)
+        edtVehicleMake = view.findViewById(R.id.edttxtVehicleMake)
+        spnVehiclePOR = view.findViewById(R.id.spinnerPOR)
         edtVinNumber = view.findViewById(R.id.edttxtVinNumber)
         edtVehicleKms = view.findViewById(R.id.edttxtVehicleKms)
         btnSubmitRegVehicle = view.findViewById(R.id.btnSubmitRegVehicle)
         btnBack = view.findViewById(R.id.ivBackButton)
-        //to display the images that the user captures or uploads
         display = view.findViewById(R.id.capturedImage)
         galleryCars = view.findViewById(R.id.imgAttachImage)
-        imgCars= view.findViewById(R.id.imgCamera)
+        imgCars = view.findViewById(R.id.imgCamera)
+       ynpYearPicker = view.findViewById(R.id.npYearPicker)
 
         // Populate Spinner with customer names
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         userId?.let { populateCustomerSpinner() } //it
 
+        vehiclePORList = ArrayList()
+
+        // Set up adapter for Spinner
+        vehiclePORAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, vehiclePORList)
+        vehiclePORAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnVehiclePOR.adapter = vehiclePORAdapter
+
+        fetchVehiclePORData()
+
+        fetchVehicleMakes()
 
         // Image upload click listeners
         galleryCars.setOnClickListener { selectImagesFromGallery() }
-
         //imgCars.setOnClickListener { captureImageWithCamera() }
         imgCars.setOnClickListener { handleCameraPermission() }
+
+
+
+        edtVehicleMake.setOnClickListener {
+            showVehicleMakeDialog()
+        }
+
+        setupYearPicker()
+
+        setupEditorActions()
+
+
+        edtVehicleModel.setOnClickListener {
+            val selectedMake = edtVehicleMake.text.toString()
+            if (selectedMake.isEmpty()) {
+                Toast.makeText(requireContext(), "Please select a vehicle make first.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Call the function to show the pop-up for model selection
+                showVehicleModelDialog(selectedMake)
+            }
+        }
 
         // Submit vehicle registration
         btnSubmitRegVehicle.setOnClickListener {
@@ -97,6 +143,189 @@ class RegisterVehicleFragment : Fragment() {
             replaceFragment(HomeFragment())
         }
 
+
+
+        return view
+    }
+
+    fun showVehicleMakeDialog() {
+        // Inflate the dialog view layout
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_vehicle_make, null)
+        val searchView = dialogView.findViewById<SearchView>(R.id.searchVehicleMake)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerVehicleMake)
+
+        // Set up RecyclerView with a LinearLayoutManager
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Create the AlertDialog before setting up the adapter
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Select Vehicle Make")
+            .setCancelable(true)
+            .create()
+
+        // Adapter for displaying vehicle makes
+        val adapter = VehicleMakeAdapter(vehicleMakesList) { selectedMake ->
+            // Handle the vehicle make selection
+            edtVehicleMake.setText(selectedMake)
+            // Dismiss the dialog when an item is selected
+            alertDialog.dismiss()
+        }
+
+        recyclerView.adapter = adapter
+
+        // Filter the vehicle makes based on search query
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.filter.filter(newText)
+                return false
+            }
+        })
+
+        // Show the dialog
+        alertDialog.show()
+    }
+
+
+    private fun showVehicleModelDialog(selectedMake: String) {
+        // Create a dialog
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_vehicle_model) // Custom layout for the model selection
+
+        // Reference UI components inside the dialog
+        val listViewModels = dialog.findViewById<ListView>(R.id.listViewModels)
+        val searchViewModels = dialog.findViewById<SearchView>(R.id.searchViewModels)
+
+        val modelList = ArrayList<String>() // List to hold models for the selected make
+        val modelAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, modelList)
+        listViewModels.adapter = modelAdapter
+
+        // Fetch models from Firebase for the selected make
+        fetchVehicleModels(selectedMake, modelList, modelAdapter)
+
+        // Handle search functionality
+        searchViewModels.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                modelAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
+        // Handle model selection
+        listViewModels.setOnItemClickListener { _, _, position, _ ->
+            val selectedModel = modelList[position]
+            edtVehicleModel.setText(selectedModel) // Set the selected model in the edit text
+            dialog.dismiss() // Close the dialog
+        }
+
+        dialog.show() // Show the dialog
+    }
+
+
+
+    private fun fetchVehicleMakes(){
+        // Fetch vehicle makes from Firebase
+        databaseVRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                vehicleMakesList.clear()  // Clear list before adding
+                for (snapshot in dataSnapshot.children) {
+                    val vehicleMake = snapshot.key.toString()
+                    vehicleMakesList.add(vehicleMake)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.e("FirebaseError", "Database error: ${databaseError.message}")
+            }
+        })
+    }
+
+    private fun fetchVehicleModels(selectedMake: String, modelList: ArrayList<String>, modelAdapter: ArrayAdapter<String>) {
+        // Reference to VehicleData/VehicleMake/selectedMake/Models in Firebase
+        val modelsRef = FirebaseDatabase.getInstance().getReference("VehicleMake/$selectedMake/Models")
+
+        modelsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                modelList.clear() // Clear the list first
+                for (modelSnapshot in snapshot.children) {
+                    val model = modelSnapshot.getValue(String::class.java)
+                    if (model != null) {
+                        modelList.add(model)
+                    }
+                }
+                // Notify adapter about data change
+                modelAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error fetching vehicle models: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun fetchVehiclePORData() {
+        // Reference to VehiclePOR node in Firebase
+        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+
+        // Attach listener to fetch data
+        vehiclePORRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Clear the list first
+                vehiclePORList.clear()
+
+                // Loop through the data to get values
+                for (vehiclePORSnapshot in snapshot.children) {
+                    val value = vehiclePORSnapshot.getValue(String::class.java)
+                    if (value != null) {
+                        vehiclePORList.add(value) // Add only the values to the list
+                    }
+                }
+
+                // Notify adapter about the data change
+                vehiclePORAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle possible errors
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupYearPicker() {
+
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val startYear = 1900 // Define the starting year
+        val endYear = currentYear // Define the end year as the current year
+
+        ynpYearPicker?.minValue = startYear
+        ynpYearPicker?.maxValue = endYear
+        ynpYearPicker?.value = currentYear // Set the current year as default
+
+        // Optional: Listener to handle year selection
+        ynpYearPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
+            Log.d("SelectedYear", "Year: $newVal")
+            if (newVal > currentYear) {
+                Toast.makeText(requireContext(), "A car model year cannot be greater than the current year", Toast.LENGTH_SHORT).show()
+                ynpYearPicker.value = currentYear
+            }
+        }
+    }
+
+
+
+
+    private fun setupEditorActions() {
         edtVehicleNoPlate.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 edtVehicleModel.requestFocus()
@@ -132,10 +361,6 @@ class RegisterVehicleFragment : Fragment() {
                 false
             }
         }
-
-
-
-        return view
     }
 
 
@@ -149,7 +374,7 @@ class RegisterVehicleFragment : Fragment() {
         }
 
         // Query the database for customers directly under the current user's ID
-        val customerRef = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
+        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -211,19 +436,38 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-
-
+    
 
     private fun registerVehicle() {
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
         val vehicleModel = edtVehicleModel.text.toString().trim()
         val vinNumber = edtVinNumber.text.toString().trim()
         val vehicleKms = edtVehicleKms.text.toString().trim()
+        val vehiclePOR = spnVehiclePOR.selectedItem.toString() // POR from spinner
 
         val vehicleOwner = spinCustomer.selectedItem.toString() // Get the selected customer's name
 
+        // Validate inputs
         if (vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vehicleKms.isEmpty()) {
             Toast.makeText(context, "Please fill in all mandatory fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validate vehicle number plate
+        if (!vehicleNoPlate.matches(Regex("^[a-zA-Z0-9]{1,7}$"))) {
+            Toast.makeText(context, "Invalid number plate. It must be alphanumeric and 1-7 characters long.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validate VIN number (exactly 17 characters, alphanumeric)
+        if (!vinNumber.matches(Regex("^[a-zA-Z0-9]{17}$"))) {
+            Toast.makeText(context, "Invalid VIN number. It must be exactly 17 characters long and alphanumeric.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Validate vehicle kilometers
+        if (!vehicleKms.matches(Regex("^[0-9]+$"))) {
+            Toast.makeText(context, "Invalid kilometers. It must be a number.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -237,39 +481,55 @@ class RegisterVehicleFragment : Fragment() {
             return
         }
 
+
+        if (imageUris.isEmpty()) {
+            Toast.makeText(context, "Please upload at least one image", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (selectedCustomerId.isEmpty()) {
+            Toast.makeText(context, "Please select a customer", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Combine VehicleNumPlate and VehiclePOR
+        val fullVehicleNumPlate = "$vehicleNoPlate $vehiclePOR"
+
+        // Get the selected year from the NumberPicker
+        val selectedYear = ynpYearPicker.value.toString()
+
         // Constructing the VehicleData object
         val vehicle = VehicleData(
             VehicleOwner = vehicleOwner, // Customer's full name selected from spinner
             customerID = selectedCustomerId, // Customer ID from spinner
-            VehicleNumPlate = vehicleNoPlate,
+            VehicleNumPlate = fullVehicleNumPlate,
+            VehiclePOR = vehiclePOR,
             VehicleModel = vehicleModel,
+            VehicleMake = edtVehicleMake.text.toString(),
+            VehicleYear = selectedYear,
+            //VehiclePOR = spnVehiclePOR.selectedItem.toString(),
             VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
             VehicleKms = vehicleKms
         )
 
+        // Get current user (admin/vehicle owner) ID
         val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
-            val userId = currentUser.uid
+        currentUser?.let {
+            val userId = it.uid
 
-            // Save the vehicle directly under the userId -> Vehicles path
-            val vehicleRef = FirebaseDatabase.getInstance().getReference(userId)  // Use the userId as the parent
+            // Save the vehicle under the userId -> Vehicles path
+            val vehicleRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(userId)
                 .child("Vehicles")
-                .push()  // Create a unique ID for the vehicle
+                .push()  // Generate a unique ID for the vehicle
 
-            // Assign the generated vehicleId to the VehicleData object
             vehicle.vehicleId = vehicleRef.key ?: ""
 
             vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     uploadVehicleImages(vehicleRef.key!!)
                     Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
-                    // Clear the fields after successful registration
-                    edtVehicleNoPlate.text.clear()
-                    edtVehicleModel.text.clear()
-                    edtVinNumber.text.clear()
-                    edtVehicleKms.text.clear()
-                    imageUris.clear()
-                    display.setImageResource(R.drawable.camera)
+                    clearInputFields()
                 } else {
                     Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
                 }
@@ -277,6 +537,15 @@ class RegisterVehicleFragment : Fragment() {
         }
     }
 
+
+    private fun clearInputFields() {
+        edtVehicleNoPlate.text.clear()
+        edtVehicleModel.text.clear()
+        edtVinNumber.text.clear()
+        edtVehicleKms.text.clear()
+        imageUris.clear()
+        display.setImageResource(R.drawable.camera) // Reset image display
+    }
 
 
 
@@ -286,46 +555,30 @@ class RegisterVehicleFragment : Fragment() {
             val userId = currentUser.uid
 
             for (uri in imageUris) {
-                // Set up a unique reference for each image in Firebase Storage
-                val imageRef = storage.child(vehicleId).child(UUID.randomUUID().toString())
+                val uniqueImageId = UUID.randomUUID().toString()
+                val storageRef = storage.child("$userId/Vehicles/$vehicleId/$uniqueImageId.jpg")
 
-                imageRef.putFile(uri).addOnSuccessListener {
-                    imageRef.downloadUrl.addOnSuccessListener { url ->
-                        // Save the image URL under the vehicle's node within the logged-in user's Vehicles node
-                        FirebaseDatabase.getInstance().getReference(userId)
-                            .child("Vehicles")
-                            .child(vehicleId)
-                            .child("images")
-                            .push()
-                            .setValue(url.toString())
+                storageRef.putFile(uri)
+                    .addOnSuccessListener { taskSnapshot ->
+                        // Get the download URL
+                        storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                            // Save the image URL in the database under the vehicle node
+                            val imageRef = FirebaseDatabase.getInstance().getReference("Users")
+                                .child(userId)
+                                .child("Vehicles")
+                                .child(vehicleId)
+                                .child("images")
+                                .child(uniqueImageId)
+
+                            imageRef.setValue(downloadUri.toString())
+                        }
                     }
-                }.addOnFailureListener {
-                    Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
     }
-
-   /* private fun uploadVehicleImages(vehicleId: String) {
-        if (imageUris.isNotEmpty()) {
-            for (uri in imageUris) {
-                val imageRef = storage.child(vehicleId).child(UUID.randomUUID().toString())
-
-                imageRef.putFile(uri).addOnSuccessListener {
-                    imageRef.downloadUrl.addOnSuccessListener { url ->
-                        // Save the download URL to the vehicle node in the database
-                        FirebaseDatabase.getInstance().getReference("Vehicles")
-                            .child(FirebaseAuth.getInstance().currentUser!!.uid)
-                            .child(vehicleId)  // Corrected path here: vehicleId refers to the vehicle
-                            .child("images")
-                            .push().setValue(url.toString())
-                    }
-                }.addOnFailureListener {
-                    Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }*/
 
 
     private fun handleGalleryImages(data: Intent?) {

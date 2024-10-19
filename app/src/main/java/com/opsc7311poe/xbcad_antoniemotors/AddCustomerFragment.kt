@@ -102,8 +102,11 @@ class AddCustomerFragment : Fragment() {
 
         // Ensure the user is logged in before proceeding
         if (currentUserUid != null) {
+            // Reference to the correct path in the database
+            val userDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserUid).child("Customers")
+
             // Generate a unique customer ID under the user's node
-            val customerId = database.child(currentUserUid).child("Customers").push().key
+            val customerId = userDatabaseRef.push().key
 
             // Create a new customer object
             val customer = customerId?.let {
@@ -117,28 +120,28 @@ class AddCustomerFragment : Fragment() {
                 )
             }
 
-            // Saving the customer under the current user's UID in Firebase
+            // Saving the customer under the current user's node in Firebase
             if (customerId != null) {
-                database.child(currentUserUid).child("Customers").child(customerId)
-                    .setValue(customer).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show()
+                userDatabaseRef.child(customerId).setValue(customer).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show()
 
-                            // Clear the input fields after successful submission
-                            nameField.text.clear()
-                            surnameField.text.clear()
-                            mobileNumField.text.clear()
-                            emailField.text.clear()
-                            addressField.text.clear()
-                        } else {
-                            Toast.makeText(context, "Failed to add customer. Try again.", Toast.LENGTH_SHORT).show()
-                        }
+                        // Clear the input fields after successful submission
+                        nameField.text.clear()
+                        surnameField.text.clear()
+                        mobileNumField.text.clear()
+                        emailField.text.clear()
+                        addressField.text.clear()
+                    } else {
+                        Toast.makeText(context, "Failed to add customer. Try again.", Toast.LENGTH_SHORT).show()
                     }
+                }
             }
         } else {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 }
