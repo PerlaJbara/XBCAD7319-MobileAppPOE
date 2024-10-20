@@ -374,36 +374,29 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-
-
-
     private fun showCustomerSelectionDialog() {
-        // Inflate the dialog view
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_customer_names, null)
         val searchView = dialogView.findViewById<SearchView>(R.id.searchCustomerName)
         val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerCustomerName)
 
-        // Set up the RecyclerView with the adapter
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .setTitle("Select Customer")
             .setNegativeButton("Cancel", null)
             .create()
 
-        // Fetch customers from Firebase
         populateCustomerList { customers ->
-            // Initialize the adapter
             var filteredCustomers = customers.toList()
             val adapter = VehicleCustomerAdapter(filteredCustomers) { selectedCustomer ->
-                // When a customer is selected, set the text to EditText and close the dialog
-                edtCustomer.setText(selectedCustomer)
-                dialog.dismiss()  // Dismiss dialog on selection
+                // Set both customer name and ID when a customer is selected
+                edtCustomer.setText("${selectedCustomer.CustomerName} ${selectedCustomer.CustomerSurname}")
+                selectedCustomerId = selectedCustomer.CustomerID  // Save the selected customer ID
+                dialog.dismiss()  // Dismiss the dialog on selection
             }
 
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-            // Search filtering logic
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean = false
 
@@ -412,35 +405,37 @@ class RegisterVehicleFragment : Fragment() {
                     filteredCustomers = if (searchText.isNullOrEmpty()) {
                         customers
                     } else {
-                        customers.filter { it.lowercase().contains(searchText) }
+                        customers.filter {
+                            "${it.CustomerName} ${it.CustomerSurname}".lowercase().contains(searchText)
+                        }
                     }
-                    adapter.updateCustomers(filteredCustomers)  // Update the adapter
+                    adapter.updateCustomers(filteredCustomers)
                     return true
                 }
             })
 
-            dialog.show()  // Show the dialog
+            dialog.show()
         }
     }
 
 
-    private fun populateCustomerList(onCustomersFetched: (List<String>) -> Unit) {
+
+
+    private fun populateCustomerList(onCustomersFetched: (List<CustomerData>) -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        // Firebase reference to user's customers
         val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val customerNames = mutableListOf<String>()
+                val customerList = mutableListOf<CustomerData>()
                 for (customerSnapshot in snapshot.children) {
-                    val firstName = customerSnapshot.child("customerName").getValue(String::class.java)
-                    val lastName = customerSnapshot.child("customerSurname").getValue(String::class.java)
-                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty()) {
-                        customerNames.add("$firstName $lastName")
+                    val customerData = customerSnapshot.getValue(CustomerData::class.java)
+                    customerData?.let {
+                        customerList.add(it)
                     }
                 }
-                onCustomersFetched(customerNames)  // Pass the customer names back
+                onCustomersFetched(customerList)  // Pass the list of CustomerData
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -450,15 +445,14 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
+
     private fun registerVehicle() {
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
         val vehicleModel = edtVehicleModel.text.toString().trim()
         val vinNumber = edtVinNumber.text.toString().trim()
         val vehicleKms = edtVehicleKms.text.toString().trim()
-        val vehiclePOR = spnVehiclePOR.selectedItem.toString() // POR from spinner
-        val vehicleOwner = edtCustomer.text.toString() // Get the selected customer's name
-        //val vehicleOwner = spinCustomer.selectedItem.toString() // Get the selected customer's name
-
+        val vehiclePOR = spnVehiclePOR.selectedItem.toString()
+        val vehicleOwner = edtCustomer.text.toString()
 
         // Validate inputs
         if (vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vehicleKms.isEmpty()) {
@@ -472,7 +466,7 @@ class RegisterVehicleFragment : Fragment() {
             return
         }
 
-        // Validate VIN number (exactly 17 characters, alphanumeric)
+        // Validate VIN number
         if (!vinNumber.matches(Regex("^[a-zA-Z0-9]{17}$"))) {
             Toast.makeText(context, "Invalid VIN number. It must be exactly 17 characters long and alphanumeric.", Toast.LENGTH_SHORT).show()
             return
@@ -484,22 +478,7 @@ class RegisterVehicleFragment : Fragment() {
             return
         }
 
-        if (imageUris.isEmpty()) {
-            Toast.makeText(context, "Please upload at least one image", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (selectedCustomerId.isEmpty()) {
-            Toast.makeText(context, "Please select a customer", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-
-        if (imageUris.isEmpty()) {
-            Toast.makeText(context, "Please upload at least one image", Toast.LENGTH_SHORT).show()
-            return
-        }
-
+        // Check if the customer is selected
         if (selectedCustomerId.isEmpty()) {
             Toast.makeText(context, "Please select a customer", Toast.LENGTH_SHORT).show()
             return
@@ -513,14 +492,13 @@ class RegisterVehicleFragment : Fragment() {
 
         // Constructing the VehicleData object
         val vehicle = VehicleData(
-            VehicleOwner = vehicleOwner, // Customer's full name selected from spinner
-            customerID = selectedCustomerId, // Customer ID from spinner
+            VehicleOwner = vehicleOwner, // Customer's full name
+            customerID = selectedCustomerId, // Use the selected customer's ID
             VehicleNumPlate = fullVehicleNumPlate,
             VehiclePOR = vehiclePOR,
             VehicleModel = vehicleModel,
             VehicleMake = edtVehicleMake.text.toString(),
             VehicleYear = selectedYear,
-            //VehiclePOR = spnVehiclePOR.selectedItem.toString(),
             VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
             VehicleKms = vehicleKms
         )
@@ -549,6 +527,7 @@ class RegisterVehicleFragment : Fragment() {
             }
         }
     }
+
 
 
     private fun clearInputFields() {

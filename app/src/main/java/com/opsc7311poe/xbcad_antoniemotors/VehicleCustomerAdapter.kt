@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class VehicleCustomerAdapter(
-    private var customers: List<String>,  // Make this mutable to update the list
-    private val onCustomerSelected: (String) -> Unit
+    private var customers: List<CustomerData>,  // Use CustomerData instead of String
+    private val onCustomerSelected: (CustomerData) -> Unit  // Pass CustomerData
 ) : RecyclerView.Adapter<VehicleCustomerAdapter.CustomerViewHolder>() {
 
     inner class CustomerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val customerName: TextView = itemView.findViewById(R.id.txtCustomerName)
 
-        fun bind(customer: String) {
-            customerName.text = customer
+        fun bind(customer: CustomerData) {
+            customerName.text = "${customer.CustomerName} ${customer.CustomerSurname}" // Show full name
             itemView.setOnClickListener {
-                onCustomerSelected(customer)
+                onCustomerSelected(customer)  // Pass the entire CustomerData object
             }
         }
     }
@@ -35,9 +35,9 @@ class VehicleCustomerAdapter(
 
     override fun getItemCount(): Int = customers.size
 
-    // Method to update customers
-    fun updateCustomers(newCustomers: List<String>) {
+    fun updateCustomers(newCustomers: List<CustomerData>) {
         customers = newCustomers
-        notifyDataSetChanged()  // Notify adapter of data change
+        notifyDataSetChanged()
     }
 }
+
