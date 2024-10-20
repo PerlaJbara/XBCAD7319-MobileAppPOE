@@ -447,9 +447,9 @@ class RegisterVehicleFragment : Fragment() {
 
 
     private fun registerVehicle() {
-        val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
+        val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
         val vehicleModel = edtVehicleModel.text.toString().trim()
-        val vinNumber = edtVinNumber.text.toString().trim()
+        val vinNumber = edtVinNumber.text.toString().trim().uppercase()
         val vehicleKms = edtVehicleKms.text.toString().trim()
         val vehiclePOR = spnVehiclePOR.selectedItem.toString()
         val vehicleOwner = edtCustomer.text.toString()
@@ -466,9 +466,9 @@ class RegisterVehicleFragment : Fragment() {
             return
         }
 
-        // Validate VIN number
-        if (!vinNumber.matches(Regex("^[a-zA-Z0-9]{17}$"))) {
-            Toast.makeText(context, "Invalid VIN number. It must be exactly 17 characters long and alphanumeric.", Toast.LENGTH_SHORT).show()
+        // Validate VIN number (only if it's not empty)
+        if (vinNumber.isNotEmpty() && !vinNumber.matches(Regex("^[A-Z0-9]{17}$"))) {
+            Toast.makeText(context, "Invalid VIN number. It must be exactly 17 alphanumeric characters.", Toast.LENGTH_SHORT).show()
             return
         }
 
