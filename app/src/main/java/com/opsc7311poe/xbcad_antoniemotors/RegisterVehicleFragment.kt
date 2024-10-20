@@ -36,7 +36,8 @@ import java.util.*
 
 class RegisterVehicleFragment : Fragment() {
 
-    private lateinit var spinCustomer: Spinner
+    //private lateinit var spinCustomer: Spinner
+    private lateinit var edtCustomer: EditText
     private lateinit var edtVehicleNoPlate: EditText
     private lateinit var edtVehicleMake: EditText
     private lateinit var spnVehiclePOR: Spinner
@@ -79,7 +80,8 @@ class RegisterVehicleFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_register_vehicle, container, false)
 
         // Initialize views
-        spinCustomer = view.findViewById(R.id.customerspinner)
+        //spinCustomer = view.findViewById(R.id.customerspinner)
+        edtCustomer = view.findViewById(R.id.edtCustomerNames)
         edtVehicleNoPlate = view.findViewById(R.id.edttxtVehicleNoPlate)
         edtVehicleModel = view.findViewById(R.id.edttxtVehicleModel)
         edtVehicleMake = view.findViewById(R.id.edttxtVehicleMake)
@@ -91,11 +93,17 @@ class RegisterVehicleFragment : Fragment() {
         display = view.findViewById(R.id.capturedImage)
         galleryCars = view.findViewById(R.id.imgAttachImage)
         imgCars = view.findViewById(R.id.imgCamera)
-       ynpYearPicker = view.findViewById(R.id.npYearPicker)
+        ynpYearPicker = view.findViewById(R.id.npYearPicker)
+
+
+        edtCustomer.setOnClickListener {
+            showCustomerSelectionDialog()
+        }
+
 
         // Populate Spinner with customer names
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        userId?.let { populateCustomerSpinner() } //it
+       // val userId = FirebaseAuth.getInstance().currentUser?.uid
+        //userId?.let { populateCustomerSpinner() } //it
 
         vehiclePORList = ArrayList()
 
@@ -161,6 +169,7 @@ class RegisterVehicleFragment : Fragment() {
         val alertDialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .setTitle("Select Vehicle Make")
+            .setNegativeButton("Cancel", null)
             .setCancelable(true)
             .create()
 
@@ -365,78 +374,81 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    private fun populateCustomerSpinner() {
-        // Get the current logged-in user ID
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId == null) {
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
 
-        // Query the database for customers directly under the current user's ID
+
+
+    private fun showCustomerSelectionDialog() {
+        // Inflate the dialog view
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_customer_names, null)
+        val searchView = dialogView.findViewById<SearchView>(R.id.searchCustomerName)
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.recyclerCustomerName)
+
+        // Set up the RecyclerView with the adapter
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setTitle("Select Customer")
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        // Fetch customers from Firebase
+        populateCustomerList { customers ->
+            // Initialize the adapter
+            var filteredCustomers = customers.toList()
+            val adapter = VehicleCustomerAdapter(filteredCustomers) { selectedCustomer ->
+                // When a customer is selected, set the text to EditText and close the dialog
+                edtCustomer.setText(selectedCustomer)
+                dialog.dismiss()  // Dismiss dialog on selection
+            }
+
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+            // Search filtering logic
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean = false
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    val searchText = newText?.lowercase()?.trim()
+                    filteredCustomers = if (searchText.isNullOrEmpty()) {
+                        customers
+                    } else {
+                        customers.filter { it.lowercase().contains(searchText) }
+                    }
+                    adapter.updateCustomers(filteredCustomers)  // Update the adapter
+                    return true
+                }
+            })
+
+            dialog.show()  // Show the dialog
+        }
+    }
+
+
+    private fun populateCustomerList(onCustomersFetched: (List<String>) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        // Firebase reference to user's customers
         val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val customerMap = mutableMapOf<String, String>()
                 val customerNames = mutableListOf<String>()
-
-                // Check if there are customers associated with the user
-                if (!snapshot.exists()) {
-                    Toast.makeText(requireContext(), "No customers found for this user", Toast.LENGTH_SHORT).show()
-                    return
-                }
-
-                // Loop through all customers associated with this user
                 for (customerSnapshot in snapshot.children) {
-                    val customerId = customerSnapshot.key // Get customer ID
                     val firstName = customerSnapshot.child("customerName").getValue(String::class.java)
                     val lastName = customerSnapshot.child("customerSurname").getValue(String::class.java)
-
-                    // Log data to check if it's being fetched correctly
-                    Log.d("FirebaseData", "Customer: $firstName $lastName, ID: $customerId")
-
-                    // Only add customer if names are not null or empty
-                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
-                        val fullName = "$firstName $lastName"
-                        customerMap[customerId] = fullName
-                        customerNames.add(fullName) // Add full name to spinner options
+                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty()) {
+                        customerNames.add("$firstName $lastName")
                     }
                 }
-
-                // Check if the list is empty
-                if (customerNames.isEmpty()) {
-                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show()
-                    return
-                }
-
-                // Set up the spinner with the list of customer names
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerNames)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinCustomer.adapter = adapter
-
-                // Handle customer selection from the spinner
-                spinCustomer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        val selectedCustomerName = parent.getItemAtPosition(position).toString()
-                        selectedCustomerId = customerMap.filterValues { it == selectedCustomerName }.keys.firstOrNull().orEmpty()
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {
-                        // Handle case where nothing is selected if necessary
-                    }
-                }
+                onCustomersFetched(customerNames)  // Pass the customer names back
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("FirebaseError", "Error loading customer data: ${error.message}")
-                Toast.makeText(requireContext(), "Error loading customer data", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-
-    
 
     private fun registerVehicle() {
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim()
@@ -444,8 +456,9 @@ class RegisterVehicleFragment : Fragment() {
         val vinNumber = edtVinNumber.text.toString().trim()
         val vehicleKms = edtVehicleKms.text.toString().trim()
         val vehiclePOR = spnVehiclePOR.selectedItem.toString() // POR from spinner
+        val vehicleOwner = edtCustomer.text.toString() // Get the selected customer's name
+        //val vehicleOwner = spinCustomer.selectedItem.toString() // Get the selected customer's name
 
-        val vehicleOwner = spinCustomer.selectedItem.toString() // Get the selected customer's name
 
         // Validate inputs
         if (vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vehicleKms.isEmpty()) {
