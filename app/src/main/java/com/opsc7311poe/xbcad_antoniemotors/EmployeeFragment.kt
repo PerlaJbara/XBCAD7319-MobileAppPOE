@@ -104,7 +104,7 @@ class EmployeeFragment : Fragment() {
         imgPlus = view.findViewById(R.id.imgPlus)
         imgPlus.setOnClickListener() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(Register_Employee_Page())
+            replaceFragment(ServicesFragment())
         }
 
         return view

@@ -79,8 +79,17 @@
                 android:id="@+id/svServices"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/txtgradientgtor">
             </SearchView>
+
+            <ImageView
+                android:id="@+id/imgFilter"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="25dp"
+                android:src="@drawable/vector_filterblack"/>
 
             <ScrollView
                 android:layout_width="match_parent"

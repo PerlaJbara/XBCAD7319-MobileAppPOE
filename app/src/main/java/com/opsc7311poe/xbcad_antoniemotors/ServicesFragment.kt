@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +25,7 @@ import java.util.Locale
 class ServicesFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
+    private lateinit var imgFilter: ImageView
     private lateinit var linLay: LinearLayout
     private lateinit var svServices: SearchView
     private var listOfAllServices = mutableListOf<ServiceData>()
@@ -60,6 +62,26 @@ class ServicesFragment : Fragment() {
             }
         })
 
+        //filter functionality
+        imgFilter = view.findViewById(R.id.imgFilter)
+
+        imgFilter.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+
+            // Show a dialog with filter options
+            val filterOptions = arrayOf("Not Started", "Busy", "Completed")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Filter Tasks By")
+                .setItems(filterOptions) { _, which ->
+                    when (which) {
+                        0 -> filterByStatus("Not Started")
+                        1 -> filterByStatus("Busy")
+                        2 -> filterByStatus("Completed")
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
 
         return view
     }
@@ -192,6 +214,16 @@ class ServicesFragment : Fragment() {
                 it.name!!.lowercase().contains(filter)
             })
         }
+        loadServicesFromList(tempList)
+    }
+
+    private fun filterByStatus(statusEntered: String) {
+        var tempList = mutableListOf<ServiceData>()
+
+       tempList.addAll(listOfAllServices.filter {
+           it.status!!.equals(statusEntered)
+       })
+
         loadServicesFromList(tempList)
     }
 
