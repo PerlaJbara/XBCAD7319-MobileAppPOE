@@ -12,11 +12,12 @@ data class ServiceData(
     var dateReturned: Date?,
     var parts: List<Part>? ,
     var labourCost: Double?,
-    var totalCost: Double?
+    var totalCost: Double?,
+    var paid: Boolean?
 
 ){
     // No-argument constructor (required by Firebase)
-    constructor() : this(null, null , null, null, null, null, null, null, null)
+    constructor() : this(null, null , null, null, null, null, null, null, null, null)
 }
 
 data class Part(

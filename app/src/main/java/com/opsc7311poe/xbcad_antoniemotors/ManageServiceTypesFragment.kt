@@ -72,7 +72,7 @@ class ManageServiceTypesFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val servicesRef = database.getReference(userId).child("ServiceTypes")
+            val servicesRef = database.getReference("Users/$userId").child("ServiceTypes")
 
             servicesRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -129,7 +129,7 @@ class ManageServiceTypesFragment : Fragment() {
             //deleting service
             val database = com.google.firebase.Firebase.database
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val serRef = database.getReference(userId!!).child("ServiceTypes")
+            val serRef = database.getReference("Users/$userId").child("ServiceTypes")
 
             serRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

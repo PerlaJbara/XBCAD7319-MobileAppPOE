@@ -32,7 +32,9 @@ class ServiceDetailsFragment : Fragment() {
    private lateinit var btnSave: Button
    private lateinit var btnDelete: Button
    private lateinit var imgStatus: ImageView
+   private lateinit var imgPayStatus: ImageView
    private lateinit var imgChangeStatus: ImageView
+   private lateinit var imgChangePayStatus: ImageView
    private lateinit var txtDateCarReceived: TextView
    private lateinit var txtDateCarReturned: TextView
    private lateinit var txtParts: TextView
@@ -42,6 +44,7 @@ class ServiceDetailsFragment : Fragment() {
    private lateinit var txtNumPlate: TextView
 
    private lateinit var currentStatus: String
+   private var currentPaymentStatus: Boolean = false
    private lateinit var fetchedService: ServiceData
 
     val database = Firebase.database
@@ -67,6 +70,7 @@ class ServiceDetailsFragment : Fragment() {
         txtName = view.findViewById(R.id.txtName)
         btnCust = view.findViewById(R.id.btnCustName)
         imgStatus = view.findViewById(R.id.imgStatus)
+        imgPayStatus = view.findViewById(R.id.imgPayStatus)
         txtDateCarReceived = view.findViewById(R.id.txtDateCarReceived)
         txtDateCarReturned = view.findViewById(R.id.txtDateCarReturned)
         txtParts = view.findViewById(R.id.txtParts)
@@ -121,6 +125,13 @@ class ServiceDetailsFragment : Fragment() {
                             }
                         }
 
+                        //Handle payment status display
+                        if (fetchedService.paid!!){
+                            imgPayStatus.setImageResource(R.drawable.vectorpaid)
+                        } else {
+                            imgPayStatus.setImageResource(R.drawable.vectornotpaid)
+                        }
+
                         //populating vehicle info
                         vehicleID = fetchedService.vehicleID!!
                         getVehInfo(vehicleID)
@@ -158,6 +169,21 @@ class ServiceDetailsFragment : Fragment() {
             {
                 imgStatus.setImageResource(R.drawable.vectorstatusbusy)
                 currentStatus = "Busy"
+            }
+        }
+
+        imgChangePayStatus = view.findViewById(R.id.imgChangePayStatus)
+        imgChangePayStatus.setOnClickListener(){
+            //status changes when button is tapped
+            if (currentPaymentStatus)
+            {
+                imgPayStatus.setImageResource(R.drawable.vectornotpaid)
+                currentPaymentStatus = false
+            }
+            else if(!currentPaymentStatus)
+            {
+                imgPayStatus.setImageResource(R.drawable.vectorpaid)
+                currentPaymentStatus = true
             }
         }
 
@@ -203,7 +229,7 @@ class ServiceDetailsFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), custID, vehicleID, currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost)
+                serviceEntered = ServiceData( txtName.text.toString(), custID, vehicleID, currentStatus, dateReceived, dateReturned, fetchedService.parts, txtLabourCost.text.toString().toDouble(), totalCost, currentPaymentStatus)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
