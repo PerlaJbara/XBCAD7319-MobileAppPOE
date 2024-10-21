@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -487,6 +488,10 @@ class RegisterVehicleFragment : Fragment() {
         // Combine VehicleNumPlate and VehiclePOR
         val fullVehicleNumPlate = "$vehicleNoPlate $vehiclePOR"
 
+        // Get the current date and time
+        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+
+
         // Get the selected year from the NumberPicker
         val selectedYear = ynpYearPicker.value.toString()
 
@@ -500,7 +505,8 @@ class RegisterVehicleFragment : Fragment() {
             VehicleMake = edtVehicleMake.text.toString(),
             VehicleYear = selectedYear,
             VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
-            VehicleKms = vehicleKms
+            VehicleKms = vehicleKms,
+            registrationDate = currentDate
         )
 
         // Get current user (admin/vehicle owner) ID
@@ -531,12 +537,15 @@ class RegisterVehicleFragment : Fragment() {
 
 
     private fun clearInputFields() {
-        edtVehicleNoPlate.text.clear()
-        edtVehicleModel.text.clear()
-        edtVinNumber.text.clear()
-        edtVehicleKms.text.clear()
-        imageUris.clear()
-        display.setImageResource(R.drawable.camera) // Reset image display
+        edtVehicleNoPlate.text.clear()  // Clear the vehicle number plate input
+        edtVehicleModel.text.clear()  // Clear the vehicle model input
+        edtVinNumber.text.clear()  // Clear the VIN number input
+        edtVehicleKms.text.clear()  // Clear the vehicle kilometers input
+        edtCustomer.text.clear()  // Clear the selected customer input
+        imageUris.clear()  // Clear the image URIs
+        display.setImageResource(R.drawable.camera)  // Reset image display to default
+        spnVehiclePOR.setSelection(0)  // Reset the vehicle POR spinner to the first option
+        ynpYearPicker.value = ynpYearPicker.minValue  // Reset the year picker to the minimum value
     }
 
 

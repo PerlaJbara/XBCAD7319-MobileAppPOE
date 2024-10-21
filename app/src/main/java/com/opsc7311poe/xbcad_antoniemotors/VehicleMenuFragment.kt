@@ -31,7 +31,6 @@ class VehicleMenuFragment : Fragment() {
         //btnPartsInventory = view.findViewById(R.id.btnAddPart)
 
         // Set up button click listeners or other view logic here
-
         btnVehicleReg.setOnClickListener(){
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(SearchVehiclesFragment())

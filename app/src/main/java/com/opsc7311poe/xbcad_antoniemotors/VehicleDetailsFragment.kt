@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -22,7 +23,10 @@ class VehicleDetailsFragment : Fragment() {
     private lateinit var txtVehicleModel: TextView
     private lateinit var txtVehicleKms: TextView
     private lateinit var txtVinNumber: TextView
+    private lateinit var txtVehicleReg: TextView
     private lateinit var vehicleImagesRecyclerView: RecyclerView
+    private lateinit var btnEditVehicleDetails: Button
+    private lateinit var btnDeleteVehicle: Button
 
     private lateinit var databaseRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -37,7 +41,9 @@ class VehicleDetailsFragment : Fragment() {
             Toast.makeText(requireContext(), "Invalid Vehicle ID.", Toast.LENGTH_SHORT).show()
             // Optionally, navigate back or close the fragment
         } else {
-            databaseRef = FirebaseDatabase.getInstance().getReference(auth.currentUser?.uid ?: "")
+            // Adjust Firebase path to Users -> userId -> Vehicles -> vehicleId
+            databaseRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(auth.currentUser?.uid ?: "")
                 .child("Vehicles")
                 .child(vehicleId!!)
         }
@@ -54,6 +60,10 @@ class VehicleDetailsFragment : Fragment() {
         txtVehicleModel = view.findViewById(R.id.txtVehicleModel)
         txtVehicleKms = view.findViewById(R.id.txtVehicleKms)
         txtVinNumber = view.findViewById(R.id.txtVinNumber)
+        txtVehicleReg = view.findViewById(R.id.txtVehicleRegDate)
+        btnEditVehicleDetails = view.findViewById(R.id.btnEditVehicle)
+        btnDeleteVehicle = view.findViewById(R.id.btnDeleteVehicle)
+
 
         vehicleImagesRecyclerView = view.findViewById(R.id.vehicleImagesRecyclerView)
 
@@ -76,6 +86,8 @@ class VehicleDetailsFragment : Fragment() {
                 txtVehicleModel.text = snapshot.child("vehicleModel").getValue(String::class.java) ?: "N/A"
                 txtVehicleKms.text = snapshot.child("vehicleKms").getValue(String::class.java) ?: "N/A"
                 txtVinNumber.text = snapshot.child("vinNumber").getValue(String::class.java) ?: "N/A"
+                txtVehicleReg.text = snapshot.child("registrationDate").getValue(String::class.java) ?: "N/A"
+
             }.addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed to load vehicle details.", Toast.LENGTH_SHORT).show()
                 Log.e("VehicleDetails", "Error loading vehicle details: ${it.message}")
