@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
@@ -24,6 +25,8 @@ class ServicesFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
     private lateinit var linLay: LinearLayout
+    private lateinit var svServices: SearchView
+    private var listOfAllServices = mutableListOf<ServiceData>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +45,22 @@ class ServicesFragment : Fragment() {
         linLay = view.findViewById(R.id.linlayServiceCards)
         loadServices()
 
+        //handling search functionality
+
+        // Listen to SearchView input
+        svServices = view.findViewById(R.id.svServices)
+        svServices.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchList(newText)
+                return true
+            }
+        })
+
+
         return view
     }
 
@@ -59,6 +78,8 @@ class ServicesFragment : Fragment() {
                     for (pulledOrder in snapshot.children) {
 
                         val service = pulledOrder.getValue(ServiceData::class.java)
+                        //adding service to list to filter later
+                        listOfAllServices.add(service!!);
 
                         val cardView = LayoutInflater.from(requireContext()).inflate(R.layout.card_service, linLay, false) as CardView
                         // Populate the card with service data
@@ -109,6 +130,72 @@ class ServicesFragment : Fragment() {
             })
         }
     }
+
+    private fun loadServicesFromList(inputList: MutableList<ServiceData>) {
+
+        linLay.removeAllViews()
+
+        for (service in inputList) {
+
+            val cardView = LayoutInflater.from(requireContext()).inflate(R.layout.card_service, linLay, false) as CardView
+            // Populate the card with service data
+            //populate the customer data
+            fetchCustNameAndSurname(service.custID!!, cardView)
+            //populate vehicle data
+            fetchVehicleNameAndModel(service.vehicleID!!, cardView)
+
+            cardView.findViewById<TextView>(R.id.txtServiceName).text = service.name
+            cardView.findViewById<TextView>(R.id.txtCost).text = "R ${service.totalCost.toString()}"
+
+            //changing date values to string
+            val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+
+            cardView.findViewById<TextView>(R.id.txtDateTakenIn).text = formatter.format(service?.dateReceived)
+            cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
+            // Set the status ImageView based on status
+            val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
+            when (service.status) {
+                "Completed" -> statusImageView.setImageResource(R.drawable.vectorstatuscompleted)
+                "Busy" -> statusImageView.setImageResource(R.drawable.vectorstatusbusy)
+                "Not Started" -> statusImageView.setImageResource(R.drawable.vectorstatusnotstrarted)
+            }
+
+            //functionality to go details page when card is tapped
+            /*cardView.setOnClickListener {
+
+                val serviceInfoFragment = ServiceDetailsFragment()
+                //transferring service info using a bundle
+                val bundle = Bundle()
+                bundle.putString("serviceID", pulledOrder.key)
+                serviceInfoFragment.arguments = bundle
+                //changing to service info fragment
+                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                replaceFragment(serviceInfoFragment)
+            }*/
+
+
+            // Add the card to the container
+            linLay.addView(cardView)
+
+        }
+
+    }
+    private fun searchList(query: String?) {
+        var tempList = mutableListOf<ServiceData>()
+
+
+        if (query.isNullOrEmpty()) {
+            tempList.addAll(listOfAllServices)
+        } else {
+            val filter = query.lowercase()
+            tempList.addAll(listOfAllServices.filter {
+                it.name!!.lowercase().contains(filter)
+            })
+        }
+        loadServicesFromList(tempList)
+    }
+
+
 
     private fun fetchCustNameAndSurname(custID: String, cv: CardView )
     {
