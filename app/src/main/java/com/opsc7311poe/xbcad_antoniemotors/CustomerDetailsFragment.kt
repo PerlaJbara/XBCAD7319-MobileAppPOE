@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
 
 class CustomerDetailsFragment : Fragment() {
@@ -15,6 +16,7 @@ class CustomerDetailsFragment : Fragment() {
     private lateinit var txtEmail: TextView
     private lateinit var txtAddress: TextView
     private lateinit var txtCellNumber: TextView
+    private lateinit var rviewCustomerVehicles: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +35,7 @@ class CustomerDetailsFragment : Fragment() {
         txtEmail = view.findViewById(R.id.txtEmail)
         txtAddress = view.findViewById(R.id.txtAddress)
         txtCellNumber = view.findViewById(R.id.txtCellNumber)
+        rviewCustomerVehicles = view.findViewById(R.id.rvCustomerVehicles)
 
         // Retrieve customer details from arguments
         val customerName = arguments?.getString("customerName") ?: ""

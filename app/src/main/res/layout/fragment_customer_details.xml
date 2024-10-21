@@ -164,107 +164,21 @@
 
                         <ScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="200dp">
+                            android:layout_height="300dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:paddingLeft="45dp"
-                                android:orientation="vertical"
-                                android:paddingBottom="20dp">
+                                android:layout_height="wrap_content">
 
-
-                                <TextView
-                                    android:id="@+id/txtCustomerVehicles"
-                                    android:layout_width="390dp"
-                                    android:textColor="@color/red"
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:id="@+id/rvCustomerVehicles"
                                     android:orientation="vertical"
-                                    android:text="This is a test for the scroll view in case the owner has more then 1 vehicle "
-                                    android:textSize="20sp" />
+                                    android:layout_gravity="center_horizontal">
 
-                                <TextView
-                                    android:id="@+id/txtCarModelLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Car Model:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"/>
+                                </androidx.recyclerview.widget.RecyclerView>
 
-
-                                <TextView
-                                    android:id="@+id/txtCarModel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="2002 Honda Civic"
-                                    android:textSize="18sp"/>
-
-
-                                <TextView
-                                    android:id="@+id/txtVinNumberLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="VIN Number:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"
-                                    android:layout_marginTop="8dp"/>
-
-                                <TextView
-                                    android:id="@+id/txtVinNumber"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="1EFCV1F65JA522134"
-                                    android:textSize="18sp"/>
-
-                                <TextView
-                                    android:id="@+id/txtKilometersLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Kilometers:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"
-                                    android:layout_marginTop="8dp"/>
-
-                                <TextView
-                                    android:id="@+id/txtKilometers"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="351 112.98 km"
-                                    android:textSize="18sp"/>
-
-                                <TextView
-                                    android:id="@+id/txtLicensePlateLabel"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="License Plate:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"
-                                    android:layout_marginTop="8dp"/>
-
-                                <TextView
-                                    android:id="@+id/txtLicensePlate"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="GHJ907 GP"
-                                    android:textSize="18sp"/>
-
-
-                                <TextView
-                                    android:id="@+id/txtTest1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="License Plate:"
-                                    android:textStyle="bold"
-                                    android:textSize="18sp"
-                                    android:layout_marginTop="8dp"/>
-
-                                <TextView
-                                    android:id="@+id/txtTest1View"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="GHJ907 GP"
-                                    android:textSize="18sp"/>
 
                             </LinearLayout>
 

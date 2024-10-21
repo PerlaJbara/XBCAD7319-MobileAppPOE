@@ -61,12 +61,42 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:paddingBottom="20dp"
-                        android:text="Personal Information"
+                        android:paddingTop="20dp"
+                        android:text="Customer Information:"
                         android:textAlignment="center"
                         android:textSize="30sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"/>
 
                     <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingBottom="20dp">
+
+                        <TextView
+                            android:layout_width="310dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:text="Customer Type:"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+
+                        <Spinner
+                            android:layout_width="310dp"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="8dp"
+                            android:id="@+id/spnCustomerType"
+                            android:background="@drawable/spingradientgtor"
+                            android:entries="@array/customer_type_options">
+                        </Spinner>
+
+                    </LinearLayout>
+
+                    <!-- Name Layout -->
+                    <LinearLayout
+                        android:id="@+id/nameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -87,10 +117,11 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/spingradientgtor" />
-
                     </LinearLayout>
 
+                    <!-- Surname Layout -->
                     <LinearLayout
+                        android:id="@+id/surnameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -101,7 +132,7 @@
                             android:layout_width="310dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:text="Surame:"
+                            android:text="Surname:"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
@@ -111,7 +142,32 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/spingradientgtor" />
+                    </LinearLayout>
 
+                    <!-- Company Name Layout -->
+                    <LinearLayout
+                        android:id="@+id/companyLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingBottom="20dp"
+                        android:visibility="gone"> <!-- Initially hidden -->
+
+                        <TextView
+                            android:layout_width="310dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:text="Company Name:"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/edttxtCompanyName"
+                            android:layout_width="310dp"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/spingradientgtor" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -137,6 +193,8 @@
                             android:background="@drawable/spingradientgtor" />
 
                     </LinearLayout>
+
+
 
 
                     <LinearLayout

@@ -81,35 +81,5 @@ class CustomerAdapter(private var customerList: List<CustomerData>,
         }
     }
 
-   /* private val customerFilter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-            val filteredList = ArrayList<CustomerData>()
 
-            if (constraint == null || constraint.isEmpty()) {
-                // If there's no input, show the full list
-                filteredList.addAll(customerListFull)
-            } else {
-                val filterPattern = constraint.toString().lowercase().trim()
-
-                for (customer in customerListFull) {
-                    // Match customer names that start with the entered letters, case insensitive
-                    if (customer.CustomerName.lowercase().startsWith(filterPattern) ||
-                        customer.CustomerSurname.lowercase().startsWith(filterPattern)
-                    ) {
-                        filteredList.add(customer)
-                    }
-                }
-            }
-
-            val results = FilterResults()
-            results.values = filteredList
-            return results
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            customerList = results?.values as List<CustomerData>
-            notifyDataSetChanged()
-        }
-    }*/
 }

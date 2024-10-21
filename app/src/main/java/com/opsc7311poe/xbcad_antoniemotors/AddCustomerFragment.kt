@@ -2,20 +2,17 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.database
-import com.opsc7311poe.xbcad_antoniemotors.CustomerData
+import android.widget.LinearLayout
+import android.widget.ImageView
 
 class AddCustomerFragment : Fragment() {
 
@@ -27,15 +24,17 @@ class AddCustomerFragment : Fragment() {
     private lateinit var addressField: EditText
     private lateinit var submitButton: Button
     private lateinit var btnBack: ImageView
+    private lateinit var spinnerCustType: Spinner
+    private lateinit var edtCompany: EditText
+    private lateinit var nameLayout: LinearLayout
+    private lateinit var surnameLayout: LinearLayout
+    private lateinit var companyLayout: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_customer, container, false)
-
-        // Initializing Firebase Database
-        //database = FirebaseDatabase.getInstance().reference.child("Customers")
 
         // Initialize Firebase Database and Views
         database = FirebaseDatabase.getInstance().reference
@@ -46,14 +45,42 @@ class AddCustomerFragment : Fragment() {
         addressField = view.findViewById(R.id.edttxtAddress)
         submitButton = view.findViewById(R.id.btnSubmitRegCustomer)
         btnBack = view.findViewById(R.id.ivBackButton)
+        spinnerCustType = view.findViewById(R.id.spnCustomerType)
+        edtCompany = view.findViewById(R.id.edttxtCompanyName)
+        nameLayout = view.findViewById(R.id.nameLayout)
+        surnameLayout = view.findViewById(R.id.surnameLayout)
+        companyLayout = view.findViewById(R.id.companyLayout)
 
         // Set onClickListener for the submit button
         submitButton.setOnClickListener {
             addCustomer()
         }
 
+        // Handle back button click
         btnBack.setOnClickListener() {
             replaceFragment(HomeFragment())
+        }
+
+        // Listen for changes in the spinner selection to toggle name/company fields
+        spinnerCustType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedType = parent.getItemAtPosition(position).toString()
+                if (selectedType == "Business") {
+                    // Show company name field and hide name and surname fields
+                    nameLayout.visibility = View.GONE
+                    surnameLayout.visibility = View.GONE
+                    companyLayout.visibility = View.VISIBLE
+                } else {
+                    // Show name and surname fields, hide company name field
+                    nameLayout.visibility = View.VISIBLE
+                    surnameLayout.visibility = View.VISIBLE
+                    companyLayout.visibility = View.GONE
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No action needed here
+            }
         }
 
         return view
@@ -66,72 +93,118 @@ class AddCustomerFragment : Fragment() {
             .commit()
     }
 
-
-
     private fun addCustomer() {
-        val name = nameField.text.toString().trim()
-        val surname = surnameField.text.toString().trim()
-        val mobileNum = mobileNumField.text.toString().trim()
-        val email = emailField.text.toString().trim()
-        val address = addressField.text.toString().trim()
+        val customerType = spinnerCustType.selectedItem.toString()
 
-        // Check if any of the fields are empty
-        if (TextUtils.isEmpty(name)) {
-            nameField.error = "Please enter a name"
-            return
+        // If customer type is Private, get name and surname
+        if (customerType == "Private") {
+            val name = nameField.text.toString().trim()
+            val surname = surnameField.text.toString().trim()
+            val mobileNum = mobileNumField.text.toString().trim()
+            val email = emailField.text.toString().trim()
+            val address = addressField.text.toString().trim()
+
+            if (validatePrivateCustomer(name, surname, mobileNum, email, address)) {
+                saveCustomerToDatabase(name, surname, mobileNum, email, address, customerType)
+            }
         }
-        if (TextUtils.isEmpty(surname)) {
-            surnameField.error = "Please enter a surname"
-            return
+
+        // If customer type is Business, get company name
+        else if (customerType == "Business") {
+            val companyName = edtCompany.text.toString().trim()
+            val mobileNum = mobileNumField.text.toString().trim()
+            val email = emailField.text.toString().trim()
+            val address = addressField.text.toString().trim()
+
+            if (validateBusinessCustomer(companyName, mobileNum, email, address)) {
+                saveCustomerToDatabase(companyName, "", mobileNum, email, address, customerType)
+            }
         }
-        if (TextUtils.isEmpty(mobileNum)) {
-            mobileNumField.error = "Please enter a mobile number"
-            return
+    }
+
+    private fun validatePrivateCustomer(
+        name: String, surname: String, mobileNum: String, email: String, address: String
+    ): Boolean {
+        val namePattern = Regex("^[a-zA-Z]+\$")
+        if (!name.matches(namePattern)) {
+            nameField.error = "Name cannot contain numbers or special characters"
+            return false
         }
-        if (TextUtils.isEmpty(email)) {
-            emailField.error = "Please enter an email address"
-            return
+        if (!surname.matches(namePattern)) {
+            surnameField.error = "Surname cannot contain numbers or special characters"
+            return false
+        }
+        if (mobileNum.length != 10 || !mobileNum.all { it.isDigit() }) {
+            mobileNumField.error = "Mobile number must be 10 digits and contain only numbers"
+            return false
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailField.error = "Invalid email format"
+            return false
         }
         if (TextUtils.isEmpty(address)) {
             addressField.error = "Please enter a physical address"
-            return
+            return false
         }
+        return true
+    }
 
-        // Get the current logged-in user's UID from FirebaseAuth
+
+    private fun validateBusinessCustomer(
+        companyName: String, mobileNum: String, email: String, address: String
+    ): Boolean {
+        if (TextUtils.isEmpty(companyName)) {
+            edtCompany.error = "Please enter a company name"
+            return false
+        }
+        if (mobileNum.length != 10 || !mobileNum.all { it.isDigit() }) {
+            mobileNumField.error = "Mobile number must be 10 digits and contain only numbers"
+            return false
+        }
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailField.error = "Invalid email format"
+            return false
+        }
+        if (TextUtils.isEmpty(address)) {
+            addressField.error = "Please enter a physical address"
+            return false
+        }
+        return true
+    }
+
+    private fun saveCustomerToDatabase(
+        name: String, surname: String, mobileNum: String, email: String, address: String, customerType: String
+    ) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
 
-        // Ensure the user is logged in before proceeding
         if (currentUserUid != null) {
-            // Reference to the correct path in the database
-            val userDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUserUid).child("Customers")
-
-            // Generate a unique customer ID under the user's node
+            val userDatabaseRef = database.child("Users").child(currentUserUid).child("Customers")
             val customerId = userDatabaseRef.push().key
 
-            // Create a new customer object
             val customer = customerId?.let {
                 CustomerData(
                     CustomerID = it,
-                    CustomerName = name,
-                    CustomerSurname = surname,
+                    CustomerName = name, // For Business, this will be the company name
+                    CustomerSurname = surname, // Empty for Business customers
                     CustomerMobileNum = mobileNum,
                     CustomerEmail = email,
-                    CustomerAddress = address
+                    CustomerAddress = address,
+                    CustomerType = customerType
                 )
             }
 
-            // Saving the customer under the current user's node in Firebase
             if (customerId != null) {
                 userDatabaseRef.child(customerId).setValue(customer).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show()
 
-                        // Clear the input fields after successful submission
+                        // Clear input fields after successful submission
                         nameField.text.clear()
                         surnameField.text.clear()
                         mobileNumField.text.clear()
                         emailField.text.clear()
                         addressField.text.clear()
+                        edtCompany.text.clear()
                     } else {
                         Toast.makeText(context, "Failed to add customer. Try again.", Toast.LENGTH_SHORT).show()
                     }
@@ -141,8 +214,4 @@ class AddCustomerFragment : Fragment() {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
 }
-

@@ -134,6 +134,7 @@ class CustomerFragment : Fragment() {
                 putString("customerEmail", customer.CustomerEmail)
                 putString("customerAddress", customer.CustomerAddress)
                 putString("customerMobile", customer.CustomerMobileNum)
+                //putString("customerType", customer.CustomerMobileNum)
             }
         }
 

@@ -14,5 +14,5 @@ data class CustomerData(
     var CustomerMobileNum: String = "",
     var CustomerEmail: String = "",
     var CustomerAddress: String = "",
-
+    var CustomerType: String = ""
     )
