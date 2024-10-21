@@ -75,7 +75,7 @@ class ServiceDetailsFragment : Fragment() {
         txtVin = view.findViewById(R.id.txtVin)
         txtNumPlate = view.findViewById(R.id.txtNumPlate)
 
-        val serRef = database.getReference(userId!!).child("Services")
+        val serRef = database.getReference("Users/$userId").child("Services")
         val serviceID = arguments?.getString("serviceID")
         //fetching service data from DB
         if (userId != null && serviceID != null) {
@@ -210,7 +210,7 @@ class ServiceDetailsFragment : Fragment() {
                 if (userId != null  && serviceID != null)
                 {
                     var database = com.google.firebase.ktx.Firebase.database
-                    val empRef = database.getReference(userId).child("Services").child(serviceID)
+                    val empRef = database.getReference("Users/$userId").child("Services").child(serviceID)
 
                     empRef.setValue(serviceEntered)
                         .addOnSuccessListener {
@@ -242,7 +242,7 @@ class ServiceDetailsFragment : Fragment() {
                 //deleting service
                 val database = Firebase.database
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
-                val serRef = database.getReference(userId!!).child("Services")
+                val serRef = database.getReference("Users/$userId").child("Services")
 
                 serRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -279,7 +279,7 @@ class ServiceDetailsFragment : Fragment() {
     }
 
     private fun getCustName(custID: String){
-        val vehRef = database.getReference(userId!!).child("Customers/$custID")
+        val vehRef = database.getReference("Users/$userId").child("Customers/$custID")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -295,7 +295,7 @@ class ServiceDetailsFragment : Fragment() {
     }
 
     private fun getVehInfo(vehID: String) {
-        val vehRef = database.getReference(userId!!).child("Vehicles/$vehID")
+        val vehRef = database.getReference("Users/$userId").child("Vehicles/$vehID")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {

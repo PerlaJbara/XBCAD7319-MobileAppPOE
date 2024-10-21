@@ -187,14 +187,14 @@ class AddServiceFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData( txtName.text.toString(), selectedCustomerId, selectedVehicleId,spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble(), totalCost)
+                serviceEntered = ServiceData(txtName.text.toString(), selectedCustomerId, selectedVehicleId,spinStatus.selectedItem.toString(), dateReceived, dateReturned, partsEntered, txtLabourCost.text.toString().toDouble(), totalCost)
 
                 //adding service object to db
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
                 if (userId != null)
                 {
                     val database = Firebase.database
-                    val empRef = database.getReference(userId).child("Services")
+                    val empRef = database.getReference("Users/$userId").child("Services")
 
                     empRef.push().setValue(serviceEntered)
                         .addOnSuccessListener {
@@ -256,7 +256,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for customers directly under the current user's ID
-        val customerRef = FirebaseDatabase.getInstance().getReference(userId).child("Customers")
+        val customerRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -328,7 +328,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for vehicles directly under the current user's ID
-        val vehRef = FirebaseDatabase.getInstance().getReference(userId).child("Vehicles")
+        val vehRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("Vehicles")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -402,7 +402,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for service types under the current user's ID
-        val serviceTypeRef = FirebaseDatabase.getInstance().getReference(userId).child("ServiceTypes")
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("ServiceTypes")
 
         serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -473,7 +473,7 @@ class AddServiceFragment : Fragment() {
     private fun populateFieldsWithServiceTypeData(selectedServiceTypeId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        val serviceTypeRef = FirebaseDatabase.getInstance().getReference(userId!!).child("ServiceTypes/$selectedServiceTypeId")
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("ServiceTypes/$selectedServiceTypeId")
 
         serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -489,6 +489,8 @@ class AddServiceFragment : Fragment() {
                     allPartsString += "${part.name}             R${String.format(Locale.getDefault(), "%.2f", part.cost)}"
                     allPartsString += "\n"
                 }
+
+                partsEntered = fetchedSerType.parts!!.toMutableList()
 
                 txtAllParts.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
                 txtAllParts.text = allPartsString

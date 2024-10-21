@@ -106,7 +106,7 @@ class AddServiceTypeFragment : Fragment() {
                 if (userId != null)
                 {
                     val database = Firebase.database
-                    val empRef = database.getReference(userId).child("ServiceTypes")
+                    val empRef = database.getReference("Users/$userId").child("ServiceTypes")
 
                     empRef.push().setValue(serviceTypeEntered)
                         .addOnSuccessListener {

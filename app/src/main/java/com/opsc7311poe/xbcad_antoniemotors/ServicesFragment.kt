@@ -50,7 +50,7 @@ class ServicesFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val servicesRef = database.getReference(userId).child("Services")
+            val servicesRef = database.getReference("Users/$userId").child("Services")
 
             servicesRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -117,7 +117,7 @@ class ServicesFragment : Fragment() {
 
         if (userId != null) {
             val database = Firebase.database
-            val custRef = database.getReference(userId).child("Customers")
+            val custRef = database.getReference("Users/$userId").child("Customers")
 
             custRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -144,7 +144,7 @@ class ServicesFragment : Fragment() {
 
         if (userId != null) {
             val database = Firebase.database
-            val vehRef = database.getReference(userId).child("Vehicles")
+            val vehRef = database.getReference("Users/$userId").child("Vehicles")
 
             vehRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

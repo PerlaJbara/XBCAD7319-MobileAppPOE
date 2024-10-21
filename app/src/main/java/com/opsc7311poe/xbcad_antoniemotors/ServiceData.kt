@@ -27,6 +27,7 @@ data class Part(
     constructor() : this(null, null)
 }
 
+//service type class
 data class ServiceTypeData(
     var name: String?,
     var parts: List<Part>? ,
