@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navVehicles -> {
-                    replaceFragment(SearchVehiclesFragment())
+                    replaceFragment(VehicleMenuFragment())
                     true
                 }
                 R.id.navCustomers -> {
