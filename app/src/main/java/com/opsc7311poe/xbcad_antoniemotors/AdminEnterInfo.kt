@@ -126,7 +126,7 @@ class AdminEnterInfo : AppCompatActivity() {
             "profileImage" to profileImageUrl
         )
 
-        database.getReference("Users").child(userId).setValue(userInfo)
+        database.getReference("Users").child(userId).child("Details").setValue(userInfo)
             .addOnSuccessListener {
                 Toast.makeText(this, "Admin registered successfully!", Toast.LENGTH_SHORT).show()
                 navigateToMainActivity()
