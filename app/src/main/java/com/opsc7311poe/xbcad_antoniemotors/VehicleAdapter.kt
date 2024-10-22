@@ -9,11 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 class VehicleAdapter(
-    private val vehicleList: List<VehicleData>,
+    private var vehicleList: List<VehicleData>,
     private val onVehicleClick: (VehicleData) -> Unit
 ) : RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder>() {
 
     private var filteredList: List<VehicleData> = vehicleList
+
+    // Method to update the vehicle list dynamically
+    fun updateList(newVehicleList: List<VehicleData>) {
+        vehicleList = newVehicleList
+        filteredList = newVehicleList
+        notifyDataSetChanged() // Refresh the RecyclerView
+    }
 
     fun filterList(query: String?) {
         filteredList = if (!query.isNullOrEmpty()) {
@@ -58,6 +65,8 @@ class VehicleAdapter(
             itemView.setOnClickListener { onVehicleClick(vehicle) }
         }
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
         val view = LayoutInflater.from(parent.context)

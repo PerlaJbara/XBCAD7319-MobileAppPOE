@@ -76,7 +76,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:paddingRight="70dp"
                         android:text="Contact Information"
                         android:textStyle="bold"
                         android:textSize="30sp"
@@ -88,105 +87,169 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:paddingRight="165dp"
                         android:orientation="vertical"
                         android:layout_marginBottom="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="150dp">
 
-                            <TextView
-                                android:id="@+id/textViewCellNumberLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Cell number:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"/>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/txtCellNumber"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="074 352 1145"
-                                android:textSize="18sp"/>
+                                <TextView
+                                    android:id="@+id/textViewCellNumberLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Cell number:"
+                                    android:textSize="25sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.137" />
+
+                                <TextView
+                                    android:id="@+id/txtCellNumber"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="074 352 1145"
+                                    android:textSize="20sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.501"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textViewCellNumberLabel"
+                                    app:layout_constraintVertical_bias="0.369" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         </LinearLayout>
 
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="150dp">
 
-                            <TextView
-                                android:id="@+id/textViewEmailLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Email:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/txtEmail"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="cviljoen3@gmail.com"
-                                android:textSize="18sp"/>
+                                <TextView
+                                    android:id="@+id/textViewEmailLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Email:"
+                                    android:textSize="25sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.215" />
+
+                                <TextView
+                                    android:id="@+id/txtEmail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="20dp"
+                                    android:text="cviljoen3@gmail.com"
+                                    android:textSize="20sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textViewEmailLabel"
+                                    app:layout_constraintVertical_bias="0.0" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="200dp">
 
-                            <TextView
-                                android:id="@+id/textCustTypeLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Physical Address:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/txtCustomerType"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
-                                android:textSize="18sp"/>
+                                <TextView
+                                    android:id="@+id/textAddressLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Physical Address:"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.104" />
+
+                                <TextView
+                                    android:id="@+id/txtAddress"
+                                    android:layout_width="207dp"
+                                    android:layout_height="100dp"
+                                    android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                                    android:textSize="20sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.8" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="150dp">
 
-                            <TextView
-                                android:id="@+id/textViewAddressLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Physical Address:"
-                                android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
 
-                            <TextView
-                                android:id="@+id/txtAddress"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
-                                android:textSize="18sp"/>
+                                <TextView
+                                    android:id="@+id/textCustTypeLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Customer Type:"
+                                    android:textSize="25sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintVertical_bias="0.137" />
+
+                                <TextView
+                                    android:id="@+id/txtCustomerType"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="32dp"
+                                    android:text="Private/Business"
+                                    android:textSize="20sp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.498"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textCustTypeLabel"
+                                    app:layout_constraintVertical_bias="0.438" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         </LinearLayout>
-
-
-
-
-
 
                     </LinearLayout>
-
 
 
 
@@ -230,7 +293,47 @@
 
                         </ScrollView>
 
-                        <!-- History Information Section -->
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content">
+
+                           <androidx.constraintlayout.widget.ConstraintLayout
+                               android:layout_width="match_parent"
+                               android:layout_height="73dp">
+
+                               <Button
+                                   android:id="@+id/btnEditCustomer"
+                                   android:layout_width="143dp"
+                                   android:layout_height="62dp"
+                                   android:backgroundTint="#038A39"
+                                   android:text="Edit"
+                                   android:textSize="18sp"
+                                   app:layout_constraintBottom_toBottomOf="parent"
+                                   app:layout_constraintEnd_toEndOf="parent"
+                                   app:layout_constraintHorizontal_bias="0.059"
+                                   app:layout_constraintStart_toStartOf="parent"
+                                   app:layout_constraintTop_toTopOf="parent"
+                                   app:layout_constraintVertical_bias="0.0" />
+
+                               <Button
+                                   android:id="@+id/btnDeleteCustomer"
+                                   android:layout_width="143dp"
+                                   android:layout_height="62dp"
+                                   android:textSize="18sp"
+                                   android:backgroundTint="#CA2F2E"
+                                   android:text="Delete Customer"
+                                   app:layout_constraintBottom_toBottomOf="parent"
+                                   app:layout_constraintEnd_toEndOf="parent"
+                                   app:layout_constraintHorizontal_bias="0.94"
+                                   app:layout_constraintStart_toStartOf="parent"
+                                   app:layout_constraintTop_toTopOf="parent"
+                                   app:layout_constraintVertical_bias="0.0" />
+
+
+                           </androidx.constraintlayout.widget.ConstraintLayout>
+
+                       </LinearLayout>
+
                     </LinearLayout>
 
 
@@ -238,42 +341,9 @@
 
             </ScrollView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="73dp">
-
-                <Button
-                    android:id="@+id/btnEditCustomer"
-                    android:layout_width="143dp"
-                    android:layout_height="62dp"
-                    android:backgroundTint="#038A39"
-                    android:text="Edit"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.059"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <Button
-                    android:id="@+id/btnDeleteCustomer"
-                    android:layout_width="143dp"
-                    android:layout_height="62dp"
-                    android:textSize="18sp"
-                    android:backgroundTint="#CA2F2E"
-                    android:text="Delete Customer"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.94"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
+
 
     </LinearLayout>
 

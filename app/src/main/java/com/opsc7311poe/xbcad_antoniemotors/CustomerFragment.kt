@@ -129,12 +129,13 @@ class CustomerFragment : Fragment() {
     private fun openCustomerDetailsFragment(customer: CustomerData) {
         val fragment = CustomerDetailsFragment().apply {
             arguments = Bundle().apply {
+                putString("customerID", customer.CustomerID)
                 putString("customerName", customer.CustomerName)
                 putString("customerSurname", customer.CustomerSurname)
                 putString("customerEmail", customer.CustomerEmail)
                 putString("customerAddress", customer.CustomerAddress)
                 putString("customerMobile", customer.CustomerMobileNum)
-                //putString("customerType", customer.CustomerMobileNum)
+                putString("customerType", customer.CustomerType)
             }
         }
 
