@@ -22,7 +22,7 @@ class AdminEmpFragment : Fragment() {
         imgLeaveman = view.findViewById(R.id.imgleavemang)
         imgSearchAndReg = view.findViewById(R.id.imgsearchandreg)
         imgTask = view.findViewById(R.id.imgtask)
-        imgLeaveap = view.findViewById(R.id.imgleaveap)
+
 
         // Set click listeners for the image views
 
@@ -38,9 +38,7 @@ class AdminEmpFragment : Fragment() {
             replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
         }
 
-        imgLeaveap.setOnClickListener {
-            replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
-        }
+
 
 
     }
@@ -55,7 +53,7 @@ class AdminEmpFragment : Fragment() {
 
     private fun replaceFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.frame_container, fragment) // Ensure 'fragment_container' is the correct ID
+        transaction.replace(R.id.fragment_container, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
