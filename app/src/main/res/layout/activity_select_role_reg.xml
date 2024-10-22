@@ -49,7 +49,7 @@
             android:id="@+id/ivAdminRole"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            tools:src="@drawable/vector_adminlogo"
+            android:src="@drawable/vector_adminlogo"
             />
 
         <TextView
@@ -67,7 +67,7 @@
             android:id="@+id/ivEmployeeLogo"
             android:layout_width="match_parent"
             android:layout_height="125dp"
-            tools:src="@drawable/vector_employeelogo" />
+            android:src="@drawable/vector_employeelogo" />
 
         <TextView
             android:id="@+id/txtemployeelogo"

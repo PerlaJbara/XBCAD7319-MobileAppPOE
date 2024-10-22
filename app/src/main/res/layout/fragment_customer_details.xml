@@ -85,59 +85,105 @@
 
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:paddingRight="165dp"
                         android:orientation="vertical"
                         android:layout_marginBottom="16dp">
 
-                        <TextView
-                            android:id="@+id/textViewCellNumberLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cell number:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/txtCellNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="074 352 1145"
-                            android:textSize="18sp"/>
+                            <TextView
+                                android:id="@+id/textViewCellNumberLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Cell number:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"/>
 
-                        <TextView
-                            android:id="@+id/textViewEmailLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Email:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:layout_marginTop="8dp"/>
+                            <TextView
+                                android:id="@+id/txtCellNumber"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="074 352 1145"
+                                android:textSize="18sp"/>
 
-                        <TextView
-                            android:id="@+id/txtEmail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="cviljoen3@gmail.com"
-                            android:textSize="18sp"/>
+                        </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textViewAddressLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Physical Address:"
-                            android:textStyle="bold"
-                            android:textSize="18sp"
-                            android:layout_marginTop="8dp"/>
 
-                        <TextView
-                            android:id="@+id/txtAddress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
-                            android:textSize="18sp"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textViewEmailLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Email:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:id="@+id/txtEmail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="cviljoen3@gmail.com"
+                                android:textSize="18sp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textCustTypeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Physical Address:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:id="@+id/txtCustomerType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                                android:textSize="18sp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textViewAddressLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Physical Address:"
+                                android:textStyle="bold"
+                                android:textSize="18sp"
+                                android:layout_marginTop="8dp"/>
+
+                            <TextView
+                                android:id="@+id/txtAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                                android:textSize="18sp"/>
+
+                        </LinearLayout>
+
+
+
+
+
 
                     </LinearLayout>
 
