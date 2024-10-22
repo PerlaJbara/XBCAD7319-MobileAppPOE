@@ -57,6 +57,13 @@ dependencies {
     implementation (libs.androidx.biometric)
     implementation (libs.firebase.auth.ktx.v2101)
     implementation(libs.firebase.storage.ktx)
+
+    //Testing
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
-            android:text="Employee Leave Tracker"
+            android:text="Leave Tracker"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="60sp" />
@@ -52,6 +52,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/scrllDspemp">
+
+        <!-- Filter By Label -->
+        <TextView
+            android:id="@+id/txtFilterBy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:text="Filter by"
+            android:textColor="#000000"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <!-- Horizontal LinearLayout for the two EditTexts -->
         <LinearLayout
@@ -99,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:backgroundTint="#CA2F2E"
-            android:text="Submit"
+            android:text="Search"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
     </LinearLayout>

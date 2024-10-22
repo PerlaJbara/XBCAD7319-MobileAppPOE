@@ -70,15 +70,40 @@
                 android:entries="@array/leave_types"
                 android:spinnerMode="dropdown"
                 tools:ignore="TouchTargetSizeCheck" />
+
+            <!-- Leave Remaining Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtLeaveRemainingLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:text="Leave Remaining"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtLeaveRemaining"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:text="X days"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Holiday Section - Start Date and Save Button -->
+        <!-- Holiday Section - Start Date and End Date -->
         <LinearLayout
             android:id="@+id/layoutdatepick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/customer_cards"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -88,6 +113,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtSelectStartLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Select Start"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/txtselleavestart"
@@ -100,14 +134,43 @@
                     tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnSaveStart"
-                android:layout_width="wrap_content"
+            <!-- Spacer -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <!-- Centered End Date -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:backgroundTint="#CA2F2E"
-                android:text="Set Leave Start"
-                android:textSize="18sp" />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtSelectEndLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Select End"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/txtselleaveend"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/roundcorneredt"
+                    android:hint="Select Date"
+                    android:inputType="date"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
+
+            <!-- Spacer -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -127,80 +190,16 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- First Row: Leave Remaining TextView -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Label for Leave Remaining -->
-                <TextView
-                    android:id="@+id/txtLeaveRemainingLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:text="Leave Remaining"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <!-- Value for Leave Remaining -->
-                <TextView
-                    android:id="@+id/txtLeaveRemaining"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:text="X days"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Spacer -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
-
-            <!-- Second Row: Leave Used TextView -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Label for Leave Used -->
-                <TextView
-                    android:id="@+id/txtLeaveUsedLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:text="Leave Used"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-
-                <!-- Value for Leave Used -->
-                <TextView
-                    android:id="@+id/txtLeaveUsed"
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:text="Y days"
-                    android:textColor="#000000"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Spacer -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="16dp" />
-
             <!-- Centered Button: Save Leave -->
             <Button
-                android:id="@+id/btnSaveLeave"
+                android:id="@+id/btnRequest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:backgroundTint="#CA2F2E"
-                android:text="Save Leave"
-                android:textSize="18sp"
+                android:text="Request"
                 android:textColor="#FFFFFF"
-                android:layout_gravity="center_horizontal" />
+                android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
 

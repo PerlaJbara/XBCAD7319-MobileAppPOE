@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navEmployees -> {
-                    replaceFragment(EmployeeFragment())
+                    replaceFragment(AdminEmpFragment())
                     true
                 }
                 R.id.navEmpHome -> {
