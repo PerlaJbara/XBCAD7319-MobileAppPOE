@@ -13,7 +13,8 @@ class AdminEmpFragment : Fragment() {
     private lateinit var imgLeaveman: ImageView
     private lateinit var imgSearchAndReg: ImageView
     private lateinit var imgTask: ImageView
-    private lateinit var imgLeaveap : ImageView
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
