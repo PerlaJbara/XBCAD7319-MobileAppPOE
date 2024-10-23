@@ -108,7 +108,7 @@
                 android:textSize="25sp" />
 
             <EditText
-                android:id="@+id/editTextText2"
+                android:id="@+id/txtEmpTaskDescription"
                 android:layout_width="350dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="10dp"
@@ -148,7 +148,7 @@
                 android:textSize="25sp" />
 
             <Spinner
-                android:id="@+id/spinner2"
+                android:id="@+id/spSelectEmp"
                 android:layout_width="332dp"
                 android:layout_height="46dp"
                 android:layout_marginStart="10dp"
@@ -188,7 +188,7 @@
                 android:textSize="25sp" />
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/switchTaskApproval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -202,7 +202,6 @@
 
     </ScrollView>
 
-    <!-- Assign Task Button fixed at the bottom -->
     <Button
         android:id="@+id/btnAssignTask"
         android:layout_width="wrap_content"

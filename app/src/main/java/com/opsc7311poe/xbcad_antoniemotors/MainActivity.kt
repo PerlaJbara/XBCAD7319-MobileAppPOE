@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Set up the default fragment (for example, HomeFragment)
-        replaceFragment(HomeFragment())
+      //  replaceFragment(HomeFragment())
 
         bottomNavView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -54,13 +54,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navEmployees -> {
-                    replaceFragment(AdminEmpFragment())
+                    replaceFragment(EmployeeFragment())
                     true
                 }
-                R.id.navEmpHome -> {
-                    replaceFragment(EmployeeHomeNav())
-                    true
-                }
+
                 R.id.navVehicles -> {
                     replaceFragment(VehicleMenuFragment())
                     true
@@ -88,16 +85,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun getUserRole(userId: String) {
         // Get the role from Firebase Realtime Database
-        val userRef = database.child("Users").child(userId).child("role")
+        val userRef = database.child("Users").child(userId).child("Details").child("role")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userRole = snapshot.getValue(String::class.java)
                 if (userRole != null) {
                     loadNavigationMenu(userRole)
                     // Set the default fragment after loading the menu
-                    replaceFragment(HomeFragment())
+                    if(userRole == "admin"){
+                        replaceFragment(HomeFragment())
+                    }
+                    else if(userRole == "employee"){
+                        replaceFragment(EmployeeHomeFragment())
+                    }
                 } else {
                     Log.e("MainActivity", "Role not found for user")
+                    Log.e("MainActivity", "User role is $userId")
                     // Handle if the role is not found
                 }
             }
@@ -107,7 +110,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
 
     private fun loadNavigationMenu(userRole: String) {
         // Load the appropriate menu based on the role

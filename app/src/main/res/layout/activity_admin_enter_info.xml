@@ -79,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
                     android:paddingBottom="8dp"
-                    android:text="Business Name:"
+                    android:text="Select Business:"
                     android:textColor="@android:color/black"
                     android:textSize="25sp" />
 
