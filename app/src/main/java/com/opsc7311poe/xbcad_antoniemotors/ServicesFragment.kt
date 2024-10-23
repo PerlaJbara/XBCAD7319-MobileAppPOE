@@ -69,7 +69,7 @@ class ServicesFragment : Fragment() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
 
             // Show a dialog with filter options
-            val filterOptions = arrayOf("Not Started", "Busy", "Completed")
+            val filterOptions = arrayOf("Not Started", "Busy", "Completed", "Paid", "Unpaid", "View All Services")
             AlertDialog.Builder(requireContext())
                 .setTitle("Filter Tasks By")
                 .setItems(filterOptions) { _, which ->
@@ -77,6 +77,9 @@ class ServicesFragment : Fragment() {
                         0 -> filterByStatus("Not Started")
                         1 -> filterByStatus("Busy")
                         2 -> filterByStatus("Completed")
+                        3 -> filterByPayStatus(true)
+                        4 -> filterByPayStatus(false)
+                        5 -> replaceFragment(ServicesFragment())
                     }
                 }
                 .setNegativeButton("Cancel", null)
@@ -124,6 +127,12 @@ class ServicesFragment : Fragment() {
                             "Completed" -> statusImageView.setImageResource(R.drawable.vectorstatuscompleted)
                             "Busy" -> statusImageView.setImageResource(R.drawable.vectorstatusbusy)
                             "Not Started" -> statusImageView.setImageResource(R.drawable.vectorstatusnotstrarted)
+                        }
+
+                        // Set the payment status ImageView based on payment status
+                        val payStatusImageView = cardView.findViewById<ImageView>(R.id.imgPayStatus)
+                        if(service.paid!!) {
+                            payStatusImageView.setImageResource(R.drawable.vectorpaid)
                         }
 
                         //functionality to go details page when card is tapped
@@ -182,6 +191,11 @@ class ServicesFragment : Fragment() {
                 "Not Started" -> statusImageView.setImageResource(R.drawable.vectorstatusnotstrarted)
             }
 
+            val payStatusImageView = cardView.findViewById<ImageView>(R.id.imgPayStatus)
+            if(service.paid!!) {
+                payStatusImageView.setImageResource(R.drawable.vectorpaid)
+            }
+
             //functionality to go details page when card is tapped
             /*cardView.setOnClickListener {
 
@@ -222,6 +236,15 @@ class ServicesFragment : Fragment() {
 
        tempList.addAll(listOfAllServices.filter {
            it.status!!.equals(statusEntered)
+       })
+
+        loadServicesFromList(tempList)
+    }
+    private fun filterByPayStatus(payStatusEntered: Boolean) {
+        var tempList = mutableListOf<ServiceData>()
+
+       tempList.addAll(listOfAllServices.filter {
+           it.paid!! == payStatusEntered
        })
 
         loadServicesFromList(tempList)
