@@ -41,7 +41,7 @@ dependencies {
 
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
-
+    implementation ("com.airbnb.android:lottie:6.0.0")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.biometric:biometric:1.4.0-alpha02")
     implementation(libs.androidx.core.ktx)
@@ -60,6 +60,7 @@ dependencies {
 
     //Testing
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation(libs.androidx.recyclerview)
 
 
 

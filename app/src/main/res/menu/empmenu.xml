@@ -6,6 +6,11 @@
         android:icon="@drawable/vector_tasks"
         android:title="Tasks"
         />
+    <item
+        android:id="@+id/navLeave"
+        android:icon="@drawable/vector_leave"
+        android:title="Leave"
+        />
 
     <item
         android:id="@+id/navEmpHome"
@@ -14,9 +19,15 @@
         />
 
     <item
-        android:id="@+id/navLeave"
-        android:icon="@drawable/vector_leave"
-        android:title="Leave"
+        android:id="@+id/navMessages"
+        android:icon="@drawable/vector_chat"
+        android:title="Messages"
+        />
+
+    <item
+        android:id="@+id/navLeaderboard"
+        android:icon="@drawable/vector_leaderboard"
+        android:title="Leaderboard"
         />
 
 </menu>

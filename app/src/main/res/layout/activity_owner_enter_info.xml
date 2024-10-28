@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logincar"
-    tools:context=".AdminEnterInfo">
+    tools:context=".OwnerEnterInfoActivity">
 
 
     <LinearLayout
@@ -56,13 +56,13 @@
                     android:textSize="25sp" />
 
                 <ImageView
-                    android:id="@+id/ivAdminProfilePicture"
+                    android:id="@+id/ivOwnerProfilePic"
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
                     android:src="@drawable/camera" />
 
                 <TextView
-                    android:id="@+id/txtSelectImage"
+                    android:id="@+id/txtSelectImageOwner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
@@ -73,38 +73,19 @@
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
+
                 <TextView
-                    android:id="@+id/businessname"
+                    android:id="@+id/ownername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
                     android:paddingBottom="8dp"
-                    android:text="Business Name:"
+                    android:text="First Name:"
                     android:textColor="@android:color/black"
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminBusinessName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please enter your business name"/>
-
-                <TextView
-                    android:id="@+id/firstname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingBottom="8dp"
-                    android:text="First Name"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtAdminFirstName"
+                    android:id="@+id/txtOwnerFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -124,7 +105,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminLastName"
+                    android:id="@+id/txtOwnerLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -143,11 +124,11 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminEmail"
+                    android:id="@+id/txtOwnerEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:hint="Please enter your email address"/>
@@ -165,7 +146,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtPassword"
+                    android:id="@+id/txtOwnerPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -187,7 +168,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminPhone"
+                    android:id="@+id/txtOwnerPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -209,7 +190,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminPAddress"
+                    android:id="@+id/txtOwnerAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -217,6 +198,7 @@
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:hint="Please enter your address"/>
+
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -227,14 +209,15 @@
                     android:visibility="gone"
                     android:indeterminate="true" />
 
+
                 <Button
-                    android:id="@+id/btnRegisterAdmin"
+                    android:id="@+id/btnRegisterOwner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:backgroundTint="@color/black"
                     android:padding="12dp"
-                    android:text="Register"
+                    android:text="Register Account"
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />

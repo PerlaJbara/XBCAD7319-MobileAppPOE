@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,20 +8,18 @@
     android:background="@drawable/logincar"
     tools:context=".Login">
 
-
     <LinearLayout
-        android:layout_width="362dp"
-        android:layout_height="639dp"
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/bgseethroughgrey"
         android:orientation="vertical"
         android:padding="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.619">
-
+        app:layout_constraintWidth_percent="0.9">
 
         <TextView
             android:id="@+id/login_heading"
@@ -34,7 +33,6 @@
             android:textSize="80sp"
             android:textStyle="bold" />
 
-
         <TextView
             android:id="@+id/username_label"
             android:layout_width="wrap_content"
@@ -45,7 +43,6 @@
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
-
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="match_parent"
@@ -54,7 +51,6 @@
             android:inputType="text"
             android:padding="12dp"
             android:textColor="@color/black" />
-
 
         <TextView
             android:id="@+id/password_label"
@@ -68,7 +64,6 @@
             android:textColor="@android:color/black"
             android:textSize="35sp" />
 
-
         <EditText
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
@@ -77,7 +72,6 @@
             android:inputType="textPassword"
             android:padding="12dp"
             android:textColor="@color/black" />
-
 
         <Button
             android:id="@+id/btnNextPage"
@@ -91,6 +85,14 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:indeterminateTint="@color/black" />
 
         <TextView
             android:id="@+id/txtSignUp"
@@ -105,14 +107,13 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="316dp"
-            android:layout_height="185dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingTop="70dp"
             android:text="Powered By Tech Fusion"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="18dp" />
-
+            android:textSize="18sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

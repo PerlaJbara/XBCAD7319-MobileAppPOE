@@ -6,16 +6,15 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +26,33 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.XBCADAntonieMotors"
         tools:targetApi="31">
+        <activity
+            android:name=".SuccessOwnerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DenyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeniedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WaitingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EmpEnterInfo"
+            android:exported="false" />
+        <activity
+            android:name=".EmpSelectBusinessAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AdminSelectBusinessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OwnerEnterInfoActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterBusinessActivity"
             android:exported="false" />

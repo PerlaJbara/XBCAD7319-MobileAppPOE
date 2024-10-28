@@ -1,74 +1,118 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
+import com.google.firebase.database.ValueEventListener
+import java.util.UUID
 
 class RegisterBusinessActivity : AppCompatActivity() {
 
-    private lateinit var txtBusinessName: EditText
-    private lateinit var btnRegBusiness: Button
-    private lateinit var database: DatabaseReference
+    private lateinit var businessname: EditText
+    private lateinit var ownername: EditText
+    private lateinit var ownersurname: EditText
+    private lateinit var btnRegisterBusiness: Button
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_business)
 
-        txtBusinessName = findViewById(R.id.txtRegBusinessName)
-        btnRegBusiness = findViewById(R.id.btnRegisterBusiness)
+        businessname = findViewById(R.id.txtRegBusinessName)
+        ownername = findViewById(R.id.txtOwnerName)
+        ownersurname = findViewById(R.id.txtOwnerSurname)
+        btnRegisterBusiness = findViewById(R.id.btnRegisterBusiness)
+        progressBar = findViewById(R.id.progressBar)
 
-        // Initialize the Firebase database reference
-        database = FirebaseDatabase.getInstance().reference
+        btnRegisterBusiness.setOnClickListener {
+            val businessName = businessname.text.toString().trim()
+            val ownerName = ownername.text.toString().trim()
+            val ownerSurname = ownersurname.text.toString().trim()
 
-        btnRegBusiness.setOnClickListener {
-            registerBusiness()
+            if (businessName.isNotEmpty() && ownerName.isNotEmpty() && ownerSurname.isNotEmpty()) {
+                checkBusinessName(businessName, ownerName, ownerSurname)
+            } else {
+                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun registerBusiness() {
-        val businessName = txtBusinessName.text.toString().trim()
+    // Function to check if business name exists
+    // Function to check if business name exists
+    private fun checkBusinessName(businessName: String, ownerName: String, ownerSurname: String) {
+        // Show progress bar
+        progressBar.visibility = ProgressBar.VISIBLE
 
-        if (businessName.isEmpty()) {
-            Toast.makeText(this, "Please enter a business name.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Get Firebase database reference
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("Users")
 
-        // Check if the business name already exists in the database
-        val query: Query = database.child("Users").orderByChild("businessName").equalTo(businessName)
-        query.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                if (task.result?.exists() == true) {
-                    // Business name already exists
-                    Toast.makeText(this, "This business name is already taken. Please choose another.", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Business name is available, save it
-                    saveBusinessName(businessName)
+        // Query to check if the business name already exists
+        usersRef.orderByChild("BusinessInfo/businessName").equalTo(businessName)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Business name already exists
+                        progressBar.visibility = ProgressBar.GONE
+                        Toast.makeText(this@RegisterBusinessActivity, "Business name already exists. Please choose a different name.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // If no businesses exist, or business name is unique, proceed with registration
+                        saveBusinessInfo(businessName, ownerName, ownerSurname)
+                    }
                 }
-            } else {
-                Toast.makeText(this, "Error checking business name.", Toast.LENGTH_SHORT).show()
-            }
-        }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Hide progress bar and show error message
+                    progressBar.visibility = ProgressBar.GONE
+                    Toast.makeText(this@RegisterBusinessActivity, "Error checking business name. Please try again.", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
-    private fun saveBusinessName(businessName: String) {
-    //    val userId = "exampleUserId" // Replace this with actual user ID logic, e.g., FirebaseAuth.getInstance().currentUser?.uid
+    // Function to save business info
+    private fun saveBusinessInfo(businessName: String, ownerName: String, ownerSurname: String) {
+        // Get Firebase database reference
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("Users")
 
-        // Create a node for Users and use the userId as the key
-        val userNode = database.child("Users")
+        // Generate a unique ID without dashes
+        val businessId = UUID.randomUUID().toString().replace("-", "")
 
-        // Set the business name directly under the user's node
-        userNode.child("businessName").setValue(businessName).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Toast.makeText(this, "Business registered successfully!", Toast.LENGTH_SHORT).show()
-                // Optionally, redirect or finish the activity
-            } else {
-                Toast.makeText(this, "Error registering business name.", Toast.LENGTH_SHORT).show()
+        // Create a BusinessInfo object with the provided details
+        val businessInfo = BusinessInfo(
+            businessName = businessName,
+            ownerName = ownerName,
+            ownerSurname = ownerSurname,
+            ownerId = null // Initially set to null
+        )
+
+        // Set the data in the database under the generated key
+        usersRef.child(businessId).child("BusinessInfo").setValue(businessInfo)
+            .addOnCompleteListener { task ->
+                // Hide progress bar
+                progressBar.visibility = ProgressBar.GONE
+
+                if (task.isSuccessful) {
+                    // Data saved successfully
+                    Toast.makeText(this, "Business registered successfully!", Toast.LENGTH_SHORT).show()
+
+                    // Navigate to the next activity and pass the data
+                    val intent = Intent(this, OwnerEnterInfoActivity::class.java)
+                    intent.putExtra("businessName", businessName)
+                    intent.putExtra("ownerName", ownerName)
+                    intent.putExtra("ownerSurname", ownerSurname)
+                    startActivity(intent)
+                } else {
+                    // Failed to save data
+                    Toast.makeText(this, "Failed to register business!", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
     }
 }

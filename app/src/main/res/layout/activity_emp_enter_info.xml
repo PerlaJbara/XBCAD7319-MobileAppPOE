@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logincar"
-    tools:context=".AdminEnterInfo">
+    tools:context=".EmpEnterInfo">
 
 
     <LinearLayout
@@ -56,13 +56,13 @@
                     android:textSize="25sp" />
 
                 <ImageView
-                    android:id="@+id/ivAdminProfilePicture"
+                    android:id="@+id/ivEmpProfPicture"
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
                     android:src="@drawable/camera" />
 
                 <TextView
-                    android:id="@+id/txtSelectImage"
+                    android:id="@+id/txtSelectImageEmp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
@@ -84,7 +84,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminBusinessName"
+                    android:id="@+id/txtEmpBusinessName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -104,7 +104,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminFirstName"
+                    android:id="@+id/txtEmpFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -124,7 +124,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminLastName"
+                    android:id="@+id/txtEmpLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -143,7 +143,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminEmail"
+                    android:id="@+id/txtEmpEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -165,7 +165,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtPassword"
+                    android:id="@+id/txtEmpPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -187,7 +187,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminPhone"
+                    android:id="@+id/txtEmpPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -209,7 +209,7 @@
                     android:textSize="25sp" />
 
                 <EditText
-                    android:id="@+id/txtAdminPAddress"
+                    android:id="@+id/txtEmpPAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
@@ -218,17 +218,21 @@
                     android:textColor="@color/black"
                     android:hint="Please enter your address"/>
 
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="wrap_content"
+                <Switch
+                    android:id="@+id/opIn"
+                    android:padding="12dp"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/albert_sans"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:visibility="gone"
-                    android:indeterminate="true" />
+                    android:text="Opt In To Leaderboard"
+                    android:checked="true"
+                    android:shadowColor="@color/red"/>
 
                 <Button
-                    android:id="@+id/btnRegisterAdmin"
+                    android:id="@+id/btnRegisterEmp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
@@ -238,6 +242,15 @@
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:textStyle="bold" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:indeterminate="true" />
             </LinearLayout>
         </ScrollView>
 

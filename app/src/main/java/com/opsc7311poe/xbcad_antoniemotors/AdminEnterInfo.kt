@@ -3,33 +3,47 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.bumptech.glide.Glide
+import android.widget.ProgressBar
 
 class AdminEnterInfo : AppCompatActivity() {
 
-    private lateinit var txtBusinessName: TextView
-    private lateinit var txtAdminFirstName: TextView
-    private lateinit var txtAdminLastName: TextView
-    private lateinit var txtAdminEmail: TextView
-    private lateinit var txtAdminPassword: TextView
+    private lateinit var txtBusinessName: EditText
+    private lateinit var txtAdminFirstName: EditText
+    private lateinit var txtAdminLastName: EditText
+    private lateinit var txtAdminEmail: EditText
+    private lateinit var txtAdminPassword: EditText
     private lateinit var ivProfileImage: ImageView
     private lateinit var txtSelectProfileImage: TextView
+    private lateinit var txtAdminPhone: EditText
+    private lateinit var txtAdminAddress: EditText
     private var selectedImageUri: Uri? = null
-    private var role: String? = null
     private lateinit var btnRegisterAdmin: Button
+    private lateinit var progressBar: ProgressBar
 
     // Firebase instances
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseDatabase
+    private lateinit var database: DatabaseReference
     private lateinit var storage: FirebaseStorage
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+            displayImage(uri)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +51,7 @@ class AdminEnterInfo : AppCompatActivity() {
 
         // Initialize Firebase components
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance()
+        database = FirebaseDatabase.getInstance().reference
         storage = FirebaseStorage.getInstance()
 
         // Initialize views
@@ -49,99 +63,129 @@ class AdminEnterInfo : AppCompatActivity() {
         ivProfileImage = findViewById(R.id.ivAdminProfilePicture)
         txtSelectProfileImage = findViewById(R.id.txtSelectImage)
         btnRegisterAdmin = findViewById(R.id.btnRegisterAdmin)
+        txtAdminAddress = findViewById(R.id.txtAdminPAddress)
+        txtAdminPhone = findViewById(R.id.txtAdminPhone)
+        progressBar = findViewById(R.id.progressBar)
 
-        // Get role from intent (passed from the previous activity)
-        role = intent.getStringExtra("role")
-
-        // Handle profile image selection
-        val imagePicker = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            selectedImageUri = uri
-            ivProfileImage.setImageURI(selectedImageUri)
-        }
-
+        // Set onClickListener for image selection
         txtSelectProfileImage.setOnClickListener {
-            imagePicker.launch("image/*")
+            // Launch the image picker
+            pickImageLauncher.launch("image/*")
         }
 
-        // Register button listener
+        // Retrieve the business name from the previous intent
+        val businessName = intent.getStringExtra("selectedBusinessName")
+        txtBusinessName.setText(businessName)
+
+        // Button click listener to register admin
         btnRegisterAdmin.setOnClickListener {
             registerAdmin()
         }
     }
 
-    // Registration function
+    private fun displayImage(uri: Uri) {
+        // Use Glide to load the selected image into the ImageView
+        Glide.with(this)
+            .load(uri)
+            .into(ivProfileImage)
+    }
+
     private fun registerAdmin() {
         val businessName = txtBusinessName.text.toString()
         val firstName = txtAdminFirstName.text.toString()
         val lastName = txtAdminLastName.text.toString()
         val email = txtAdminEmail.text.toString()
         val password = txtAdminPassword.text.toString()
+        val phone = txtAdminPhone.text.toString()
+        val address = txtAdminAddress.text.toString()
 
-        // Validate fields
-        if (email.isEmpty() || password.isEmpty() || selectedImageUri == null || businessName.isEmpty() || firstName.isEmpty() || lastName.isEmpty()) {
-            Toast.makeText(this, "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
+        if (businessName.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Register user with Firebase Authentication
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val userId = auth.currentUser?.uid ?: ""
-                uploadProfileImage(userId, businessName, firstName, lastName, email)
-            } else {
-                // Registration failed
-                Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                // Prompt user to re-enter details
-            }
-        }
-    }
+        // Hide register button and show progress bar
+        btnRegisterAdmin.visibility = Button.INVISIBLE
+        progressBar.visibility = ProgressBar.VISIBLE
 
-    // Function to upload profile image to Firebase Storage
-    private fun uploadProfileImage(userId: String, businessName: String, firstName: String, lastName: String, email: String) {
-        val storageRef = storage.reference.child("profile_images/$userId.jpg")
+        // Create the admin account in Firebase Authentication
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val userId = auth.currentUser?.uid
 
-        selectedImageUri?.let { uri ->
-            storageRef.putFile(uri).addOnSuccessListener {
-                storageRef.downloadUrl.addOnSuccessListener { imageUrl ->
-                    saveAdminInfo(userId, businessName, firstName, lastName, email, imageUrl.toString())
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Error retrieving image URL: ${it.message}", Toast.LENGTH_SHORT).show()
-                    // User stays on the same page in case of failure
+                    // Retrieve the owner ID and business ID
+                    retrieveOwnerIdAndBusinessId(businessName) { ownerId, businessId ->
+                        // Save admin info to Firebase Database
+                        saveAdminInfoToFirebase(userId, ownerId, businessId, businessName, firstName, lastName, email, phone, address)
+                    }
+                } else {
+                    // Show register button and hide progress bar on failure
+                    btnRegisterAdmin.visibility = Button.VISIBLE
+                    progressBar.visibility = ProgressBar.GONE
+                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
-            }.addOnFailureListener {
-                Toast.makeText(this, "Error uploading image: ${it.message}", Toast.LENGTH_SHORT).show()
-                // User stays on the same page in case of failure
             }
+    }
+
+    private fun retrieveOwnerIdAndBusinessId(businessName: String, callback: (String?, String?) -> Unit) {
+        // Query the database to find the owner ID and business ID based on the business name
+        database.child("Users").orderByChild("BusinessInfo/businessName").equalTo(businessName)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                for (userSnapshot in snapshot.children) {
+                    val businessId = userSnapshot.key // Get the business ID
+                    val employeeSnapshot = userSnapshot.child("Employees").children
+                    for (employee in employeeSnapshot) {
+                        val role = employee.child("role").getValue(String::class.java)
+                        if (role == "owner") {
+                            val ownerId = employee.key // Get the owner ID
+                            callback(ownerId, businessId)
+                            return@addOnSuccessListener
+                        }
+                    }
+                }
+                callback(null, null) // Return null if no owner or business found
+            }
+            .addOnFailureListener {
+                callback(null, null) // Handle failure
+            }
+    }
+
+    private fun saveAdminInfoToFirebase(userId: String?, ownerId: String?, businessId: String?, businessName: String, firstName: String, lastName: String, email: String, phone: String, address: String) {
+        if (userId != null && ownerId != null && businessId != null) {
+            val adminInfo = hashMapOf(
+                "firstName" to firstName,
+                "lastName" to lastName,
+                "email" to email,
+                "phone" to phone,
+                "address" to address,
+                "role" to "admin",
+                "approval" to "pending",
+                "companyName" to businessName,
+                "businessID" to businessId, // Save business ID
+                "managerID" to ownerId // Save owner ID (manager ID)
+            )
+
+            // Save the admin info under the appropriate business path in the Pending node
+            database.child("Users").child(businessId).child("Pending").child(userId).setValue(adminInfo)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Admin registered successfully!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@AdminEnterInfo, SuccessActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    // Show register button and hide progress bar on failure
+                    btnRegisterAdmin.visibility = Button.VISIBLE
+                    progressBar.visibility = ProgressBar.GONE
+                    Toast.makeText(this, "Failed to save admin info: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+
+            btnRegisterAdmin.visibility = Button.VISIBLE
+            progressBar.visibility = ProgressBar.GONE
+            Toast.makeText(this, "Failed to retrieve owner ID or business ID", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    // Function to save admin info to Firebase Realtime Database
-    private fun saveAdminInfo(userId: String, businessName: String, firstName: String, lastName: String, email: String, profileImageUrl: String) {
-        val userInfo = mapOf(
-            "businessName" to businessName,
-            "firstName" to firstName,
-            "lastName" to lastName,
-            "email" to email,
-            "role" to role,
-            "profileImage" to profileImageUrl
-        )
-
-        database.getReference("Users").child(userId).child("Details").setValue(userInfo)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Admin registered successfully!", Toast.LENGTH_SHORT).show()
-                navigateToMainActivity()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error saving admin info: ${e.message}", Toast.LENGTH_SHORT).show()
-                // User stays on the same page in case of failure
-            }
-    }
-
-    // Function to navigate to MainActivity
-    private fun navigateToMainActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.putExtra("user_role", role)
-        startActivity(intent)
-        finish()
     }
 }

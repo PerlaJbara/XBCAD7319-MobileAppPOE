@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/logincar"
-    tools:context=".SelectRoleReg">
+    tools:context=".AdminSelectBusinessActivity">
 
 
     <LinearLayout
@@ -41,9 +41,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/albert_sans"
             android:paddingBottom="8dp"
-            android:text="Select Your Role:"
+            android:text="Select Your Company:"
             android:textColor="@android:color/black"
-            android:textSize="30sp" />
+            android:textSize="25sp" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -54,56 +54,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <ImageView
-                    android:id="@+id/ivAdminRole"
+                <Spinner
+                    android:id="@+id/spAllBusinessNames"
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:src="@drawable/vector_adminlogo" />
+                    android:layout_height="45dp"
+                    android:background="@drawable/txtgradientgtor"/>
 
-                <TextView
-                    android:id="@+id/txtAdminRole"
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp" />
+
+                <Button
+                    android:id="@+id/btnAdminBusChoice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="10dp"
-                    android:text="I'm An Admin"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/ivEmployeeLogo"
-                    android:layout_width="match_parent"
-                    android:layout_height="125dp"
-                    android:src="@drawable/vector_employeelogo" />
-
-                <TextView
-                    android:id="@+id/txtemployeelogo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="10dp"
-                    android:text="I'm An Employee"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/ivNewBusiness"
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
-                    android:src="@drawable/vector_business" />
-
-                <TextView
-                    android:id="@+id/txtGoToRegBusiness"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="5dp"
-                    android:text="I'm A New Business"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
+                    android:text="Proceed"
+                    android:backgroundTint="@color/black"/>
             </LinearLayout>
         </ScrollView>
 

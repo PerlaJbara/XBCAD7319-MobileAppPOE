@@ -1,11 +1,10 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -32,17 +31,18 @@ class MainActivity : AppCompatActivity() {
         // Check if the user is logged in
         val user = auth.currentUser
         if (user != null) {
-            // User is logged in, fetch the role
-            getUserRole(user.uid)
+            // User is logged in, fetch the role and approval status
+            getUserDetails(user.uid)
+
         } else {
-            // Handle case where the user is not logged in, e.g., show a login screen
             Log.e("MainActivity", "User is not logged in")
-            // You can navigate to the login screen if needed.
+            Toast.makeText(this,"You're not logged in!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@MainActivity, Login ::class.java)
+            startActivity(intent)
+            finish()
         }
 
-        // Set up the default fragment (for example, HomeFragment)
-      //  replaceFragment(HomeFragment())
-
+        // Set up the bottom navigation listener
         bottomNavView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.navHome -> {
@@ -54,10 +54,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navEmployees -> {
-                    replaceFragment(EmployeeFragment())
+                 //   replaceFragment(EmployeeFragment())
+                 replaceFragment(AdminApproveRegistrationFragment())
                     true
                 }
-
                 R.id.navVehicles -> {
                     replaceFragment(VehicleMenuFragment())
                     true
@@ -78,35 +78,62 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(LeaveFragment()) // For employee role
                     true
                 }
+                R.id.navMessages -> {
+                    replaceFragment(MessagesFragment()) // For employee role
+                    true
+                }
+                R.id.navLeaderboard -> {
+                    replaceFragment(LeaderboardFragment()) // For employee role
+                    true
+                }
                 else -> false
             }
         }
     }
 
-    private fun getUserRole(userId: String) {
-        // Get the role from Firebase Realtime Database
-        val userRef = database.child("Users").child(userId).child("Details").child("role")
+    private fun getUserDetails(userId: String) {
+        // Get the role and approval status from Firebase Realtime Database
+        val userRef = database.child("Users").child(userId).child("Details")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val userRole = snapshot.getValue(String::class.java)
-                if (userRole != null) {
-                    loadNavigationMenu(userRole)
-                    // Set the default fragment after loading the menu
-                    if(userRole == "admin"){
-                        replaceFragment(HomeFragment())
-                    }
-                    else if(userRole == "employee"){
-                        replaceFragment(EmployeeHomeFragment())
+                val userRole = snapshot.child("role").getValue(String::class.java)
+                val approvalStatus = snapshot.child("approval").getValue(String::class.java)
+
+                if (userRole != null && approvalStatus != null) {
+                    when (approvalStatus) {
+                        "approved" -> {
+                            // Load the appropriate navigation bar based on the role
+                            loadNavigationMenu(userRole)
+
+                            // Set the default fragment
+                            when (userRole.lowercase()) {
+                                "admin", "owner" -> replaceFragment(HomeFragment()) // For admin/owner
+                                "employee" -> replaceFragment(EmployeeHomeFragment()) // For employee
+                            }
+                        }
+                        "pending" -> {
+                            // Redirect to WaitingActivity
+                            val intent = Intent(this@MainActivity, WaitingActivity::class.java)
+                            startActivity(intent)
+                            finish() // Close the MainActivity
+                        }
+                        "denied" -> {
+                            // Redirect to DeniedActivity
+                            val intent = Intent(this@MainActivity, DeniedActivity::class.java)
+                            startActivity(intent)
+                            finish() // Close the MainActivity
+                        }
+                        else -> {
+                            Log.e("MainActivity", "Unknown approval status: $approvalStatus")
+                        }
                     }
                 } else {
-                    Log.e("MainActivity", "Role not found for user")
-                    Log.e("MainActivity", "User role is $userId")
-                    // Handle if the role is not found
+                    Log.e("MainActivity", "Role or approval status not found for user")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("MainActivity", "Failed to fetch user role: ${error.message}")
+                Log.e("MainActivity", "Failed to fetch user details: ${error.message}")
             }
         })
     }
@@ -114,9 +141,9 @@ class MainActivity : AppCompatActivity() {
     private fun loadNavigationMenu(userRole: String) {
         // Load the appropriate menu based on the role
         when (userRole.lowercase()) {
-            "admin" -> {
+            "admin", "owner" -> {
                 bottomNavView.menu.clear()
-                bottomNavView.inflateMenu(R.menu.menu) // Load admin menu
+                bottomNavView.inflateMenu(R.menu.menu) // Load admin/owner menu
             }
             "employee" -> {
                 bottomNavView.menu.clear()
@@ -125,7 +152,7 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 Log.w("MainActivity", "Unknown user role: $userRole")
                 bottomNavView.menu.clear()
-                bottomNavView.inflateMenu(R.menu.empmenu) // Load a guest menu or default behavior
+                bottomNavView.inflateMenu(R.menu.empmenu) // Load a default menu for unknown roles
             }
         }
     }
@@ -141,5 +168,4 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frame_container, fragment)
             .commit()
     }
-
 }
