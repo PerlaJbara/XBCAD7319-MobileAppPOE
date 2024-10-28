@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navMessages -> {
-                    replaceFragment(MessagesFragment()) // For employee role
+                  //  replaceFragment(MessagesFragment()) // For employee role
                     true
                 }
                 R.id.navLeaderboard -> {
