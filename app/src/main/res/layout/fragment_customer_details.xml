@@ -183,7 +183,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Physical Address:"
-                                    android:textSize="20sp"
+                                    android:textSize="25sp"
                                     android:textStyle="bold"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +195,8 @@
                                     android:id="@+id/txtAddress"
                                     android:layout_width="207dp"
                                     android:layout_height="100dp"
-                                    android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
+                                    android:textAlignment="center"
+                                    android:text="33 Civil Avenue Bedfordview Germiston 2008"
                                     android:textSize="20sp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -251,6 +252,46 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="73dp">
+
+                            <Button
+                                android:id="@+id/btnEditCustomer"
+                                android:layout_width="143dp"
+                                android:layout_height="62dp"
+                                android:backgroundTint="#038A39"
+                                android:text="Edit"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.059"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <Button
+                                android:id="@+id/btnDeleteCustomer"
+                                android:layout_width="143dp"
+                                android:layout_height="62dp"
+                                android:textSize="18sp"
+                                android:backgroundTint="#CA2F2E"
+                                android:text="Delete Customer"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.94"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
 
 
                     <!-- Vehicles Information Section -->
@@ -273,7 +314,7 @@
 
                         <ScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="300dp">
+                            android:layout_height="wrap_content">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -293,46 +334,7 @@
 
                         </ScrollView>
 
-                       <LinearLayout
-                           android:layout_width="match_parent"
-                           android:layout_height="wrap_content">
 
-                           <androidx.constraintlayout.widget.ConstraintLayout
-                               android:layout_width="match_parent"
-                               android:layout_height="73dp">
-
-                               <Button
-                                   android:id="@+id/btnEditCustomer"
-                                   android:layout_width="143dp"
-                                   android:layout_height="62dp"
-                                   android:backgroundTint="#038A39"
-                                   android:text="Edit"
-                                   android:textSize="18sp"
-                                   app:layout_constraintBottom_toBottomOf="parent"
-                                   app:layout_constraintEnd_toEndOf="parent"
-                                   app:layout_constraintHorizontal_bias="0.059"
-                                   app:layout_constraintStart_toStartOf="parent"
-                                   app:layout_constraintTop_toTopOf="parent"
-                                   app:layout_constraintVertical_bias="0.0" />
-
-                               <Button
-                                   android:id="@+id/btnDeleteCustomer"
-                                   android:layout_width="143dp"
-                                   android:layout_height="62dp"
-                                   android:textSize="18sp"
-                                   android:backgroundTint="#CA2F2E"
-                                   android:text="Delete Customer"
-                                   app:layout_constraintBottom_toBottomOf="parent"
-                                   app:layout_constraintEnd_toEndOf="parent"
-                                   app:layout_constraintHorizontal_bias="0.94"
-                                   app:layout_constraintStart_toStartOf="parent"
-                                   app:layout_constraintTop_toTopOf="parent"
-                                   app:layout_constraintVertical_bias="0.0" />
-
-
-                           </androidx.constraintlayout.widget.ConstraintLayout>
-
-                       </LinearLayout>
 
                     </LinearLayout>
 

@@ -47,8 +47,10 @@ class RegisterVehicleFragment : Fragment() {
     private lateinit var edtVehicleKms: EditText
     private lateinit var btnSubmitRegVehicle: Button
     private lateinit var imgCars: ImageView
-    private lateinit var galleryCars: ImageView
-    private lateinit var display: ImageView
+    private lateinit var imgBtnGalleryCars: ImageView
+    private lateinit var galleryCars: RecyclerView
+    //private lateinit var display: ImageView
+    private lateinit var display: RecyclerView
     private var selectedCustomerId: String = ""
     private val imageUris = mutableListOf<Uri>()
     private lateinit var btnBack: ImageView
@@ -91,10 +93,13 @@ class RegisterVehicleFragment : Fragment() {
         edtVehicleKms = view.findViewById(R.id.edttxtVehicleKms)
         btnSubmitRegVehicle = view.findViewById(R.id.btnSubmitRegVehicle)
         btnBack = view.findViewById(R.id.ivBackButton)
-        display = view.findViewById(R.id.capturedImage)
-        galleryCars = view.findViewById(R.id.imgAttachImage)
+        display = view.findViewById(R.id.cameraRecyclerView)
+        imgBtnGalleryCars = view.findViewById(R.id.imgAttachImage)
+        galleryCars = view.findViewById(R.id.gimgRecyclerView)
         imgCars = view.findViewById(R.id.imgCamera)
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
+
+
 
 
         edtCustomer.setOnClickListener {
@@ -103,7 +108,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
         // Populate Spinner with customer names
-       // val userId = FirebaseAuth.getInstance().currentUser?.uid
+        // val userId = FirebaseAuth.getInstance().currentUser?.uid
         //userId?.let { populateCustomerSpinner() } //it
 
         vehiclePORList = ArrayList()
@@ -118,11 +123,34 @@ class RegisterVehicleFragment : Fragment() {
         fetchVehicleMakes()
 
         // Image upload click listeners
-        galleryCars.setOnClickListener { selectImagesFromGallery() }
+        imgBtnGalleryCars.setOnClickListener { selectImagesFromGallery() }
+
+        galleryCars = view.findViewById(R.id.gimgRecyclerView)
+        val imageAdapter = ImageAdapter(imageUris) { uri ->
+            // Handle removing the image when the user clicks the remove button
+            removeImage(uri)
+        }
+        galleryCars.adapter = imageAdapter
+        galleryCars.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         //imgCars.setOnClickListener { captureImageWithCamera() }
+
+
         imgCars.setOnClickListener { handleCameraPermission() }
 
+        // Initialize adapter for camera images
+        /* val cameraImageAdapter = ImageAdapter(imageUris) { uriToRemove ->
+             imageUris.remove(uriToRemove)  // Remove image from the list
+             display.adapter?.notifyDataSetChanged()  // Notify adapter
+         }*/
 
+        val cameraImageAdapter = ImageAdapter(imageUris) { uri ->
+            // Handle removing the image when the user clicks the remove button
+            removeImage(uri)
+        }
+
+        // Set up RecyclerView with adapter
+        display.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        display.adapter = cameraImageAdapter
 
         edtVehicleMake.setOnClickListener {
             showVehicleMakeDialog()
@@ -149,7 +177,7 @@ class RegisterVehicleFragment : Fragment() {
         }
 
         btnBack.setOnClickListener {
-            replaceFragment(HomeFragment())
+            replaceFragment(VehicleMenuFragment())
         }
 
 
@@ -543,7 +571,7 @@ class RegisterVehicleFragment : Fragment() {
         edtVehicleKms.text.clear()  // Clear the vehicle kilometers input
         edtCustomer.text.clear()  // Clear the selected customer input
         imageUris.clear()  // Clear the image URIs
-        display.setImageResource(R.drawable.camera)  // Reset image display to default
+        //display.setImageResource(R.drawable.camera)  // Reset image display to default
         spnVehiclePOR.setSelection(0)  // Reset the vehicle POR spinner to the first option
         ynpYearPicker.value = ynpYearPicker.minValue  // Reset the year picker to the minimum value
     }
@@ -578,27 +606,6 @@ class RegisterVehicleFragment : Fragment() {
                         Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
                     }
             }
-        }
-    }
-
-
-    private fun handleGalleryImages(data: Intent?) {
-        data?.let {
-            if (it.clipData != null) {
-                for (i in 0 until it.clipData!!.itemCount) {
-                    imageUris.add(it.clipData!!.getItemAt(i).uri)
-                }
-            } else if (it.data != null) {
-                imageUris.add(it.data!!)
-            }
-        }
-    }
-
-    private fun handleCameraImage(data: Intent?) {
-        val photoBitmap = data?.extras?.get("data") as? Bitmap
-        photoBitmap?.let {
-            display.setImageBitmap(it)
-            imageUris.add(getImageUriFromBitmap(requireContext(), it))
         }
     }
 
@@ -641,35 +648,49 @@ class RegisterVehicleFragment : Fragment() {
         }
     }
 
+    private fun removeImage(uri: Uri) {
+        imageUris.remove(uri)
+        galleryCars.adapter?.notifyDataSetChanged()
+        display.adapter?.notifyDataSetChanged()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 PICK_IMAGES_REQUEST -> {
-                    if (data?.clipData != null) {
-                        val count = data.clipData!!.itemCount
-                        for (i in 0 until count) {
-                            imageUris.add(data.clipData!!.getItemAt(i).uri)
-                        }
-                    } else if (data?.data != null) {
-                        imageUris.add(data.data!!)
-                    }
+                    handleGalleryImages(data)
                 }
                 CAMERA_REQUEST_CODE -> {
-                    val photoBitmap = data?.extras?.get("data") as? Bitmap
-                    photoBitmap?.let {
-                        // Display the captured image in the ImageView
-                        display.setImageBitmap(it)
-
-                        // Optionally, convert the Bitmap to Uri and add it to the imageUris list
-                        val tempUri = getImageUriFromBitmap(requireContext(), it)
-                        imageUris.add(tempUri)
-                    }
+                    handleCameraImage(data)
                 }
             }
         }
     }
+
+    private fun handleGalleryImages(data: Intent?) {
+        data?.let {
+            if (it.clipData != null) {
+                for (i in 0 until it.clipData!!.itemCount) {
+                    imageUris.add(it.clipData!!.getItemAt(i).uri)
+                }
+            } else if (it.data != null) {
+                imageUris.add(it.data!!)
+            }
+            galleryCars.adapter?.notifyDataSetChanged() // Update RecyclerView with new images
+        }
+    }
+
+    private fun handleCameraImage(data: Intent?) {
+        val photoBitmap = data?.extras?.get("data") as? Bitmap
+        photoBitmap?.let {
+            val tempUri = getImageUriFromBitmap(requireContext(), it)
+            imageUris.add(tempUri)  // Add the captured image URI to the list
+            display.adapter?.notifyDataSetChanged() // Notify the adapter of data change
+        }
+    }
+
 
 
     private fun replaceFragment(fragment: Fragment) {

@@ -27,13 +27,18 @@ class VehicleMenuFragment : Fragment() {
 
         // Initialize views here, where view is guaranteed to be non-null
         btnVehicleReg = view.findViewById(R.id.btnRegVehicle)
-        //btnAddVehicleMakes = view.findViewById(R.id.btnAddVehicleMake)
+        btnAddVehicleMakes = view.findViewById(R.id.btnAddVehicleMake)
         //btnPartsInventory = view.findViewById(R.id.btnAddPart)
 
         // Set up button click listeners or other view logic here
         btnVehicleReg.setOnClickListener(){
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(SearchVehiclesFragment())
+        }
+
+        btnAddVehicleMakes.setOnClickListener(){
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(AddVehicleMakeModelPOR())
         }
 
     }

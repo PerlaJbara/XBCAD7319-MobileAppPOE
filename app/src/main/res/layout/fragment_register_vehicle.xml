@@ -330,8 +330,9 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -348,6 +349,32 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintVertical_bias="0.428"
                                 app:srcCompat="@drawable/paperclip" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:id="@+id/gimgRecyclerView"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            </androidx.recyclerview.widget.RecyclerView>
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -415,7 +442,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -423,45 +450,47 @@
                             android:layout_height="match_parent">
 
 
-                            <ImageView
-                                android:id="@+id/capturedImage"
-                                android:layout_width="181dp"
-                                android:layout_height="190dp"
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:id="@+id/cameraRecyclerView"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@android:drawable/ic_menu_camera" />
+                                app:layout_constraintTop_toTopOf="parent">
+
+                            </androidx.recyclerview.widget.RecyclerView>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_gravity="center_vertical"
-    android:layout_height="100dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="100dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btnSubmitRegVehicle"
-            android:layout_width="140dp"
-            android:layout_height="50dp"
-            android:backgroundTint="#038A39"
-            android:text="Register"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                            <Button
+                                android:id="@+id/btnSubmitRegVehicle"
+                                android:layout_width="140dp"
+                                android:layout_height="50dp"
+                                android:backgroundTint="#038A39"
+                                android:text="Register"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.498"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 

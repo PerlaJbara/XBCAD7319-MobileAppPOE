@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
@@ -13,6 +14,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.widget.LinearLayout
 import android.widget.ImageView
+import java.util.Date
+import java.util.Locale
 
 class AddCustomerFragment : Fragment() {
 
@@ -180,6 +183,8 @@ class AddCustomerFragment : Fragment() {
         if (currentUserUid != null) {
             val userDatabaseRef = database.child("Users").child(currentUserUid).child("Customers")
             val customerId = userDatabaseRef.push().key
+            // Get the current date and time
+            val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
             val customer = customerId?.let {
                 CustomerData(
@@ -189,7 +194,8 @@ class AddCustomerFragment : Fragment() {
                     CustomerMobileNum = mobileNum,
                     CustomerEmail = email,
                     CustomerAddress = address,
-                    CustomerType = customerType
+                    CustomerType = customerType,
+                    CustomerAddedDate = currentDate
                 )
             }
 
