@@ -61,9 +61,13 @@ dependencies {
     //Testing
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation(libs.androidx.recyclerview)
+    //implementation(libs.firebase.functions)
 
-
-
+    implementation ("com.google.firebase:firebase-bom:32.2.0")
+    implementation ("com.google.firebase:firebase-appcheck-playintegrity:16.0.0")
+    implementation ("com.google.android.gms:play-services-auth:20.1.0") // or the latest version
+    implementation ("com.google.android.gms:play-services-tasks:17.2.1") // or the latest version
+    //implementation ("com.google.firebase:firebase-functions:21.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

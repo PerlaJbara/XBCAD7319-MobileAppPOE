@@ -10,4 +10,10 @@
         <item>Business</item>
     </string-array>
 
+    <!-- Description for the vehicle image -->
+    <string name="image_desc">Selected vehicle image</string>
+
+    <!-- Description for the remove button -->
+    <string name="remove_image_desc">Remove image</string>
+
 </resources>

@@ -1,3 +1,4 @@
+
 package com.opsc7311poe.xbcad_antoniemotors
 
 import com.google.firebase.auth.FirebaseAuth
@@ -14,5 +15,6 @@ data class CustomerData(
     var CustomerMobileNum: String = "",
     var CustomerEmail: String = "",
     var CustomerAddress: String = "",
-    var CustomerType: String = ""
-    )
+    var CustomerType: String = "",
+    var CustomerAddedDate: String = ""
+)
