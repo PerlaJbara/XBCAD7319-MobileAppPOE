@@ -25,6 +25,7 @@ class AdminEnterInfo : AppCompatActivity() {
     private lateinit var txtAdminLastName: EditText
     private lateinit var txtAdminEmail: EditText
     private lateinit var txtAdminPassword: EditText
+
     private lateinit var ivProfileImage: ImageView
     private lateinit var txtSelectProfileImage: TextView
     private lateinit var txtAdminPhone: EditText
@@ -55,6 +56,7 @@ class AdminEnterInfo : AppCompatActivity() {
         storage = FirebaseStorage.getInstance()
 
         // Initialize views
+
         txtBusinessName = findViewById(R.id.txtAdminBusinessName)
         txtAdminFirstName = findViewById(R.id.txtAdminFirstName)
         txtAdminLastName = findViewById(R.id.txtAdminLastName)

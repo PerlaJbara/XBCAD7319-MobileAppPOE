@@ -54,11 +54,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <Spinner
+                <!--<Spinner
                     android:id="@+id/spAllBusinessNames"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"/>
+                    android:background="@drawable/txtgradientgtor"/>-->
+
+                <EditText
+                    android:id="@+id/edtBusinessNames"
+                    android:layout_width="310dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/spingradientgtor"
+                    />
 
                 <Space
                     android:layout_width="match_parent"
