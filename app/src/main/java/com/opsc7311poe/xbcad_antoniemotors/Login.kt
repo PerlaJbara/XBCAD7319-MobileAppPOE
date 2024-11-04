@@ -134,7 +134,7 @@ class Login : AppCompatActivity() {
     }
 
 
-private fun checkUserStatus(userId: String) {
+    private fun checkUserStatus(userId: String) {
         val usersRef = database.child("Users")
 
         usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -144,6 +144,10 @@ private fun checkUserStatus(userId: String) {
                     if (employeeSnapshot.exists()) {
                         val approvalStatus = employeeSnapshot.child("approval").getValue(String::class.java)
                         val role = employeeSnapshot.child("role").getValue(String::class.java)
+
+                        // Check for the correct businessID field capitalization
+                        val businessIdKey = if (employeeSnapshot.hasChild("businessID")) "businessID" else "businessId"
+                        val businessID = employeeSnapshot.child(businessIdKey).getValue(String::class.java)
 
                         if (approvalStatus == "approved") {
                             redirectToMainActivity(role)
@@ -162,6 +166,7 @@ private fun checkUserStatus(userId: String) {
             }
         })
     }
+
 
     private fun checkPendingStatus(userId: String) {
         val usersRef = database.child("Users")
