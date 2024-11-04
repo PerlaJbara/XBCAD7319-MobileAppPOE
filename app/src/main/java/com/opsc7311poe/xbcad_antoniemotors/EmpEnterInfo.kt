@@ -69,12 +69,13 @@ class EmpEnterInfo : AppCompatActivity() {
     }
 
     // Use GetContent launcher to pick an image
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        if (uri != null) {
-            selectedImageUri = uri
-            displayImage(uri)
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                selectedImageUri = uri
+                displayImage(uri)
+            }
         }
-    }
 
     private fun pickImage() {
         pickImageLauncher.launch("image/*")
@@ -88,11 +89,9 @@ class EmpEnterInfo : AppCompatActivity() {
     }
 
     private fun registerEmployee() {
-        // Show progress bar while processing registration
         progressBar.visibility = ProgressBar.VISIBLE
         btnRegisterEmp.visibility = View.GONE
 
-        // Check required fields
         if (businessId == null || managerId == null) {
             Toast.makeText(this, "Business ID or Manager ID is missing.", Toast.LENGTH_SHORT).show()
             progressBar.visibility = ProgressBar.GONE
@@ -115,28 +114,60 @@ class EmpEnterInfo : AppCompatActivity() {
             return
         }
 
-        // Register the user with Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Upload the image if selected, otherwise proceed to save data
-                    if (selectedImageUri != null) {
-                        uploadImageToFirebaseStorage { imageUrl ->
-                            saveEmployeeToDatabase(firstName, lastName, email, password, phone, address, leaderboardOptIn, imageUrl)
+                    val uid = task.result?.user?.uid
+                    if (uid != null) {
+                        if (selectedImageUri != null) {
+                            uploadImageToFirebaseStorage { imageUrl ->
+                                saveEmployeeToDatabase(
+                                    uid,
+                                    firstName,
+                                    lastName,
+                                    email,
+                                    password,
+                                    phone,
+                                    address,
+                                    leaderboardOptIn,
+                                    imageUrl
+                                )
+                            }
+                        } else {
+                            saveEmployeeToDatabase(
+                                uid,
+                                firstName,
+                                lastName,
+                                email,
+                                password,
+                                phone,
+                                address,
+                                leaderboardOptIn,
+                                null
+                            )
                         }
                     } else {
-                        saveEmployeeToDatabase(firstName, lastName, email, password, phone, address, leaderboardOptIn, null)
+                        Toast.makeText(this, "Failed to retrieve user ID.", Toast.LENGTH_SHORT)
+                            .show()
+                        progressBar.visibility = ProgressBar.GONE
+                        btnRegisterEmp.visibility = View.VISIBLE
                     }
                 } else {
-                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Registration failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     progressBar.visibility = ProgressBar.GONE
                     btnRegisterEmp.visibility = View.VISIBLE
                 }
             }
     }
 
+
     private fun uploadImageToFirebaseStorage(callback: (String) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().getReference("employee_profile_images/${UUID.randomUUID()}.jpg")
+        val storageRef = FirebaseStorage.getInstance()
+            .getReference("employee_profile_images/${UUID.randomUUID()}.jpg")
         selectedImageUri?.let { uri ->
             storageRef.putFile(uri)
                 .addOnSuccessListener {
@@ -145,7 +176,11 @@ class EmpEnterInfo : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Toast.makeText(this, "Failed to upload image: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Failed to upload image: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     progressBar.visibility = ProgressBar.GONE
                     btnRegisterEmp.visibility = View.VISIBLE
                 }
@@ -157,6 +192,7 @@ class EmpEnterInfo : AppCompatActivity() {
     }
 
     private fun saveEmployeeToDatabase(
+        uid: String,
         firstName: String,
         lastName: String,
         email: String,
@@ -166,8 +202,8 @@ class EmpEnterInfo : AppCompatActivity() {
         leaderboardOptIn: Boolean,
         imageUrl: String?
     ) {
-        val empId = UUID.randomUUID().toString().replace("-", "")
-        val dbRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId!!).child("Pending")
+        val dbRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId!!)
+            .child("Pending")
 
         val employeeData = hashMapOf(
             "firstName" to firstName,
@@ -184,14 +220,20 @@ class EmpEnterInfo : AppCompatActivity() {
             "profileImageUrl" to imageUrl
         )
 
-        dbRef.child(empId).setValue(employeeData).addOnCompleteListener { task ->
+        // Use Firebase Authentication uid as the unique key for the employee
+        dbRef.child(uid).setValue(employeeData).addOnCompleteListener { task ->
             progressBar.visibility = ProgressBar.GONE
             if (task.isSuccessful) {
                 val intent = Intent(this@EmpEnterInfo, SuccessActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(this, "Failed to register employee. Please Try Again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Failed to register employee. Please try again.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                btnRegisterEmp.visibility = View.VISIBLE
             }
         }
     }

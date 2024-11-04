@@ -136,28 +136,22 @@ class Login : AppCompatActivity() {
 
     private fun checkUserStatus(userId: String) {
         val usersRef = database.child("Users")
+        Log.d("Login", "Checking for userId: $userId in Users node")
 
         usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (userSnapshot in snapshot.children) {
+                    Log.d("Login", "Checking business node: ${userSnapshot.key}")
                     val employeeSnapshot = userSnapshot.child("Employees").child(userId)
                     if (employeeSnapshot.exists()) {
+                        Log.d("Login", "Found employee with userId: $userId")
                         val approvalStatus = employeeSnapshot.child("approval").getValue(String::class.java)
                         val role = employeeSnapshot.child("role").getValue(String::class.java)
-
-                        // Check for the correct businessID field capitalization
-                        val businessIdKey = if (employeeSnapshot.hasChild("businessID")) "businessID" else "businessId"
-                        val businessID = employeeSnapshot.child(businessIdKey).getValue(String::class.java)
-
-                        if (approvalStatus == "approved") {
-                            redirectToMainActivity(role)
-                        } else {
-                            Toast.makeText(this@Login, "User approval status unknown.", Toast.LENGTH_SHORT).show()
-                        }
+                        redirectToMainActivity(role)
                         return
                     }
                 }
-
+                Log.d("Login", "User with userId: $userId not found in Employees")
                 checkPendingStatus(userId)
             }
 
@@ -166,7 +160,6 @@ class Login : AppCompatActivity() {
             }
         })
     }
-
 
     private fun checkPendingStatus(userId: String) {
         val usersRef = database.child("Users")
@@ -197,7 +190,6 @@ class Login : AppCompatActivity() {
                         return
                     }
                 }
-
                 Toast.makeText(this@Login, "User not found in database.", Toast.LENGTH_SHORT).show()
             }
 
@@ -206,6 +198,7 @@ class Login : AppCompatActivity() {
             }
         })
     }
+
 
     private fun redirectToMainActivity(role: String?) {
         val intent = Intent(this@Login, MainActivity::class.java)
