@@ -2,6 +2,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
@@ -42,6 +43,7 @@ class ServiceDetailsFragment : Fragment() {
    private lateinit var txtVehicleModel: TextView
    private lateinit var txtVin: TextView
    private lateinit var txtNumPlate: TextView
+   private lateinit var businessId: String
 
    private lateinit var currentStatus: String
    private var currentPaymentStatus: Boolean = false
@@ -58,6 +60,8 @@ class ServiceDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_service_details, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         //back button functionality
         btnBack = view.findViewById(R.id.ivBackButton)
@@ -79,7 +83,7 @@ class ServiceDetailsFragment : Fragment() {
         txtVin = view.findViewById(R.id.txtVin)
         txtNumPlate = view.findViewById(R.id.txtNumPlate)
 
-        val serRef = database.getReference("Users/$userId").child("Services")
+        val serRef = database.getReference("Users/$businessId").child("Services")
         val serviceID = arguments?.getString("serviceID")
         //fetching service data from DB
         if (userId != null && serviceID != null) {
@@ -236,7 +240,7 @@ class ServiceDetailsFragment : Fragment() {
                 if (userId != null  && serviceID != null)
                 {
                     var database = com.google.firebase.ktx.Firebase.database
-                    val empRef = database.getReference("Users/$userId").child("Services").child(serviceID)
+                    val empRef = database.getReference("Users/$businessId").child("Services").child(serviceID)
 
                     empRef.setValue(serviceEntered)
                         .addOnSuccessListener {
@@ -268,7 +272,7 @@ class ServiceDetailsFragment : Fragment() {
                 //deleting service
                 val database = Firebase.database
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
-                val serRef = database.getReference("Users/$userId").child("Services")
+                val serRef = database.getReference("Users/$businessId").child("Services")
 
                 serRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -305,7 +309,7 @@ class ServiceDetailsFragment : Fragment() {
     }
 
     private fun getCustName(custID: String){
-        val vehRef = database.getReference("Users/$userId").child("Customers/$custID")
+        val vehRef = database.getReference("Users/$businessId").child("Customers/$custID")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -321,7 +325,7 @@ class ServiceDetailsFragment : Fragment() {
     }
 
     private fun getVehInfo(vehID: String) {
-        val vehRef = database.getReference("Users/$userId").child("Vehicles/$vehID")
+        val vehRef = database.getReference("Users/$businessId").child("Vehicles/$vehID")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {

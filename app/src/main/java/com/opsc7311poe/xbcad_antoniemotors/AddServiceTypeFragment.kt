@@ -1,6 +1,8 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,6 +37,8 @@ class AddServiceTypeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_add_service_type, container, false)
+
+        val businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)
 
         //back btn functionality
         //handling back button
@@ -106,7 +110,10 @@ class AddServiceTypeFragment : Fragment() {
                 if (userId != null)
                 {
                     val database = Firebase.database
-                    val empRef = database.getReference("Users/$userId").child("ServiceTypes")
+
+                    Log.d("AddServiceTypeFragment", "BusinessId fetched: ${businessId}")
+
+                    val empRef = database.getReference("Users/$businessId").child("ServiceTypes")
 
                     empRef.push().setValue(serviceTypeEntered)
                         .addOnSuccessListener {

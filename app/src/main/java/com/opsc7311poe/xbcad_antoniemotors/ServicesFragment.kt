@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -29,12 +30,15 @@ class ServicesFragment : Fragment() {
     private lateinit var linLay: LinearLayout
     private lateinit var svServices: SearchView
     private var listOfAllServices = mutableListOf<ServiceData>()
+    private lateinit var businessId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_services, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         imgPlus = view.findViewById(R.id.imgPlus)
 
@@ -94,7 +98,7 @@ class ServicesFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val servicesRef = database.getReference("Users/$userId").child("Services")
+            val servicesRef = database.getReference("Users/$businessId").child("Services")
 
             servicesRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -259,7 +263,7 @@ class ServicesFragment : Fragment() {
 
         if (userId != null) {
             val database = Firebase.database
-            val custRef = database.getReference("Users/$userId").child("Customers")
+            val custRef = database.getReference("Users/$businessId").child("Customers")
 
             custRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -286,7 +290,7 @@ class ServicesFragment : Fragment() {
 
         if (userId != null) {
             val database = Firebase.database
-            val vehRef = database.getReference("Users/$userId").child("Vehicles")
+            val vehRef = database.getReference("Users/$businessId").child("Vehicles")
 
             vehRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -45,6 +46,7 @@ class AddServiceFragment : Fragment() {
     private lateinit var btnAddPart: Button
     private lateinit var btnAdd: Button
     private lateinit var btnManageServiceTypes: Button
+    private lateinit var businessId: String
 
     //list of parts entered
     private var partsEntered: MutableList<Part> = mutableListOf()
@@ -59,6 +61,7 @@ class AddServiceFragment : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_add_service, container, false)
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         txtName = view.findViewById(R.id.txtServiceName)
         txtLabourCost = view.findViewById(R.id.txtLabourCost)
@@ -194,7 +197,7 @@ class AddServiceFragment : Fragment() {
                 if (userId != null)
                 {
                     val database = Firebase.database
-                    val empRef = database.getReference("Users/$userId").child("Services")
+                    val empRef = database.getReference("Users/$businessId").child("Services")
 
                     empRef.push().setValue(serviceEntered)
                         .addOnSuccessListener {
@@ -256,7 +259,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for customers directly under the current user's ID
-        val customerRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("Customers")
+        val customerRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -328,7 +331,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for vehicles directly under the current user's ID
-        val vehRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("Vehicles")
+        val vehRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("Vehicles")
 
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -402,7 +405,7 @@ class AddServiceFragment : Fragment() {
         }
 
         // Query the database for service types under the current user's ID
-        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("ServiceTypes")
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("ServiceTypes")
 
         serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -473,7 +476,7 @@ class AddServiceFragment : Fragment() {
     private fun populateFieldsWithServiceTypeData(selectedServiceTypeId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$userId").child("ServiceTypes/$selectedServiceTypeId")
+        val serviceTypeRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("ServiceTypes/$selectedServiceTypeId")
 
         serviceTypeRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

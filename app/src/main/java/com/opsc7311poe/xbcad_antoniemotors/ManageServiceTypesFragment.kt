@@ -1,7 +1,9 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +29,7 @@ class ManageServiceTypesFragment : Fragment() {
     private lateinit var btnBack: ImageView
     private lateinit var imgPlus: ImageView
     private lateinit var linLay: LinearLayout
+    private lateinit var businessId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,8 @@ class ManageServiceTypesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_manage_service_types, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         //handle back btn functionality
         btnBack = view.findViewById(R.id.ivBackButton)
@@ -70,7 +75,7 @@ class ManageServiceTypesFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val servicesRef = database.getReference("Users/$userId").child("ServiceTypes")
+            val servicesRef = database.getReference("Users/$businessId").child("ServiceTypes")
 
             servicesRef.addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -127,7 +132,10 @@ class ManageServiceTypesFragment : Fragment() {
             //deleting service
             val database = com.google.firebase.Firebase.database
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val serRef = database.getReference("Users/$userId").child("ServiceTypes")
+
+            Log.d("ManageServiceTypesFragment", "BusinessId fetched: ${businessId}")
+
+            val serRef = database.getReference("Users/$businessId").child("ServiceTypes")
 
             serRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {

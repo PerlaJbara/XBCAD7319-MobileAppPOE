@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -142,6 +143,18 @@ class Login : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (userSnapshot in snapshot.children) {
                     Log.d("Login", "Checking business node: ${userSnapshot.key}")
+
+                    //saving business id to be used later in app
+
+                    val sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+
+                    val editor = sharedPref.edit()
+                    Log.d("Login", "BusinessId saved: ${userSnapshot.key}")
+
+                    editor.putString("business_id", userSnapshot.key)
+
+                    editor.apply()
+
                     val employeeSnapshot = userSnapshot.child("Employees").child(userId)
                     if (employeeSnapshot.exists()) {
                         Log.d("Login", "Found employee with userId: $userId")
