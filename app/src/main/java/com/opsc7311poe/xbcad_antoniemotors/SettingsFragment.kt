@@ -44,7 +44,7 @@ class SettingsFragment : Fragment() {
         btnDelAcc.setOnClickListener {
             // Replace the current fragment with CustomerFragment
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(deleteAcc())
+            replaceFragment(deleteAccFragment())
         }
 
         btnLogout.setOnClickListener {

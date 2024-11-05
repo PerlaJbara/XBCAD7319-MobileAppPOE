@@ -75,7 +75,7 @@
 
             <TextView
                 android:id="@+id/txtAppName"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/txtgradientgtor"
                 android:fontFamily="@font/poppins"
@@ -96,7 +96,7 @@
 
             <TextView
                 android:id="@+id/txtAppSurname"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/txtgradientgtor"
                 android:fontFamily="@font/poppins"
@@ -117,7 +117,7 @@
 
             <TextView
                 android:id="@+id/txtAppEmail"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/txtgradientgtor"
                 android:fontFamily="@font/poppins"
@@ -138,7 +138,7 @@
 
             <TextView
                 android:id="@+id/txtAppPhone"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/txtgradientgtor"
                 android:fontFamily="@font/poppins"
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/txtAppAddress"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:background="@drawable/txtgradientgtor"
                 android:fontFamily="@font/poppins"
@@ -185,7 +185,7 @@
 
                 <TextView
                     android:id="@+id/txtAppRole"
-                    android:layout_width="127dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
                     android:background="@drawable/txtgradientgtor"
                     android:fontFamily="@font/poppins"

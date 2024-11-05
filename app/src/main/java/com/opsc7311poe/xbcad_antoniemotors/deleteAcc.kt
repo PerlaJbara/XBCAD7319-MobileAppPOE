@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.EmailAuthProvider
 
-class deleteAcc : Fragment() {
+class deleteAccFragment : Fragment() {
 
     private lateinit var txtConfirmDelete: EditText
     private lateinit var btnConfirm: Button

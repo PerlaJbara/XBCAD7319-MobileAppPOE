@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
-    tools:context=".DeleteaccFragment">
+    tools:context=".deleteAccFragment">
 
     <!-- Background Image -->
     <ImageView
@@ -14,7 +14,7 @@
         android:src="@drawable/carsunset"
         android:scaleType="centerCrop" />
 
-    <!-- Semi-transparent black overlay -->
+
     <View
         android:id="@+id/blackOverlay"
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
             android:textColor="#FFFFFF"
             android:textSize="60sp" />
 
-        <!-- Back Button on top of the background image -->
+
         <ImageView
             android:id="@+id/ivBackButton"
             android:layout_width="55dp"
