@@ -18,16 +18,17 @@
         android:title="Home"
         />
 
-    <item
-        android:id="@+id/navMessages"
-        android:icon="@drawable/vector_chat"
-        android:title="Messages"
-        />
 
     <item
         android:id="@+id/navLeaderboard"
         android:icon="@drawable/vector_leaderboard"
         android:title="Leaderboard"
+        />
+
+    <item
+        android:id="@+id/navMessages"
+        android:icon="@drawable/vector_myprofile"
+        android:title="My Profile"
         />
 
 </menu>
