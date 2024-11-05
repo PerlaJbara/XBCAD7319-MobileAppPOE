@@ -27,6 +27,12 @@
         android:theme="@style/Theme.XBCADAntonieMotors"
         tools:targetApi="31">
         <activity
+            android:name=".WaitingLogout"
+            android:exported="false" />
+        <activity
+            android:name=".WaitingSettings"
+            android:exported="false" />
+        <activity
             android:name=".SuccessOwnerActivity"
             android:exported="false" />
         <activity
