@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -19,10 +20,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavView: BottomNavigationView
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+    private lateinit var businessId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        businessId = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
+        Log.e("MainActivity", "BusinessID fecthed: $businessId")
 
         bottomNavView = findViewById(R.id.bottom_navigation)
         auth = FirebaseAuth.getInstance()
@@ -47,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.navHome -> {
                     replaceFragment(HomeFragment())
+                    Log.d("Navbar", "Going to HomeFragment")
                     true
                 }
                 R.id.navDocument -> {
@@ -72,6 +78,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navEmpHome -> {
                     replaceFragment(EmployeeHomeFragment()) // For employee role
+                    Log.d("Navbar", "Going to EmployeeHomeFragment")
                     true
                 }
                 R.id.navLeave -> {
@@ -93,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getUserDetails(userId: String) {
         // Get the role and approval status from Firebase Realtime Database
-        val userRef = database.child("Users").child(userId).child("Details")
+        val userRef = database.child("Users").child(businessId).child("Employees").child(userId)
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userRole = snapshot.child("role").getValue(String::class.java)

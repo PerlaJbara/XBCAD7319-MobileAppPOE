@@ -15,7 +15,12 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import androidx.appcompat.app.AlertDialog
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.model.KeyPath
 import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -32,6 +37,8 @@ class HomeFragment : Fragment() {
     private lateinit var txtToStart: TextView
     private lateinit var txtCompleted: TextView
 
+    private lateinit var lottieAnimationView: LottieAnimationView
+
     private lateinit var userId: String
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -42,6 +49,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        //changing colour of animation
+        lottieAnimationView = view.findViewById(R.id.lottieAnimationView)
+        lottieAnimationView.addValueCallback(
+            KeyPath("**"), // This applies to all layers; use specific layer names if you want more control
+            LottieProperty.COLOR_FILTER
+        ) { PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP) }
 
         // Ensure all IDs are correct and present in fragment_home.xml
         btnSettings = view.findViewById(R.id.ivSettings)
