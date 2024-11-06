@@ -61,7 +61,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navEmployees -> {
                  //   replaceFragment(EmployeeFragment())
-                 replaceFragment(AdminApproveRegistrationFragment())
+                 //replaceFragment(AdminApproveRegistrationFragment())
+                 replaceFragment(AdminEmpFragment())
                     true
                 }
                 R.id.navVehicles -> {

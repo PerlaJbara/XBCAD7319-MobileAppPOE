@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/txtgradientgtor"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="@color/black" />
 
@@ -107,7 +107,7 @@
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="wrap_content"
+            android:layout_width="329dp"
             android:layout_height="wrap_content"
             android:paddingTop="70dp"
             android:text="Powered By Tech Fusion"
