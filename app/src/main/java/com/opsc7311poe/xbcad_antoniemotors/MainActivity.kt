@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navLeave -> {
-                    replaceFragment(LeaveFragment()) // For employee role
+                    replaceFragment(EmpLeaveFragment()) // For employee role
                     true
                 }
                 R.id.navMessages -> {

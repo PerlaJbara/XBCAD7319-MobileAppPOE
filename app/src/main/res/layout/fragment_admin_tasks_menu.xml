@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/carsideprofile"
-    tools:context=".AdminLeaveMenuFragment">
+    tools:context=".AdminTasksMenuFragment">
 
     <View
         android:id="@+id/blackOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bgblackdark" />
-
 
     <LinearLayout
         android:id="@+id/layoutHeader"
@@ -24,25 +23,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/ivBackButton"
-            android:layout_width="55dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:src="@drawable/vectorback" />
-
         <TextView
-            android:id="@+id/txtAdminEmpOverView"
+            android:id="@+id/txtAdminTasksMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/fontheader"
             android:gravity="center_horizontal"
-            android:text="Leave Manager"
+            android:text="Task Menu"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="45dp" />
     </LinearLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -73,13 +64,13 @@
             app:cardUseCompatPadding="true">
 
             <ImageView
-                android:id="@+id/imgleaves"
+                android:id="@+id/imgbtnassigntask"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/leavetrack" />
+                android:src="@drawable/assigntask" />
         </com.google.android.material.card.MaterialCardView>
 
             <TextView
@@ -87,48 +78,74 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="Leave Tracker"
+                android:text="Assign Task"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-        <!-- New Circle with Text -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_margin="16dp"
-            app:cardBackgroundColor="#787771"
-            app:cardCornerRadius="75dp"
-            app:cardElevation="4dp"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true">
 
-            <ImageView
-                android:id="@+id/imgleaveap"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:padding="4dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/leaveapp" /> <!-- Change this to your actual drawable -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="#787771"
+                app:cardCornerRadius="75dp"
+                app:cardElevation="4dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
 
-        </com.google.android.material.card.MaterialCardView>
+                <ImageView
+                    android:id="@+id/imgbtnchecktask"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/taskstatus" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
-                android:text="Leave approvel"
+                android:text="Check Task Status"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_margin="16dp"
+                app:cardBackgroundColor="#787771"
+                app:cardCornerRadius="75dp"
+                app:cardElevation="4dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
+
+                <ImageView
+                    android:id="@+id/imgbtnApprovetask"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/tasksapprovel" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="Approve Tasks"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </ScrollView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

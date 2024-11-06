@@ -70,7 +70,6 @@
                 android:entries="@array/leave_types"
                 android:spinnerMode="dropdown"
                 tools:ignore="TouchTargetSizeCheck" />
-
             <!-- Leave Remaining Section -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,19 +79,25 @@
 
                 <TextView
                     android:id="@+id/txtLeaveRemainingLabel"
-                    android:layout_width="0dp"
+                    android:layout_width="200dp"
                     android:layout_height="30dp"
-                    android:layout_weight="1"
                     android:text="Leave Remaining"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/txtLeaveRemaining"
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:text="X days"
+                    android:text="X"
+                    android:textColor="#000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtDaysLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="days"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>

@@ -44,7 +44,7 @@ class RegisterBusinessActivity : AppCompatActivity() {
         }
     }
 
-    // Function to check if business name exists
+
     // Function to check if business name exists
     private fun checkBusinessName(businessName: String, ownerName: String, ownerSurname: String) {
         // Show progress bar
@@ -115,4 +115,6 @@ class RegisterBusinessActivity : AppCompatActivity() {
                 }
             }
     }
+
+
 }

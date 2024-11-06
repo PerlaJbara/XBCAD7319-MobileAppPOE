@@ -16,4 +16,13 @@
     <!-- Description for the remove button -->
     <string name="remove_image_desc">Remove image</string>
 
+
+
+    <string-array name="leave_types">
+        <item>ANNUAL LEAVE</item>
+        <item>SICK LEAVE</item>
+        <item>MATERNITY LEAVE</item>
+        <item>FAMILY RESPONSIBILITY LEAVE</item>
+    </string-array>
+
 </resources>

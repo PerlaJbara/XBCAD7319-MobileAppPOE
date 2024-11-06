@@ -13,7 +13,7 @@ class AdminEmpFragment : Fragment() {
     private lateinit var imgLeaveman: ImageView
     private lateinit var imgSearchAndReg: ImageView
     private lateinit var imgTask: ImageView
-
+    private lateinit var imganalytic: ImageView
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,6 +36,12 @@ class AdminEmpFragment : Fragment() {
         }
 
         imgTask.setOnClickListener {
+            replaceFragment(AdminTasksMenuFragment()) // Replace with your actual fragment class
+        }
+
+
+        //add fragment
+        imganalytic.setOnClickListener {
             replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
         }
 
