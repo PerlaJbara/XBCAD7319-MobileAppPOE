@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var userId: String
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private lateinit var businessId: String
 
 
     override fun onCreateView(
@@ -49,6 +51,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         //changing colour of animation
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView)
@@ -167,78 +171,114 @@ class HomeFragment : Fragment() {
 
 
     private fun loadTasks() {
-        val database = Firebase.database.reference.child(userId).child("Vehicles")
+        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId")
+        val taskList = mutableListOf<View>() // Temporary list to hold tasks before adding to UI
 
-        database.addValueEventListener(object : ValueEventListener {
+        // 1. Load tasks from vehicle nodes
+        database.child("Vehicles").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!isAdded) return
-
-                taskContainer.removeAllViews()
 
                 if (!snapshot.exists()) {
                     noTasksMessage.visibility = View.VISIBLE
                     noTasksMessage.text = "No tasks available at the moment."
-                    return
+                } else {
+                    noTasksMessage.visibility = View.GONE
+                    taskList.addAll(fetchTasksFromSnapshot(snapshot))
                 }
 
-                noTasksMessage.visibility = View.GONE
-
-                val plateColorMap = mutableMapOf<String, Int>()
-                var colorIndex = 0
-                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
-
-                for (vehicleSnapshot in snapshot.children) {
-                    val vehicleModel = vehicleSnapshot.child("vehicleModel").getValue(String::class.java)
-                    val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
-                    val vehicleID = vehicleSnapshot.key
-
-                    if (vehicleID != null && vehicleModel != null && numberPlate != null) {
-                        val tasksSnapshot = vehicleSnapshot.child("Tasks")
-                        for (taskSnapshot in tasksSnapshot.children) {
-                            val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                            val taskId = taskSnapshot.key
-                            val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
-                            val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
-
-                            // Only show tasks that do not have a completed date
-                            if (taskId != null && taskDescription != null && completedDate == null) {
-                                // Inflate the task item layout
-                                val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
-                                val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
-                                val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-                                val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
-
-                                taskDescriptionText.text = taskDescription
-
-                                // Assign colors to different vehicles based on number plate
-                                if (!plateColorMap.containsKey(numberPlate)) {
-                                    plateColorMap[numberPlate] = colors[colorIndex % colors.size]
-                                    colorIndex++
-                                }
-
-                                numberPlateText.text = "$numberPlate ($vehicleModel)"
-                                numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
-
-                                // Handle task completion
-                                taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                                    if (isChecked) {
-                                        markTaskAsCompleted(vehicleID, taskId, taskView, creationDate ?: System.currentTimeMillis())
-                                    }
-                                }
-
-                                // Add the task view to the container
-                                taskContainer.addView(taskView)
-                            }
-                        }
-                    }
-                }
+                // 2. Load general tasks not linked to a vehicle
+                loadGeneralTasks(taskList)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
+                Log.e("HomeFragment", "Failed to load vehicle tasks: ${error.message}")
             }
         })
     }
+
+    private fun loadGeneralTasks(taskList: MutableList<View>) {
+        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId/Tasks")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
+
+                // Add tasks from the general "Tasks" node to the taskList
+                if (snapshot.exists()) {
+                    taskList.addAll(fetchTasksFromSnapshot(snapshot, isGeneralTask = true))
+                }
+
+                // Display all tasks in taskContainer
+                taskContainer.removeAllViews()
+                taskList.forEach { taskContainer.addView(it) }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("HomeFragment", "Failed to load general tasks: ${error.message}")
+            }
+        })
+    }
+
+    private fun fetchTasksFromSnapshot(snapshot: DataSnapshot, isGeneralTask: Boolean = false): List<View> {
+        val taskViews = mutableListOf<View>()
+        val plateColorMap = mutableMapOf<String, Int>()
+        var colorIndex = 0
+        val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
+
+        for (vehicleSnapshot in snapshot.children) {
+            // If loading general tasks, consider each child as a task directly
+            val tasksSnapshot = if (isGeneralTask) listOf(vehicleSnapshot) else vehicleSnapshot.child("Tasks").children
+            val vehicleModel = if (!isGeneralTask) vehicleSnapshot.child("vehicleModel").getValue(String::class.java) else null
+            val numberPlate = if (!isGeneralTask) vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java) else null
+            val vehicleID = if (!isGeneralTask) vehicleSnapshot.key else null
+
+            for (taskSnapshot in tasksSnapshot) {
+                val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                val taskId = taskSnapshot.key
+                val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
+                val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+
+                if (taskId != null && taskDescription != null && completedDate == null) {
+                    // Inflate the task item layout
+                    val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
+                    val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
+                    val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+                    val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+
+                    taskDescriptionText.text = taskDescription
+                    taskDescriptionText.setTextColor(Color.WHITE)
+
+                    // Set vehicle details if available; otherwise, show "No vehicle"
+                    val vehicleInfo = if (numberPlate != null && vehicleModel != null) {
+                        "$numberPlate ($vehicleModel)"
+                    } else {
+                        "No vehicle assigned"
+                    }
+                    numberPlateText.text = vehicleInfo
+
+                    // Assign colors to different vehicles based on number plate
+                    if (numberPlate != null && !plateColorMap.containsKey(numberPlate)) {
+                        plateColorMap[numberPlate] = colors[colorIndex % colors.size]
+                        colorIndex++
+                    }
+
+                    numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
+
+                    // Handle task completion
+                    taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            markTaskAsCompleted(vehicleID ?: "", taskId, taskView, creationDate ?: System.currentTimeMillis())
+                        }
+                    }
+
+                    taskViews.add(taskView)
+                }
+            }
+        }
+        return taskViews
+    }
+
+
 
 
     private fun markTaskAsCompleted(vehicleID: String, taskId: String, taskView: View, creationDate: Long) {

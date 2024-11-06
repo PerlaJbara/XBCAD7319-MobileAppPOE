@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         businessId = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
-        Log.e("MainActivity", "BusinessID fecthed: $businessId")
+        Log.d("MainActivity", "BusinessID fecthed: $businessId")
 
         bottomNavView = findViewById(R.id.bottom_navigation)
         auth = FirebaseAuth.getInstance()

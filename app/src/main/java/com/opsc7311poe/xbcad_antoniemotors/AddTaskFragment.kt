@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -37,6 +38,7 @@ class AddTaskFragment : Fragment() {
     private lateinit var db: FirebaseFirestore
     private lateinit var userId: String
     private lateinit var carSelected: Spinner
+    private lateinit var businessId: String
 
     private val MAX_CHAR_LIMIT = 400
 
@@ -53,6 +55,8 @@ class AddTaskFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_task, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         btnBack = view.findViewById(R.id.ivBackButton)
         txtTask = view.findViewById(R.id.txtTaskDescription)
@@ -91,81 +95,58 @@ class AddTaskFragment : Fragment() {
     }
 
     private fun submitTask() {
-        // Check if the task description is blank
         val taskDescription = txtTask.text.toString().trim()
 
         if (taskDescription.isBlank()) {
-            Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please fill in the task description.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Check if a vehicle is selected
         val selectedVehicle = carSelected.selectedItem?.toString() ?: ""
-        if (selectedVehicle.isBlank()) {
-            Toast.makeText(requireContext(), "Please select a vehicle.", Toast.LENGTH_SHORT).show()
-            return
-        }
 
-        // Get the current user's ID
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        userId?.let { uid ->
-            // Initialize Firebase Database
+        if (userId != null) {
             val database = Firebase.database
-            val vehicleRef = database.getReference(uid).child("Vehicles")
+            val taskId = database.getReference("Users/$businessId/Employees/$userId").child("Tasks").push().key
 
-            // Find the selected vehicle by its number plate
-            vehicleRef.orderByChild("vehicleNumPlate").equalTo(selectedVehicle)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            // Loop through the result to get the vehicle node
-                            for (vehicleSnapshot in snapshot.children) {
-                                val vehicleId = vehicleSnapshot.key // Get the vehicle's unique ID
-                                vehicleId?.let { vId ->
-                                    val taskId = database.getReference(uid).child("Vehicles").child(vId).child("Tasks").push().key
+            taskId?.let { tId ->
+                val task = if (selectedVehicle == "No Vehicle" || selectedVehicle.isBlank()) {
+                    Tasks(
+                        taskID = tId,
+                        taskDescription = taskDescription,
+                        vehicleNumberPlate = null, // No vehicle selected
+                        creationDate = System.currentTimeMillis(),
+                        completedDate = null
+                    )
+                } else {
+                    Tasks(
+                        taskID = tId,
+                        taskDescription = taskDescription,
+                        vehicleNumberPlate = selectedVehicle,
+                        creationDate = System.currentTimeMillis(),
+                        completedDate = null
+                    )
+                }
 
-                                    taskId?.let { tId ->
-                                        // Create a task object
-                                        val task = Tasks(
-                                            taskID = tId,
-                                            taskDescription = taskDescription,
-                                            vehicleNumberPlate = selectedVehicle,
-                                            creationDate = System.currentTimeMillis(),  // Add creation date
-                                            completedDate = null                        // Add completed date (optional)
-                                        )
+                // Save the task directly under "Tasks" node if no vehicle is selected
+                val taskRef = database.getReference("Users/$businessId/Employees/$userId").child("Tasks").child(tId)
 
 
-                                        // Save the task under the vehicle's "Tasks" node
-                                        val taskRef = vehicleRef.child(vId).child("Tasks").child(tId)
-
-                                        taskRef.setValue(task)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(requireContext(), "Task successfully added!", Toast.LENGTH_LONG).show()
-                                                // Navigate back to MainActivity or another fragment
-                                                val intent = Intent(activity, MainActivity::class.java)
-                                                startActivity(intent)
-                                            }
-                                            .addOnFailureListener { e ->
-                                                Toast.makeText(requireContext(), "Error saving task: ${e.message}", Toast.LENGTH_SHORT).show()
-                                            }
-                                    } ?: run {
-                                        Toast.makeText(requireContext(), "Failed to generate task ID.", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
-                        } else {
-                            Toast.makeText(requireContext(), "No matching vehicle found.", Toast.LENGTH_SHORT).show()
-                        }
+                taskRef.setValue(task)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Task successfully added!", Toast.LENGTH_LONG).show()
+                        replaceFragment(HomeFragment())
                     }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(), "Error saving task: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
-                })
-        } ?: run {
+            } ?: run {
+                Toast.makeText(requireContext(), "Failed to generate task ID.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
             Toast.makeText(requireContext(), "User ID is null.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 
@@ -177,7 +158,7 @@ class AddTaskFragment : Fragment() {
 
             vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val vehicleNumbers = mutableListOf<String>() // To store vehicle number plates for the spinner
+                    val vehicleNumbers = mutableListOf("No Vehicle") // To store vehicle number plates for the spinner
 
                     Log.d("VehicleData", "Snapshot data: ${snapshot.value}")
 

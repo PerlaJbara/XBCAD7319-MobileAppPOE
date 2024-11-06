@@ -15,14 +15,18 @@ class AdminEmpFragment : Fragment() {
     private lateinit var imgTask: ImageView
     private lateinit var imganalytic: ImageView
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_admin_emp, container, false)
 
         // Initialize ImageViews
         imgLeaveman = view.findViewById(R.id.imgleavemang)
         imgSearchAndReg = view.findViewById(R.id.imgsearchandreg)
         imgTask = view.findViewById(R.id.imgtask)
+        imganalytic = view.findViewById(R.id.imganalytics)
 
 
         // Set click listeners for the image views
@@ -36,8 +40,9 @@ class AdminEmpFragment : Fragment() {
         }
 
         imgTask.setOnClickListener {
-            replaceFragment(AdminTasksMenuFragment()) // Replace with your actual fragment class
+            replaceFragment(AdminTasksMenuFragment())
         }
+
 
 
         //add fragment
@@ -48,20 +53,14 @@ class AdminEmpFragment : Fragment() {
 
 
 
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_emp, container, false)
+        return view
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
