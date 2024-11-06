@@ -14,6 +14,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.android.material.badge.BadgeDrawable
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             // User is logged in, fetch the role and approval status
             getUserDetails(user.uid)
+            checkPendingRequests() //this is for the notification thingie
 
         } else {
             Log.e("MainActivity", "User is not logged in")
@@ -98,6 +102,41 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun showBadge(count: Int) {
+        val badgeDrawable = bottomNavView.getOrCreateBadge(R.id.navEmployees)
+        badgeDrawable.isVisible = true
+        badgeDrawable.number = count
+    }
+
+    private fun removeBadge() {
+        val badgeDrawable = bottomNavView.getBadge(R.id.navEmployees)
+        badgeDrawable?.isVisible = false
+    }
+    private fun checkPendingRequests() {
+        // Use the businessId already fetched from SharedPreferences
+        val pendingRef = database.child("Users").child(businessId).child("Pending")
+
+        // Fetch and count the pending requests
+        pendingRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val pendingCount = snapshot.childrenCount.toInt()
+                if (pendingCount > 0) {
+
+                    showBadge(pendingCount)
+                } else {
+                    // Remove the badge if there are no pending requests
+                    removeBadge()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("MainActivity", "Failed to fetch pending requests: ${error.message}")
+            }
+        })
+    }
+
+
 
     private fun getUserDetails(userId: String) {
         // Get the role and approval status from Firebase Realtime Database
