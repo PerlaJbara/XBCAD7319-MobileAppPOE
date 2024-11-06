@@ -7,7 +7,7 @@ import com.opsc7311poe.xbcad_antoniemotors.R
 
 class ManagerAdapter(
     private var managerNames: MutableList<String>,
-    private val onItemClick: (Int) -> Unit
+    private val onItemClick: (String) -> Unit // Pass admin name instead of position
 ) : RecyclerView.Adapter<ManagerAdapter.ManagerViewHolder>() {
 
     private val fullList = ArrayList(managerNames) // Store original list for filtering
@@ -35,9 +35,9 @@ class ManagerAdapter(
     inner class ManagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtAdminName: TextView = itemView.findViewById(R.id.txtAdminName)
 
-        fun bind(adminName: String, onClick: (Int) -> Unit) {
+        fun bind(adminName: String, onClick: (String) -> Unit) {
             txtAdminName.text = adminName
-            itemView.setOnClickListener { onClick(adapterPosition) }
+            itemView.setOnClickListener { onClick(adminName) } // Pass name directly
         }
     }
 }

@@ -11,6 +11,8 @@ var VehicleModel: String = "",
 var VehicleYear: String = "",
 var VinNumber: String = "",
 var VehicleKms: String = "",
+var AdminVehicle: String = "",
+var AdminFullName: String = "",
 var images: Map<String, String> = emptyMap(),
 var registrationDate: String = "" // New field for registration date
 )

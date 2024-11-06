@@ -43,7 +43,6 @@ class AdminSelectBusinessActivity : AppCompatActivity() {
         txtBusinessNames.setOnClickListener {
             showBusinessNameDialog()
         }
-        // Button click listener to carry the selected business name to the next page
 
         // Button click listener to carry the selected business name to the next page
         btnAdminSelBusiness.setOnClickListener {
@@ -58,6 +57,7 @@ class AdminSelectBusinessActivity : AppCompatActivity() {
         }
 
     }
+
 
 
     // Function to load business names from Firebase
@@ -89,10 +89,14 @@ class AdminSelectBusinessActivity : AppCompatActivity() {
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recyclerBusinessName)
         val searchView = dialog.findViewById<SearchView>(R.id.searchBusinessName)
 
-        val adapter = BusinessAdapter(businessNamesList.toMutableList()) { position ->
-            selectedBusiness = businessNamesList[position]
-            selectedBusinessId = businessIds[position]
-            txtBusinessNames.setText(selectedBusiness)
+        val adapter = BusinessAdapter(businessNamesList.toMutableList()) { selectedBusinessName ->
+            // Find the correct business ID using the selected name
+            val index = businessNamesList.indexOf(selectedBusinessName)
+            if (index != -1) {
+                selectedBusiness = selectedBusinessName
+                selectedBusinessId = businessIds[index]
+                txtBusinessNames.setText(selectedBusiness)
+            }
             dialog.dismiss()
         }
         recyclerView.adapter = adapter
@@ -111,5 +115,6 @@ class AdminSelectBusinessActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
 
 }

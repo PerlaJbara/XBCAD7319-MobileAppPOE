@@ -243,9 +243,13 @@ class EmpSelectBusinessAdminActivity : AppCompatActivity() {
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recyclerAdminName)
         val searchView = dialog.findViewById<SearchView>(R.id.searchAdminName)
 
-        val adapter = ManagerAdapter(managerNames.toMutableList()) { position ->
-            txtAdminNames.setText(managerNames[position])
-            selectedAdminId = managerIds[position]
+        val adapter = ManagerAdapter(managerNames.toMutableList()) { selectedAdminName ->
+            // Find the correct admin ID using the selected name
+            val index = managerNames.indexOf(selectedAdminName)
+            if (index != -1) {
+                txtAdminNames.setText(selectedAdminName)
+                selectedAdminId = managerIds[index]
+            }
             dialog.dismiss()
         }
         recyclerView.adapter = adapter
@@ -265,19 +269,24 @@ class EmpSelectBusinessAdminActivity : AppCompatActivity() {
         dialog.show()
     }
 
+
     private fun showBusinessNameDialog() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.dialog_business_names)
         val recyclerView = dialog.findViewById<RecyclerView>(R.id.recyclerBusinessName)
         val searchView = dialog.findViewById<SearchView>(R.id.searchBusinessName)
 
-        val adapter = BusinessAdapter(businessNames.toMutableList()) { position ->
-            selectedBusiness = businessNames[position]
-            selectedBusinessId = businessIds[position]
-            txtBusinessNames.setText(selectedBusiness)
-            // Load manager names after business selection
-            loadManagerNames(selectedBusinessId!!) {
-                // Optionally notify that manager names have been loaded
+        val adapter = BusinessAdapter(businessNames.toMutableList()) { selectedBusinessName ->
+            // Find the correct business ID using the selected name
+            val index = businessNames.indexOf(selectedBusinessName)
+            if (index != -1) {
+                selectedBusiness = selectedBusinessName
+                selectedBusinessId = businessIds[index]
+                txtBusinessNames.setText(selectedBusiness)
+                // Load manager names after business selection
+                loadManagerNames(selectedBusinessId!!) {
+                    // Optionally notify that manager names have been loaded
+                }
             }
             dialog.dismiss()
         }

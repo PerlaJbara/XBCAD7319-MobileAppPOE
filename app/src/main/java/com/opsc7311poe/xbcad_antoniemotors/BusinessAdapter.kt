@@ -7,7 +7,7 @@ import com.opsc7311poe.xbcad_antoniemotors.R
 
 class BusinessAdapter(
     private var businessNames: MutableList<String>,
-    private val onItemClick: (Int) -> Unit
+    private val onItemClick: (String) -> Unit // Pass business name instead of position
 ) : RecyclerView.Adapter<BusinessAdapter.BusinessViewHolder>() {
 
     private val fullList = ArrayList(businessNames) // Store original list for filtering
@@ -35,9 +35,10 @@ class BusinessAdapter(
     inner class BusinessViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val txtBusinessName: TextView = itemView.findViewById(R.id.txtBusinessName)
 
-        fun bind(businessName: String, onClick: (Int) -> Unit) {
+        fun bind(businessName: String, onClick: (String) -> Unit) {
             txtBusinessName.text = businessName
-            itemView.setOnClickListener { onClick(adapterPosition) }
+            itemView.setOnClickListener { onClick(businessName) } // Pass name directly
         }
     }
 }
+
