@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -36,7 +37,7 @@ class SearchVehiclesFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
         searchVehicle = view.findViewById(R.id.vehicleSearch)
         recyclerView = view.findViewById(R.id.recyclerViewVehicle)
-
+        
         // Set click listener for the "Add Vehicle" button
         vectorPlusButton.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
@@ -70,7 +71,7 @@ class SearchVehiclesFragment : Fragment() {
         return view
     }
 
-    private fun fetchVehicles() {
+    /*private fun fetchVehicles() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Vehicles")
@@ -109,7 +110,83 @@ class SearchVehiclesFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
+    }*/
+
+    private fun fetchVehicles() {
+        val adminId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (adminId != null) {
+            // Reference to the "Users" node in Firebase
+            val usersReference = FirebaseDatabase.getInstance().getReference("Users")
+
+            // Locate the business associated with this admin
+            usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(usersSnapshot: DataSnapshot) {
+                    var businessID: String? = null
+
+                    // Iterate over each business node to find where adminId exists under Employees
+                    for (businessSnapshot in usersSnapshot.children) {
+                        val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
+
+                        if (employeeSnapshot.exists()) {
+                            // Found the employee record; extract the associated BusinessID
+                            businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
+                            Log.d("fetchVehicles", "BusinessID found for admin: $businessID")
+                            break
+                        }
+                    }
+
+                    if (businessID != null) {
+                        // Now use BusinessID to retrieve vehicles under the correct business
+                        val vehicleReference = usersReference.child(businessID).child("Vehicles")
+
+                        vehicleReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                vehicleList.clear()
+
+                                if (!snapshot.exists()) {
+                                    Toast.makeText(requireContext(), "No saved vehicles found.", Toast.LENGTH_SHORT).show()
+                                    return
+                                }
+
+                                // Retrieve each vehicle and add to the list
+                                for (vehicleSnapshot in snapshot.children) {
+                                    val vehicle = vehicleSnapshot.getValue(VehicleData::class.java)
+
+                                    vehicle?.let {
+                                        it.vehicleId = vehicleSnapshot.key ?: "" // Assign vehicleId from snapshot key
+                                        vehicleList.add(it)
+                                    }
+                                }
+
+                                if (vehicleList.isEmpty()) {
+                                    Toast.makeText(requireContext(), "No saved vehicles found.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    vehicleAdapter.notifyDataSetChanged()
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(requireContext(), "Error fetching vehicles.", Toast.LENGTH_SHORT).show()
+                                Log.e("SearchVehiclesFragment", "Database error: ${error.message}")
+                            }
+                        })
+                    } else {
+                        Log.e("fetchVehicles", "BusinessID not found for the current admin.")
+                        Toast.makeText(requireContext(), "Unable to find associated business.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("fetchVehicles", "Error fetching business information: ${error.message}")
+                    Toast.makeText(requireContext(), "Error fetching business information.", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
+        }
     }
+
 
 
 

@@ -84,71 +84,32 @@ class CustomerFragment : Fragment() {
     }
 
 
-    /*private fun fetchCustomers() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-        if (userId != null) {
-            // Reference to the "Customers" node under the user's UID in Firebase
-            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
-
-            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    customerList.clear()
-
-                    // Check if there are any customers saved in Firebase
-                    if (!snapshot.exists()) {
-                        Toast.makeText(requireContext(), "No saved customers found.", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-
-                    // Retrieve each customer and add to the list
-                    for (customerSnapshot in snapshot.children) {
-                        val customer = customerSnapshot.getValue(CustomerData::class.java)
-                        customer?.let {
-                            customerList.add(it)
-                        }
-                    }
-
-                    // Notify the adapter that data has changed
-                    customerAdapter.notifyDataSetChanged()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("fetchCustomers", "Error fetching customers: ${error.message}")
-                    Toast.makeText(requireContext(), "Error fetching customers.", Toast.LENGTH_SHORT).show()
-                }
-            })
-        } else {
-            Log.e("fetchCustomers", "User is not logged in or UID is null.")
-            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
-        }
-    }*/
-
     private fun fetchCustomers() {
         val adminId = FirebaseAuth.getInstance().currentUser?.uid
+        Log.d("fetchCustomers", "userId found for admin: $adminId")
 
         if (adminId != null) {
-            // Step 1: Find the correct business node using the admin's employee record.
+            // Reference to the "Users" node in Firebase
             val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
-            // Look for the business that has this admin in its Employees node
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(usersSnapshot: DataSnapshot) {
                     var businessID: String? = null
 
-                    // Iterate over each business (userId level) to find where adminId exists under Employees
+                    // Iterate over each business node to find where adminId exists under Employees
                     for (businessSnapshot in usersSnapshot.children) {
                         val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
 
                         if (employeeSnapshot.exists()) {
                             // Found the employee record; extract the associated BusinessID
-                            businessID = employeeSnapshot.child("BusinessID").getValue(String::class.java)
+                            businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
+                            Log.d("fetchCustomers", "BusinessID found for admin: $businessID")
                             break
                         }
                     }
 
                     if (businessID != null) {
-                        // Step 2: Use BusinessID to retrieve customers under the correct business
+                        // Now use BusinessID to retrieve customers under the correct business
                         val customerReference = usersReference.child(businessID).child("Customers")
 
                         customerReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -193,6 +154,7 @@ class CustomerFragment : Fragment() {
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 

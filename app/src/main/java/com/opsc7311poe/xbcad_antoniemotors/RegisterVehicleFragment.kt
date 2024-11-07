@@ -103,9 +103,9 @@ class RegisterVehicleFragment : Fragment() {
 
 
         edtCustomer.setOnClickListener {
+            Log.d("CustomerDialog", "Customer EditText clicked")
             showCustomerSelectionDialog()
         }
-
 
         // Populate Spinner with customer names
         // val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -259,14 +259,14 @@ class RegisterVehicleFragment : Fragment() {
 
         // Handle model selection
         listViewModels.setOnItemClickListener { _, _, position, _ ->
-            val selectedModel = modelList[position]
+            // Get the filtered item directly from the adapter
+            val selectedModel = modelAdapter.getItem(position) ?: ""
             edtVehicleModel.setText(selectedModel) // Set the selected model in the edit text
             dialog.dismiss() // Close the dialog
         }
 
         dialog.show() // Show the dialog
     }
-
 
 
     private fun fetchVehicleMakes(){
@@ -311,6 +311,7 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
+
     private fun fetchVehiclePORData() {
         // Reference to VehiclePOR node in Firebase
         val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
@@ -323,9 +324,15 @@ class RegisterVehicleFragment : Fragment() {
 
                 // Loop through the data to get values
                 for (vehiclePORSnapshot in snapshot.children) {
+                    // Check if the snapshot can be cast to a String
                     val value = vehiclePORSnapshot.getValue(String::class.java)
+
                     if (value != null) {
-                        vehiclePORList.add(value) // Add only the values to the list
+                        // Add the string value to the list
+                        vehiclePORList.add(value)
+                    } else {
+                        // Handle the case where the snapshot is not a String
+                        Log.e("fetchVehiclePORData", "Expected String but found different structure. Skipping.")
                     }
                 }
 
@@ -339,6 +346,10 @@ class RegisterVehicleFragment : Fragment() {
             }
         })
     }
+
+
+
+
 
     private fun setupYearPicker() {
 
@@ -359,7 +370,6 @@ class RegisterVehicleFragment : Fragment() {
             }
         }
     }
-
 
 
 
@@ -400,7 +410,6 @@ class RegisterVehicleFragment : Fragment() {
             }
         }
     }
-
 
 
     private fun showCustomerSelectionDialog() {
@@ -449,29 +458,73 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-
     private fun populateCustomerList(onCustomersFetched: (List<CustomerData>) -> Unit) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val adminId = FirebaseAuth.getInstance().currentUser?.uid
+        if (adminId == null) {
+            Log.e("populateCustomerList", "User is not logged in or adminId is null.")
+            return
+        }
 
-        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
+        // Reference to the "Users" node in Firebase
+        val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
-        customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val customerList = mutableListOf<CustomerData>()
-                for (customerSnapshot in snapshot.children) {
-                    val customerData = customerSnapshot.getValue(CustomerData::class.java)
-                    customerData?.let {
-                        customerList.add(it)
+        usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                var businessID: String? = null
+
+                // Iterate over each business node to find where adminId exists under Employees
+                for (businessSnapshot in usersSnapshot.children) {
+                    val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
+
+                    if (employeeSnapshot.exists()) {
+                        // Found the employee record; extract the associated BusinessID
+                        businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
+                        Log.d("populateCustomerList", "BusinessID found for admin: $businessID")
+                        break
                     }
                 }
-                onCustomersFetched(customerList)  // Pass the list of CustomerData
+
+                if (businessID != null) {
+                    // Now use BusinessID to retrieve customers under the correct business
+                    val customerReference = usersReference.child(businessID).child("Customers")
+
+                    customerReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val customerList = mutableListOf<CustomerData>()
+
+                            if (!snapshot.exists()) {
+                                Log.e("populateCustomerList", "No customers found under this business.")
+                                onCustomersFetched(customerList) // Return an empty list if no customers found
+                                return
+                            }
+
+                            // Retrieve each customer and add to the list
+                            for (customerSnapshot in snapshot.children) {
+                                val customer = customerSnapshot.getValue(CustomerData::class.java)
+                                customer?.let {
+                                    customerList.add(it)
+                                }
+                            }
+
+                            // Pass the list of CustomerData to the callback function
+                            onCustomersFetched(customerList)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("populateCustomerList", "Error fetching customers: ${error.message}")
+                        }
+                    })
+                } else {
+                    Log.e("populateCustomerList", "BusinessID not found for the current admin.")
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading customer data: ${error.message}")
+                Log.e("populateCustomerList", "Error fetching business information: ${error.message}")
             }
         })
     }
+
 
 
 
@@ -519,47 +572,80 @@ class RegisterVehicleFragment : Fragment() {
         // Get the current date and time
         val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
 
-
         // Get the selected year from the NumberPicker
         val selectedYear = ynpYearPicker.value.toString()
 
-        // Constructing the VehicleData object
-        val vehicle = VehicleData(
-            VehicleOwner = vehicleOwner, // Customer's full name
-            customerID = selectedCustomerId, // Use the selected customer's ID
-            VehicleNumPlate = fullVehicleNumPlate,
-            VehiclePOR = vehiclePOR,
-            VehicleModel = vehicleModel,
-            VehicleMake = edtVehicleMake.text.toString(),
-            VehicleYear = selectedYear,
-            VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
-            VehicleKms = vehicleKms,
-            registrationDate = currentDate
-        )
-
-        // Get current user (admin/vehicle owner) ID
+        // Get the current user's (admin's) ID
         val currentUser = FirebaseAuth.getInstance().currentUser
-        currentUser?.let {
-            val userId = it.uid
+        val adminId = currentUser?.uid ?: return
 
-            // Save the vehicle under the userId -> Vehicles path
-            val vehicleRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(userId)
-                .child("Vehicles")
-                .push()  // Generate a unique ID for the vehicle
+        // Reference to the Users node
+        val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
-            vehicle.vehicleId = vehicleRef.key ?: ""
+        // Iterate over each business node to find where adminId exists under Employees
+        usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                var businessId: String? = null
+                var adminFullName: String? = null
 
-            vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    uploadVehicleImages(vehicleRef.key!!)
-                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
-                    clearInputFields()
+                // Iterate over each business node in Users
+                for (businessSnapshot in usersSnapshot.children) {
+                    val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
+
+                    if (employeeSnapshot.exists()) {
+                        // Found the business record; get the businessId and admin's full name
+                        businessId = businessSnapshot.key
+                        val firstName = employeeSnapshot.child("firstName").getValue(String::class.java) ?: ""
+                        val lastName = employeeSnapshot.child("lastName").getValue(String::class.java) ?: ""
+                        adminFullName = "$firstName $lastName"
+                        break
+                    }
+                }
+
+                if (businessId != null && adminFullName != null) {
+                    // Constructing the VehicleData object
+                    val vehicle = VehicleData(
+                        VehicleOwner = vehicleOwner, // Customer's full name
+                        customerID = selectedCustomerId, // Use the selected customer's ID
+                        VehicleNumPlate = fullVehicleNumPlate,
+                        VehiclePOR = vehiclePOR,
+                        VehicleModel = vehicleModel,
+                        VehicleMake = edtVehicleMake.text.toString(),
+                        VehicleYear = selectedYear,
+                        VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
+                        VehicleKms = vehicleKms,
+                        registrationDate = currentDate,
+                        AdminID = adminId, // Attach admin ID
+                        AdminFullName = adminFullName // Attach admin full name
+                    )
+
+                    // Reference to the Vehicles node under the correct businessId
+                    val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
+
+                    // Assign the generated unique key as the vehicleId
+                    vehicle.vehicleId = vehicleRef.key ?: ""
+
+                    vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Pass the businessId and vehicleId to uploadVehicleImages
+                            uploadVehicleImages(businessId, vehicleRef.key!!)
+                            Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                            clearInputFields()
+                        } else {
+                            Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 } else {
-                    Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                    Log.e("registerVehicle", "Business ID not found for the current admin.")
+                    Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("registerVehicle", "Error fetching business information: ${error.message}")
+                Toast.makeText(context, "Error fetching business information.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 
@@ -578,28 +664,32 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    private fun uploadVehicleImages(vehicleId: String) {
+    private fun uploadVehicleImages(businessId: String, vehicleId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null && imageUris.isNotEmpty()) {
-            val userId = currentUser.uid
-
+            // Proceed with uploading each image to Firebase Storage and saving URLs to the database
             for (uri in imageUris) {
                 val uniqueImageId = UUID.randomUUID().toString()
-                val storageRef = storage.child("$userId/Vehicles/$vehicleId/$uniqueImageId.jpg")
+                // Use businessId in the storage path to make images accessible to all users in the business
+                val storageRef = storage.child("$businessId/Vehicles/$vehicleId/$uniqueImageId.jpg")
 
                 storageRef.putFile(uri)
                     .addOnSuccessListener { taskSnapshot ->
                         // Get the download URL
                         storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                            // Save the image URL in the database under the vehicle node
+                            // Save the image URL in the database under the specific vehicle node
                             val imageRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(userId)
+                                .child(businessId)
                                 .child("Vehicles")
                                 .child(vehicleId)
                                 .child("images")
                                 .child(uniqueImageId)
 
-                            imageRef.setValue(downloadUri.toString())
+                            imageRef.setValue(downloadUri.toString()).addOnSuccessListener {
+                                Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener {
+                                Toast.makeText(context, "Failed to save image URL in database", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                     .addOnFailureListener {
@@ -608,6 +698,10 @@ class RegisterVehicleFragment : Fragment() {
             }
         }
     }
+
+
+
+
 
 
     private fun selectImagesFromGallery() {
