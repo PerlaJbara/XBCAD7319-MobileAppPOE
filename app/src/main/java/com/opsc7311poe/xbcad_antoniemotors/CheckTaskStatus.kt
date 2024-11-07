@@ -40,6 +40,7 @@ class CheckTaskStatus : Fragment() {
 
 
     private lateinit var businessId: String
+    private lateinit var userId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +49,7 @@ class CheckTaskStatus : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_check_task_status, container, false)
 
+        userId = FirebaseAuth.getInstance().currentUser?.uid!!
         businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         //connecting elements
@@ -116,76 +118,88 @@ class CheckTaskStatus : Fragment() {
                     val task = taskSnapshot.getValue(EmpTask::class.java)
                     task!!.taskID = taskSnapshot.key
 
-                    //adding service to list to filter later
-                    listOfAllTasks.add(task);
+                    //only tasks admin assigned should show up
+                    if (task.adminID == userId){
 
-                    if (task != null) {
-                        // Inflate the card_task layout for each task
-                        val taskCardView = LayoutInflater.from(requireContext()).inflate(R.layout.card_task, svlinlay, false) as CardView
+                        //adding service to list to filter later
+                        listOfAllTasks.add(task);
 
-                        // Set task details in the card
-                        val txtTaskName = taskCardView.findViewById<TextView>(R.id.txtTaskName)
-                        val txtTaskDesc = taskCardView.findViewById<TextView>(R.id.txtTaskDesc)
-                        val txtVehNumPlate = taskCardView.findViewById<TextView>(R.id.txtVehNumPlate)
-                        val txtDueDate = taskCardView.findViewById<TextView>(R.id.txtDueDate)
-                        val txtCompletedDate = taskCardView.findViewById<TextView>(R.id.txtDateCompleted)
-                        val imgStatus = taskCardView.findViewById<ImageView>(R.id.imgStatus)
-                        val imgChangeStatus = taskCardView.findViewById<ImageView>(R.id.imgChangeStatus)
-                        val btnSaveChanges = taskCardView.findViewById<Button>(R.id.btnSave)
-                        val btnDelete = taskCardView.findViewById<Button>(R.id.btnDelete)
+                        if (task != null) {
+                            // Inflate the card_task layout for each task
+                            val taskCardView = LayoutInflater.from(requireContext())
+                                .inflate(R.layout.card_task, svlinlay, false) as CardView
 
-                        //temp status for saving changes
-                        var tempStatus = task.status
+                            // Set task details in the card
+                            val txtTaskName = taskCardView.findViewById<TextView>(R.id.txtTaskName)
+                            val txtTaskDesc = taskCardView.findViewById<TextView>(R.id.txtTaskDesc)
+                            val txtVehNumPlate =
+                                taskCardView.findViewById<TextView>(R.id.txtVehNumPlate)
+                            val txtDueDate = taskCardView.findViewById<TextView>(R.id.txtDueDate)
+                            val txtCompletedDate =
+                                taskCardView.findViewById<TextView>(R.id.txtDateCompleted)
+                            val imgStatus = taskCardView.findViewById<ImageView>(R.id.imgStatus)
+                            val imgChangeStatus =
+                                taskCardView.findViewById<ImageView>(R.id.imgChangeStatus)
+                            val btnSaveChanges = taskCardView.findViewById<Button>(R.id.btnSave)
+                            val btnDelete = taskCardView.findViewById<Button>(R.id.btnDelete)
 
-                        // Set up the data format
-                        val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                            //temp status for saving changes
+                            var tempStatus = task.status
 
-                        // Populate data fields
-                        txtTaskName.text = task.taskName ?: "Unnamed Task"
-                        txtTaskDesc.text = task.taskDescription ?: "No Description"
-                        getEmployeeName(task.employeeID.toString(), taskCardView)
-                        txtVehNumPlate.text = task.vehicleNumberPlate ?: "No vehicle assigned"
-                        txtDueDate.text = task.dueDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
-                        txtCompletedDate.text = task.completedDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
+                            // Set up the data format
+                            val dateFormatter =
+                                SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
 
-                        // Update status image according to task status
-                        when (task.status) {
-                            "Completed" -> imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
-                            "Busy" -> imgStatus.setImageResource(R.drawable.vectorstatusbusy)
-                            "Not Started" -> imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
-                        }
+                            // Populate data fields
+                            txtTaskName.text = task.taskName ?: "Unnamed Task"
+                            txtTaskDesc.text = task.taskDescription ?: "No Description"
+                            getEmployeeName(task.employeeID.toString(), taskCardView)
+                            txtVehNumPlate.text = task.vehicleNumberPlate ?: "No vehicle assigned"
+                            txtDueDate.text =
+                                task.dueDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
+                            txtCompletedDate.text =
+                                task.completedDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
 
-                        //functionality to all the buttons on card
-                        imgChangeStatus.setOnClickListener{
-                            when (tempStatus) {
-                                "Completed" -> {
-                                    imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
-                                    tempStatus = "Not Started"
-                                }
-                                "Busy" -> {
-                                    imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
-                                    tempStatus = "Completed"
-                                }
-                                "Not Started" -> {
-                                    imgStatus.setImageResource(R.drawable.vectorstatusbusy)
-                                    tempStatus = "Busy"
+                            // Update status image according to task status
+                            when (task.status) {
+                                "Completed" -> imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
+                                "Busy" -> imgStatus.setImageResource(R.drawable.vectorstatusbusy)
+                                "Not Started" -> imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
+                            }
+
+                            //functionality to all the buttons on card
+                            imgChangeStatus.setOnClickListener {
+                                when (tempStatus) {
+                                    "Completed" -> {
+                                        imgStatus.setImageResource(R.drawable.vectorstatusnotstrarted)
+                                        tempStatus = "Not Started"
+                                    }
+
+                                    "Busy" -> {
+                                        imgStatus.setImageResource(R.drawable.vectorstatuscompleted)
+                                        tempStatus = "Completed"
+                                    }
+
+                                    "Not Started" -> {
+                                        imgStatus.setImageResource(R.drawable.vectorstatusbusy)
+                                        tempStatus = "Busy"
+                                    }
                                 }
                             }
+
+                            btnSaveChanges.setOnClickListener {
+                                it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                                saveStatus(task.taskID, tempStatus)
+                            }
+
+                            btnDelete.setOnClickListener {
+                                deleteTask(task.taskID, taskCardView)
+                            }
+
+
+                            // Add the populated task card to the scroll view container
+                            svlinlay.addView(taskCardView)
                         }
-
-                        btnSaveChanges.setOnClickListener{
-                            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-                            saveStatus(task.taskID, tempStatus)
-                        }
-
-                        btnDelete.setOnClickListener{
-                            deleteTask(task.taskID, taskCardView)
-                        }
-
-
-
-                        // Add the populated task card to the scroll view container
-                        svlinlay.addView(taskCardView)
                     }
                 }
             }
@@ -222,7 +236,7 @@ class CheckTaskStatus : Fragment() {
                 var tempStatus = task.status
 
                 // Set up the data format
-                val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+                val dateFormatter = SimpleDateFormat("dd MMM yyyy HH:mm", Locale.getDefault())
 
                 // Populate data fields
                 txtTaskName.text = task.taskName ?: "Unnamed Task"
@@ -327,9 +341,31 @@ class CheckTaskStatus : Fragment() {
 
         if (taskID == null || tempStatus == null) return
 
-        val empRef = Firebase.database.reference.child("Users/$businessId/EmployeeTasks").child(taskID).child("status")
+        val taskRef = Firebase.database.reference.child("Users/$businessId/EmployeeTasks").child(taskID)
 
-        empRef.setValue(tempStatus).addOnSuccessListener {
+        //if status completed save current time for completion, else remove it
+        if (tempStatus == "Completed") {
+            // Save the current time as completedDate
+            taskRef.child("completedDate").setValue(System.currentTimeMillis())
+                .addOnSuccessListener {
+                    Log.d("saveStatus Method", "Completion date saved for TaskID: $taskID")
+                }
+                .addOnFailureListener {
+                    Log.e("saveStatus Method", "Error saving completion date: ${it.message}")
+                }
+        } else {
+            // Remove the completedDate value if the status is not "Completed"
+            taskRef.child("completedDate").removeValue()
+                .addOnSuccessListener {
+                    Log.d("saveStatus Method", "Completion date removed for TaskID: $taskID")
+                }
+                .addOnFailureListener {
+                    Log.e("saveStatus Method", "Error removing completion date: ${it.message}")
+                }
+        }
+
+
+        taskRef.child("status").setValue(tempStatus).addOnSuccessListener {
             Toast.makeText(requireContext(), "Task status updated", Toast.LENGTH_LONG).show()
         }.addOnFailureListener {
             Toast.makeText(requireContext(), "Error updating status: ${it.message}", Toast.LENGTH_LONG).show()
