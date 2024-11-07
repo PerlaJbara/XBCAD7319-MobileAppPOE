@@ -32,7 +32,10 @@ class AdminLeaveMenuFragment : Fragment() {
         }
 
         imgleaveaps.setOnClickListener {
-            replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
+            Log.d("LeaderboardFragment", "onDataChange: button click picked up")
+           replaceFragment(AdminApprovesLeaves()) // Replace with your actual fragment class
+            Log.d("LeaderboardFragment", "method ran")
+
         }
 
         btnBackButton.setOnClickListener {
@@ -44,7 +47,7 @@ class AdminLeaveMenuFragment : Fragment() {
 
     private fun replaceFragment(fragment: Fragment) {
         val transaction = parentFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
+        transaction.replace(R.id.frame_container, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
