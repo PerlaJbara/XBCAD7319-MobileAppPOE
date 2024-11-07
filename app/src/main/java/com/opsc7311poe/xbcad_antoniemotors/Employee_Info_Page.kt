@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,9 +16,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class Employee_Info_Page : Fragment() {
 
@@ -25,31 +24,24 @@ class Employee_Info_Page : Fragment() {
     lateinit var txtNum: TextView
     lateinit var txtEmail: TextView
     lateinit var txtAddress: TextView
-    lateinit var txtRemainingLeave: TextView
     lateinit var txtSal: TextView
 
     private lateinit var btnBack: ImageView
     private lateinit var btnDeleteEmployee: Button
+    private lateinit var btnEditEmp: Button
+    private lateinit var btnSaveup: Button
 
-    // New UI elements for family and holiday leave
-    lateinit var txtFamilyStartDate: EditText
-    lateinit var txtFamilyEndDate: EditText
-    lateinit var txtHolidayStartDate: EditText
-    lateinit var txtHolidayEndDate: EditText
-    lateinit var btnSavefamLeave: Button
-    lateinit var btnSaveholLeave: Button
 
     // New fields for editing
-    lateinit var btnEditEmp: Button
-    lateinit var btnSaveup: Button
     lateinit var txtnewNum: EditText
     lateinit var txtnewEmail: EditText
     lateinit var txtnewAddress: EditText
-    lateinit var txtnewRemainingLeave: EditText
     lateinit var txtnewSal: EditText
 
-    var isEditing = false
+    private lateinit var businessID: String
 
+    var isEditing = false
+    var employeeName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,298 +50,218 @@ class Employee_Info_Page : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_employee__info__page, container, false)
 
-        // Retrieve employee info
-        //    val employeeName = arguments?.getString("employeeName")
-//
-        //  btnBack = view.findViewById(R.id.ivBackButton)
-//
-        //  btnBack.setOnClickListener() {
-        // replaceFragment(EmployeeFragment())
-        //   }
+        businessID = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
+        employeeName = arguments?.getString("employeeId")
 
-        // Initialize delete button
-        //   btnDeleteEmployee = view.findViewById(R.id.btnDeleteEmp)
+        // Initialize views
+        txtName = view.findViewById(R.id.txtheaderempname)
+        txtNum = view.findViewById(R.id.txtempcell_view)
+        txtEmail = view.findViewById(R.id.txtempEmail_view)
+        txtAddress = view.findViewById(R.id.txtempAddress_view)
+        txtSal = view.findViewById(R.id.txtmonthly_view)
+
+        btnBack = view.findViewById(R.id.ivBackButton)
+        btnDeleteEmployee = view.findViewById(R.id.btnDeleteEmp)
+        btnEditEmp = view.findViewById(R.id.btnEditEmployeeInfo)
+        btnSaveup = view.findViewById(R.id.btnSaveEmployeeInfo)
+
+        // New fields for editing
+        txtnewNum = view.findViewById(R.id.txtupdatecell)
+        txtnewEmail = view.findViewById(R.id.txtupdateEmail)
+        txtnewAddress = view.findViewById(R.id.txtupdateAddress)
+        txtnewSal = view.findViewById(R.id.txtupdateMonthly)
+
+        displayDetails()
+
+
+        // Setup listeners
+        btnBack.setOnClickListener {
+            replaceFragment(EmployeeFragment())
+        }
+
+        btnEditEmp.setOnClickListener {
+            toggleEditing(true)
+        }
+
+        btnSaveup.setOnClickListener {
+            saveEmployeeData(employeeName)
+        }
+
+
+        // Fetch and display employee data
+        if (employeeName != null) {
+            displayDetails()
+        }
+
         return view
-
-    }
-}
-
-
-        // Initialize leave and holiday UI elements
-        //   txtFamilyStartDate = view.findViewById(R.id.txtStartDate)
-        //    txtFamilyEndDate = view.findViewById(R.id.txtEndDate)
-        //   txtHolidayStartDate = view.findViewById(R.id.txtHolidayStartDate)
-        //   txtHolidayEndDate = view.findViewById(R.id.txtHolidayEndDate)
-        //   btnSavefamLeave = view.findViewById(R.id.btnSavefamLeave)
-        //   btnSaveholLeave = view.findViewById(R.id.btnSaveholLeave)
-
-        //seting up date picker for the textviews
-
-        /*     txtFamilyStartDate.setOnClickListener {
-        pickDate(txtFamilyStartDate)
-    }
-    txtFamilyEndDate.setOnClickListener {
-        pickDate(txtFamilyEndDate)
     }
 
-
-    txtHolidayStartDate.setOnClickListener {
-        pickDate(txtHolidayStartDate)
-    }
-    txtHolidayEndDate.setOnClickListener {
-        pickDate(txtHolidayEndDate)
-    }
-
-
-    // Initialize edit and save buttons
-    btnEditEmp = view.findViewById(R.id.btnEditEmployeeInfo)
-    btnSaveup = view.findViewById(R.id.btnSaveEmployeeInfo)
-
-    // Initialize EditTexts for editing employee info
-    txtnewNum = view.findViewById(R.id.txtupdatecell)
-    txtnewEmail = view.findViewById(R.id.txtupdateEmail)
-    txtnewAddress = view.findViewById(R.id.txtupdateAddress)
-    txtnewRemainingLeave = view.findViewById(R.id.txtupdateLeaveRemain)
-    txtnewSal = view.findViewById(R.id.txtupdateMonthly)
-
-    btnEditEmp.setOnClickListener {
-        toggleEditing(true)
-    }
-
-    btnSaveup.setOnClickListener {
-        saveEmployeeData(employeeName)
-    }
-
-
-    // Get employee info from DB based on name
-    val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-    if (userId != null) {
-        val database = Firebase.database
-        val empRef = database.getReference(userId).child("Employees")
-
-    // Query the database to find the employee with the matching name
-        val query = empRef.orderByChild("name").equalTo(employeeName)
-        query.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (projectSnapshot in dataSnapshot.children) {
-                    val fetchedEmp = projectSnapshot.getValue(Employee::class.java)
-                    if (fetchedEmp != null) {
-                        // Assign fetched employee info to text views
-                        txtName = view.findViewById(R.id.txtheaderempname)
-                        txtName.text = fetchedEmp.name + " " + fetchedEmp.surname
-                        txtNum = view.findViewById(R.id.txtempcell_view)
-                        txtNum.text = fetchedEmp.number
-                        txtEmail = view.findViewById(R.id.txtempEmail_view)
-                        txtEmail.text = fetchedEmp.email
-                        txtAddress = view.findViewById(R.id.txtempAddress_view)
-                        txtAddress.text = fetchedEmp.address
-                        txtRemainingLeave = view.findViewById(R.id.txtleave_view)
-                        txtRemainingLeave.text = fetchedEmp.leaveLeft
-                        txtSal = view.findViewById(R.id.txtmonthly_view)
-                        txtSal.text = fetchedEmp.salary
-
-                        // Populate existing leave and holiday dates if available
-              //          txtFamilyStartDate.setText(fetchedEmp.familyLeaveStart ?: "")
-                  //      txtFamilyEndDate.setText(fetchedEmp.familyLeaveEnd ?: "")
-                  //      txtHolidayStartDate.setText(fetchedEmp.holidayStart ?: "")
-                   //     txtHolidayEndDate.setText(fetchedEmp.holidayEnd ?: "")
-
-
-                        // Populate EditTexts with employee info for editing
-                        txtnewNum.setText(fetchedEmp.number)
-                        txtnewEmail.setText(fetchedEmp.email)
-                        txtnewAddress.setText(fetchedEmp.address)
-                        txtnewRemainingLeave.setText(fetchedEmp.leaveLeft)
-                        txtnewSal.setText(fetchedEmp.salary)
-
-
-
-
-
-                        // Save family leave dates
-                        btnSavefamLeave.setOnClickListener {
-                            val familyLeaveStartStr = txtFamilyStartDate.text.toString()
-                            val familyLeaveEndStr = txtFamilyEndDate.text.toString()
-
-                            if (familyLeaveStartStr.isNotEmpty() && familyLeaveEndStr.isNotEmpty()) {
-                                try {
-                                    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                    val familyLeaveStartDate: Date? = dateFormatter.parse(familyLeaveStartStr)
-                                    val familyLeaveEndDate: Date? = dateFormatter.parse(familyLeaveEndStr)
-
-                                    // Save to Firebase if the dates are successfully parsed
-                                    if (familyLeaveStartDate != null && familyLeaveEndDate != null) {
-                                        projectSnapshot.ref.child("familyLeaveStart").setValue(familyLeaveStartStr)
-                                        projectSnapshot.ref.child("familyLeaveEnd").setValue(familyLeaveEndStr)
-                                        Toast.makeText(requireContext(), "Family leave dates saved!", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(requireContext(), "Invalid date format!", Toast.LENGTH_SHORT).show()
-                                    }
-                                } catch (e: Exception) {
-                                    Toast.makeText(requireContext(), "Error parsing dates: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
-                                Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                        // Save holiday dates
-                        btnSaveholLeave.setOnClickListener {
-                            val holidayStartStr = txtHolidayStartDate.text.toString()
-                            val holidayEndStr = txtHolidayEndDate.text.toString()
-
-                            if (holidayStartStr.isNotEmpty() && holidayEndStr.isNotEmpty()) {
-                                try {
-                                    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                    val holidayStartDate: Date? = dateFormatter.parse(holidayStartStr)
-                                    val holidayEndDate: Date? = dateFormatter.parse(holidayEndStr)
-
-                                    // Save to Firebase if the dates are successfully parsed
-                                    if (holidayStartDate != null && holidayEndDate != null) {
-                                        projectSnapshot.ref.child("holidayStart").setValue(holidayStartStr)
-                                        projectSnapshot.ref.child("holidayEnd").setValue(holidayEndStr)
-                                        Toast.makeText(requireContext(), "Holiday dates saved!", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(requireContext(), "Invalid date format!", Toast.LENGTH_SHORT).show()
-                                    }
-                                } catch (e: Exception) {
-                                    Toast.makeText(requireContext(), "Error parsing dates: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
-                                Toast.makeText(requireContext(), "Please fill in both dates!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                        // Delete employee record
-                        btnDeleteEmployee.setOnClickListener {
-                            projectSnapshot.ref.removeValue().addOnSuccessListener {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Employee deleted successfully",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                replaceFragment(EmployeeFragment())  // Navigate back to employee list
-                            }.addOnFailureListener { e ->
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Failed to delete employee: ${e.message}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                Toast.makeText(requireContext(), "Error reading from the database: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    return view
-}
-
-private fun replaceFragment(fragment: Fragment) {
-    Log.d("Employee_Info_Page", "Replacing fragment: ${fragment::class.java.simpleName}")
-    parentFragmentManager.beginTransaction()
-        .replace(R.id.frame_container, fragment)
-        .addToBackStack(null)
-        .commit()
-}
-
-
-fun pickDate(edittxt: TextView)
-{
-    val cal = Calendar.getInstance()
-    val year = cal.get(Calendar.YEAR)
-    val month = cal.get(Calendar.MONTH)
-    val day = cal.get(Calendar.DAY_OF_MONTH)
-
-    val datePickDialog = DatePickerDialog(
-        requireContext(),
-        { _, selectedYear, selectedMonth, selectedDay ->
-
-            val formattedDay = String.format("%02d", selectedDay)
-            val formattedMonth = String.format("%02d", selectedMonth + 1)
-
-            val selectedDate = "$formattedDay/${formattedMonth}/$selectedYear"
-            edittxt.setText(selectedDate)
-        }, year, month, day
-    )
-
-    datePickDialog.show()
-}
-
-
-
-private fun toggleEditing(editing: Boolean) {
-    isEditing = editing
-
-    // Toggle visibility between TextViews and EditTexts
-    txtNum.visibility = if (editing) View.GONE else View.VISIBLE
-    txtEmail.visibility = if (editing) View.GONE else View.VISIBLE
-    txtAddress.visibility = if (editing) View.GONE else View.VISIBLE
-    txtRemainingLeave.visibility = if (editing) View.GONE else View.VISIBLE
-    txtSal.visibility = if (editing) View.GONE else View.VISIBLE
-
-    txtnewNum.visibility = if (editing) View.VISIBLE else View.GONE
-    txtnewEmail.visibility = if (editing) View.VISIBLE else View.GONE
-    txtnewAddress.visibility = if (editing) View.VISIBLE else View.GONE
-    txtnewRemainingLeave.visibility = if (editing) View.VISIBLE else View.GONE
-    txtnewSal.visibility = if (editing) View.VISIBLE else View.GONE
-
-    btnSaveup.visibility = if (editing) View.VISIBLE else View.GONE
-    btnEditEmp.visibility = if (!editing) View.VISIBLE else View.GONE
-}
-
-
-
-
-private fun saveEmployeeData(employeeName: String?) {
-    val newNumber = txtnewNum.text.toString()
-    val newEmail = txtnewEmail.text.toString()
-    val newAddress = txtnewAddress.text.toString()
-    val newLeave = txtnewRemainingLeave.text.toString()
-    val newSalary = txtnewSal.text.toString()
-
-    if (newNumber.isNotEmpty() && newEmail.isNotEmpty() && newAddress.isNotEmpty() &&
-        newLeave.isNotEmpty() && newSalary.isNotEmpty()) {
-
+    private fun displayDetails() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null && employeeName != null) {
             val database = Firebase.database
-            val employeeRef = database.getReference(userId).child("Employees").child(employeeName)
+            val empRef = database.getReference("Users").child(businessID).child("Employees")
 
-            val updates = mapOf<String, Any>(
-                "number" to newNumber,
-                "email" to newEmail,
-                "address" to newAddress,
-                "leaveLeft" to newLeave,
-                "salary" to newSalary
-            )
-
-            employeeRef.updateChildren(updates).addOnSuccessListener {
-                Toast.makeText(requireContext(), "Employee updated successfully", Toast.LENGTH_SHORT).show()
-
-                // Update TextViews with the new data
-                txtNum.text = newNumber
-                txtEmail.text = newEmail
-                txtAddress.text = newAddress
-                txtRemainingLeave.text = newLeave
-                txtSal.text = newSalary
-
-                // Exit editing mode
-                toggleEditing(false)
-            }.addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error updating employee: ${e.message}", Toast.LENGTH_SHORT).show()
+            // Assuming employeeName is the unique ID of the employee
+            // Use this unique ID directly to fetch the employee details
+            if (employeeName != null) {
+                fetchEmployeeDetails(employeeName!!)
             }
         }
-    } else {
-        Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun fetchEmployeeDetails(employeeId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val database = Firebase.database
+            val empRef = database.getReference("Users").child(businessID).child("Employees")
+
+            // Directly fetch employee details using the employee's unique ID
+            val employeeRef = empRef.child(employeeId)
+
+            employeeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val fetchedEmp = dataSnapshot.getValue(EmployeeInfo::class.java)
+                    if (fetchedEmp != null) {
+                        // Populate the UI with employee data
+                        updateEmployeeUI(fetchedEmp)
+                    } else {
+                        Toast.makeText(requireContext(), "Employee not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(requireContext(), "Error fetching employee data: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+    }
+
+    private fun updateEmployeeUI(employee: EmployeeInfo?) {
+        if (employee != null) {
+            txtName.text = "${employee.firstName} ${employee.lastName}"
+            txtNum.text = employee.phone // This should show the correct phone number
+            txtEmail.text = employee.email
+            txtAddress.text = employee.address
+            txtSal.text = employee.salary // This should show the correct salary
+
+            // Fill in the editable fields with existing employee info
+            txtnewNum.setText(employee.phone)
+            txtnewEmail.setText(employee.email)
+            txtnewAddress.setText(employee.address)
+            txtnewSal.setText(employee.salary)
+        }
+    }
+
+
+
+    private fun saveEmployeeData(employeeName: String?) {
+        val newNumber = txtnewNum.text.toString()
+        val newEmail = txtnewEmail.text.toString()
+        val newAddress = txtnewAddress.text.toString()
+        val newSalary = txtnewSal.text.toString()
+
+        if (newNumber.isNotEmpty() && newEmail.isNotEmpty() && newAddress.isNotEmpty() && newSalary.isNotEmpty()) {
+
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            if (userId != null && employeeName != null) {
+                val database = Firebase.database
+                val employeeRef = database.getReference("Users").child(businessID).child("Employees").child(employeeName)
+
+                val updates = mapOf<String, Any>(
+                    "phone" to newNumber,
+                    "email" to newEmail,
+                    "address" to newAddress,
+                    "salary" to newSalary
+                )
+
+                employeeRef.updateChildren(updates).addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Employee updated successfully", Toast.LENGTH_SHORT).show()
+                    toggleEditing(false)
+                }.addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error updating employee: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+    private fun toggleEditing(isEditing: Boolean) {
+        this.isEditing = isEditing
+        // Toggle visibility of UI elements based on editing mode
+        if (isEditing) {
+            txtName.visibility = View.GONE
+            txtNum.visibility = View.GONE
+            txtEmail.visibility = View.GONE
+            txtAddress.visibility = View.GONE
+            txtSal.visibility = View.GONE
+
+            txtnewNum.visibility = View.VISIBLE
+            txtnewEmail.visibility = View.VISIBLE
+            txtnewAddress.visibility = View.VISIBLE
+            txtnewSal.visibility = View.VISIBLE
+            btnSaveup.visibility = View.VISIBLE
+        } else {
+            txtName.visibility = View.VISIBLE
+            txtNum.visibility = View.VISIBLE
+            txtEmail.visibility = View.VISIBLE
+            txtAddress.visibility = View.VISIBLE
+            txtSal.visibility = View.VISIBLE
+
+            txtnewNum.visibility = View.GONE
+            txtnewEmail.visibility = View.GONE
+            txtnewAddress.visibility = View.GONE
+            txtnewSal.visibility = View.GONE
+            btnSaveup.visibility = View.GONE
+        }
+    }
+
+//    private fun fetchEmployeeDetails(firstName: String, lastName: String) {
+//        val userId = FirebaseAuth.getInstance().currentUser?.uid
+//        if (userId != null) {
+//            val database = Firebase.database
+//            val empRef = database.getReference("Users").child(businessID).child("Employees")
+//
+//            // Query to get employee details based on both first name and last name
+//            val query = empRef.orderByChild("firstName").equalTo(firstName)
+//
+//            // Perform the query and listen for changes
+//            query.addListenerForSingleValueEvent(object : ValueEventListener {
+//                override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                    for (projectSnapshot in dataSnapshot.children) {
+//                        val fetchedEmp = projectSnapshot.getValue(EmployeeInfo::class.java)
+//                        if (fetchedEmp?.lastName == lastName) {
+//                            // If the last name matches, populate the UI with employee data
+//                            updateEmployeeUI(fetchedEmp)
+//                        }
+//                    }
+//                }
+//
+//                override fun onCancelled(databaseError: DatabaseError) {
+//                    Toast.makeText(requireContext(), "Error fetching employee data: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+//        }
+//    }
+//    private fun updateEmployeeUI(employee: EmployeeInfo) {
+//        txtName.text = "${employee.firstName} ${employee.lastName}"  // Concatenate first and last names
+//        txtNum.text = employee.number
+//        txtEmail.text = employee.email
+//        txtAddress.text = employee.address
+//        txtSal.text = employee.salary
+//
+//        // Fill in the editable fields with existing employee info
+//        txtnewNum.setText(employee.number)
+//        txtnewEmail.setText(employee.email)
+//        txtnewAddress.setText(employee.address)
+//        txtnewSal.setText(employee.salary)
+//    }
+
+
+    private fun replaceFragment(fragment: Fragment) {
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
     }
 }
-
-*/
-

@@ -61,14 +61,14 @@
             android:orientation="vertical"
             android:paddingBottom="16dp">
 
-            <!-- Contact Information Section -->
+
             <TextView
                 android:id="@+id/textViewContactInfoHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingRight="70dp"
-                android:text="Contact Information"
+                android:text="Details:"
                 android:textStyle="bold"
                 android:textSize="30sp"
                 android:layout_marginBottom="8dp"
@@ -157,91 +157,33 @@
                     android:visibility="gone"
                     android:hint="Enter new Address" />
 
-            </LinearLayout>
-
-            <!-- Employee Information Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="20dp">
-
                 <TextView
-                    android:layout_width="330dp"
+                    android:id="@+id/txtmonsal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:text="Employee Information"
-                    android:paddingBottom="20dp"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="30sp"
+                    android:layout_marginTop="8dp"
+                    android:text="Monthly Salary:"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:orientation="vertical"
-                        android:paddingLeft="45dp"
-                        android:paddingBottom="20dp">
-
-                        <TextView
-                            android:id="@+id/txtleaveremain"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Leave Days Remaining:"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/txtleave_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1 Days"
-                            android:textSize="18sp" />
-
-                        <EditText
-                            android:id="@+id/txtupdateLeaveRemain"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/roundcorneredt"
-                            android:visibility="gone"
-                            android:hint="Enter new leave" />
-
-                        <TextView
-                            android:id="@+id/txtmonsal"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Monthly Salary:"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/txtmonthly_view"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="R16 000"
-                            android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/txtmonthly_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="R16 000"
+                    android:textSize="18sp" />
 
 
-                        <EditText
-                            android:id="@+id/txtupdateMonthly"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/roundcorneredt"
-                            android:visibility="gone"
-                            android:hint="Enter new Salary" />
-                    </LinearLayout>
-                </ScrollView>
+                <EditText
+                    android:id="@+id/txtupdateMonthly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/roundcorneredt"
+                    android:visibility="gone"
+                    android:hint="Enter new Salary" />
+
             </LinearLayout>
-
-
 
             <!-- Save Button (Initially Hidden) -->
             <Button
@@ -255,28 +197,7 @@
                 android:visibility="gone" /> <!-- Initially hidden -->
 
 
-            <!-- Future Leave Section -->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- Start Date and End Date -->
-
-                <Button
-                    android:id="@+id/btnManLeave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:backgroundTint="#038A39"
-                    android:text="Manage Leave"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <!-- Holiday Section -->
 
         </LinearLayout>
 

@@ -39,7 +39,7 @@ class AdminEmpFragment : Fragment() {
         }
 
         imgSearchAndReg.setOnClickListener {
-            replaceFragment(AdminApproveRegistrationFragment()) // Replace with your actual fragment class
+            replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
         }
 
         imgTask.setOnClickListener {

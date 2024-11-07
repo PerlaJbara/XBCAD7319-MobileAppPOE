@@ -1,9 +1,8 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-import android.content.Intent
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import com.google.firebase.auth.FirebaseAuth
@@ -26,10 +24,12 @@ import com.google.firebase.ktx.Firebase
 
 class EmployeeFragment : Fragment() {
 
-    private lateinit var imgPlus: ImageView
     private lateinit var svEmpList: ScrollView
     private lateinit var linLay: LinearLayout
     private lateinit var searchBar: EditText
+    private lateinit var btnSearch: ImageView
+
+    private lateinit var businessId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,29 +37,36 @@ class EmployeeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_employee, container, false)
 
-        // Adding search bar
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
         searchBar = view.findViewById(R.id.txtEmpSearched)
+        btnSearch = view.findViewById(R.id.searchimage)
 
-        // ScrollView and LinearLayout setup for employee list
+        btnSearch.setOnClickListener {
+            findEmployee()
+        }
+
         svEmpList = view.findViewById(R.id.svEmployeeList)
         linLay = view.findViewById(R.id.linlayEmployees)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val empRef = database.getReference(userId).child("Employees")
+            val empRef = database.getReference("Users").child(businessId).child("Employees")
 
-            empRef.addValueEventListener(object: ValueEventListener {
+            empRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     linLay.removeAllViews()
 
                     for (pulledOrder in snapshot.children) {
-                        val empName: String? = pulledOrder.child("name").getValue(String::class.java)
-                        if (empName != null) {
+                        val managerId: String? = pulledOrder.child("managerID").getValue(String::class.java)
+                        val fName: String? = pulledOrder.child("firstName").getValue(String::class.java)
+                        val lName: String? = pulledOrder.child("lastName").getValue(String::class.java)
+
+                        // Check if managerId matches the logged-in user ID
+                        if (managerId == userId) {
+                            val empName = "$fName $lName"
 
                             val employeeButton = Button(requireContext())
-
-
                             employeeButton.text = empName
                             employeeButton.textSize = 20f
                             employeeButton.setBackgroundColor(Color.parseColor("#038a39"))
@@ -72,42 +79,98 @@ class EmployeeFragment : Fragment() {
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 LinearLayout.LayoutParams.WRAP_CONTENT
                             )
-                            layoutParams.setMargins(0, 20, 0, 20) // Add margins for spacing
+                            layoutParams.setMargins(0, 20, 0, 20)
                             employeeButton.layoutParams = layoutParams
 
-                            //when Employee name is tapped the project name is logged and the user is taken to project details page
                             employeeButton.setOnClickListener {
-
                                 val employeeInfoFragment = Employee_Info_Page()
-                                //transferring employee info using a bundle
                                 val bundle = Bundle()
-                                bundle.putString("employeeName", empName)
+
+                                // Pass employeeId instead of employeeName
+                                val employeeId = pulledOrder.key
+                                bundle.putString("employeeId", employeeId)
+
                                 employeeInfoFragment.arguments = bundle
-                                //changing to employee info fragment
                                 it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
                                 replaceFragment(employeeInfoFragment)
                             }
 
-                            // Add the button to the LinearLayout
                             linLay.addView(employeeButton)
                         }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Handle database error here
+                    Toast.makeText(requireContext(), "Error fetching employees: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }
 
-        // Plus button functionality
-        imgPlus = view.findViewById(R.id.imgPlus)
-        imgPlus.setOnClickListener() {
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(Register_Employee_Page())
+        return view
+    }
+
+    private fun findEmployee() {
+        val query = searchBar.text.toString().trim().lowercase()
+
+        if (query.isEmpty()) {
+            Toast.makeText(requireContext(), "Please enter a name to search", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        return view
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val database = Firebase.database
+        val empRef = database.getReference("Users").child(businessId).child("Employees")
+
+        empRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                linLay.removeAllViews()
+
+                for (pulledOrder in snapshot.children) {
+                    val managerId: String? = pulledOrder.child("managerID").getValue(String::class.java)
+                    val fName: String? = pulledOrder.child("firstName").getValue(String::class.java)
+                    val lName: String? = pulledOrder.child("lastName").getValue(String::class.java)
+
+                    val empName = "$fName $lName".trim()
+
+                    if (managerId == userId && empName.lowercase().contains(query)) {
+                        val employeeButton = Button(requireContext())
+                        employeeButton.text = empName
+                        employeeButton.textSize = 20f
+                        employeeButton.setBackgroundColor(Color.parseColor("#038a39"))
+                        employeeButton.setTextColor(Color.WHITE)
+                        employeeButton.typeface = ResourcesCompat.getFont(requireContext(), R.font.fontpoppinsregular)
+                        employeeButton.setPadding(20, 20, 20, 20)
+                        employeeButton.background = ResourcesCompat.getDrawable(resources, R.drawable.gbutton_round, null)
+
+                        val layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                        layoutParams.setMargins(0, 20, 0, 20)
+                        employeeButton.layoutParams = layoutParams
+
+                        employeeButton.setOnClickListener {
+                            val employeeInfoFragment = Employee_Info_Page()
+                            val bundle = Bundle()
+                            bundle.putString("employeeName", empName)
+                            employeeInfoFragment.arguments = bundle
+                            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                            replaceFragment(employeeInfoFragment)
+                        }
+
+                        linLay.addView(employeeButton)
+                    }
+                }
+
+                if (linLay.childCount == 0) {
+                    Toast.makeText(requireContext(), "No employees found", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error fetching employees: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun replaceFragment(fragment: Fragment) {
