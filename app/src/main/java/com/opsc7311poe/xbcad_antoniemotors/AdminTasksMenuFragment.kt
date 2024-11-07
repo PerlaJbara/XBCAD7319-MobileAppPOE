@@ -11,7 +11,7 @@ class AdminTasksMenuFragment : Fragment() {
 
     private lateinit var imgbtnassigntask: ImageView
     private lateinit var imgbtnchecktask: ImageView
-    private lateinit var imgbtnApprovetask: ImageView
+    //private lateinit var imgbtnApprovetask: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,13 +28,13 @@ class AdminTasksMenuFragment : Fragment() {
 
         imgbtnchecktask = view.findViewById(R.id.imgbtnchecktask)
         imgbtnchecktask.setOnClickListener {
-            replaceFragment(AdminEmpFragment())
+            replaceFragment(CheckTaskStatus())
         }
 
-        imgbtnApprovetask = view.findViewById(R.id.imgbtnApprovetask)
+        /*imgbtnApprovetask = view.findViewById(R.id.imgbtnApprovetask)
         imgbtnApprovetask.setOnClickListener {
             replaceFragment(AdminEmpFragment())
-        }
+        }*/
 
         return view
     }

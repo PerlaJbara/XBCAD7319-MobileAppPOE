@@ -39,7 +39,7 @@ class AssignEmployeeTask : Fragment() {
     private lateinit var spVehicleChoice: Spinner
     private lateinit var spEmpChoice: Spinner
     private lateinit var txtSelectDueDate: TextView
-    private lateinit var swTaskApproval: Switch
+    //private lateinit var swTaskApproval: Switch
     private lateinit var btnAssignTask: Button
     private lateinit var ivBackButton: ImageView
 
@@ -71,7 +71,7 @@ class AssignEmployeeTask : Fragment() {
         spVehicleChoice = view.findViewById(R.id.spSelectVehicle)
         spEmpChoice = view.findViewById(R.id.spSelectEmp)
         txtSelectDueDate = view.findViewById(R.id.txtSelectTaskDueDate)
-        swTaskApproval = view.findViewById(R.id.switchTaskApproval)
+        //swTaskApproval = view.findViewById(R.id.switchTaskApproval)
 
         //loading spinners
         loadEmployees()
@@ -127,56 +127,54 @@ class AssignEmployeeTask : Fragment() {
             return
         }
 
-        // Query the database for customers directly under the current user's ID
+        // Query the database for employees under the current user's business ID
         val empRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("Employees")
 
         empRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val customerMap = mutableMapOf<String, String>()
-                val customerNames = mutableListOf<String>()
+                val employeeMap = mutableMapOf<String, String>()
+                val employeeNames = mutableListOf<String>()
 
-                // Add a default blank selection
-                customerNames.add("")
+                // Add a default blank selection at the start
+                employeeNames.add("")
 
-                // Check if there are customers associated with the user
+                // Check if there are employees associated with the user
                 if (!snapshot.exists()) {
-                    Toast.makeText(requireContext(), "No employees found ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "No employees found", Toast.LENGTH_SHORT).show()
                     return
                 }
 
-                // Loop through all customers associated with this user
+                // Loop through all employees associated with this user
                 for (empSnapshot in snapshot.children) {
-                    val customerId = empSnapshot.key // Get customer ID
+                    val employeeId = empSnapshot.key // Get employee ID
                     val firstName = empSnapshot.child("firstName").getValue(String::class.java)
                     val lastName = empSnapshot.child("lastName").getValue(String::class.java)
+                    val role = empSnapshot.child("role").getValue(String::class.java)
 
-                    // Log data to check if it's being fetched correctly
-                    Log.d("AssignEmployeeTask", "Fetched Employee for spinner: $firstName $lastName, ID: $customerId")
-
-                    // Only add customer if names are not null or empty
-                    if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
+                    // Only add employees with the role "employee" and valid name details
+                    if (role == "employee" && !firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && employeeId != null) {
                         val fullName = "$firstName $lastName"
-                        customerMap[customerId] = fullName
-                        customerNames.add(fullName) // Add full name to spinner options
+                        employeeMap[employeeId] = fullName
+                        employeeNames.add(fullName) // Add full name to spinner options
                     }
                 }
 
-                // Check if the list is empty
-                if (customerNames.isEmpty()) {
-                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show()
+                // Check if the list is empty (after filtering by role)
+                if (employeeNames.size == 1) { // Only the blank option exists
+                    Toast.makeText(requireContext(), "No employees with the role 'employee' found", Toast.LENGTH_SHORT).show()
                     return
                 }
 
-                // Set up the spinner with the list of customer names
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerNames)
+                // Set up the spinner with the list of employee names
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, employeeNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spEmpChoice.adapter = adapter
 
-                // Handle customer selection from the spinner
+                // Handle employee selection from the spinner
                 spEmpChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        val selectedCustomerName = parent.getItemAtPosition(position).toString()
-                        selectedEmployeeID = customerMap.filterValues { it == selectedCustomerName }.keys.firstOrNull().orEmpty()
+                        val selectedEmployeeName = parent.getItemAtPosition(position).toString()
+                        selectedEmployeeID = employeeMap.filterValues { it == selectedEmployeeName }.keys.firstOrNull().orEmpty()
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {
@@ -191,6 +189,7 @@ class AssignEmployeeTask : Fragment() {
             }
         })
     }
+
 
     private fun submitTask() {
 
@@ -213,14 +212,16 @@ class AssignEmployeeTask : Fragment() {
         }
 
 
-        //converting date texts to date values
+        // Converting date text to date values
         val dateTimeFormatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val dateTimeString = txtSelectDueDate.text.toString()
-        val dueDate: Long? = dateTimeFormatter.parse(dateTimeString)?.time
 
-        if (dueDate == null) {
-            Toast.makeText(requireContext(), "Please select a valid due date and time.", Toast.LENGTH_SHORT).show()
-            return
+        // Attempt to parse due date
+        val dueDate: Long? = try {
+            dateTimeFormatter.parse(dateTimeString)?.time
+        } catch (e: Exception) {
+            Log.e("submitTask", "Invalid date format: $dateTimeString", e)
+            null
         }
 
 
@@ -231,7 +232,8 @@ class AssignEmployeeTask : Fragment() {
             employeeID = selectedEmployeeID
             adminID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             this.dueDate = dueDate
-            taskApprovalRequired = swTaskApproval.isChecked
+            Log.d("AssignEmployeeTask", "Due Date Entered: $dueDate")
+            //taskApprovalRequired = swTaskApproval.isChecked
             //status by default "Not started"
             status = "Not Started"
 

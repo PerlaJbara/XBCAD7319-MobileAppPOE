@@ -17,7 +17,6 @@
     <string name="remove_image_desc">Remove image</string>
 
 
-
     <string-array name="leave_types">
         <item>ANNUAL LEAVE</item>
         <item>SICK LEAVE</item>
