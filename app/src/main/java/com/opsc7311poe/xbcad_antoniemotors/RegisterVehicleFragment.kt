@@ -348,9 +348,6 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-
-
-
     private fun setupYearPicker() {
 
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
@@ -653,6 +650,7 @@ class RegisterVehicleFragment : Fragment() {
     private fun clearInputFields() {
         edtVehicleNoPlate.text.clear()  // Clear the vehicle number plate input
         edtVehicleModel.text.clear()  // Clear the vehicle model input
+        edtVehicleMake.text.clear()  // Clear the vehicle make input
         edtVinNumber.text.clear()  // Clear the VIN number input
         edtVehicleKms.text.clear()  // Clear the vehicle kilometers input
         edtCustomer.text.clear()  // Clear the selected customer input

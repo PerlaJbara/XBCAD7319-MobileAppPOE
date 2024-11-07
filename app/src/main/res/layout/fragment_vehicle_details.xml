@@ -68,14 +68,12 @@
                         android:orientation="vertical">
 
 
-
                         <!-- Vehicle Information Section -->
                         <TextView
                             android:id="@+id/textViewContactInfoHeader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:paddingRight="70dp"
                             android:text="Vehicle Information"
                             android:textStyle="bold"
                             android:textSize="30sp"
@@ -87,7 +85,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:paddingRight="165dp"
                             android:orientation="vertical"
                             android:layout_marginBottom="16dp">
 
@@ -97,14 +94,18 @@
                                 android:layout_height="wrap_content"
                                 android:text="Number Plate:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"/>
+                                android:textSize="22sp"
+                                android:layout_marginBottom="20dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtNumberPlate"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="201PVFGP"
-                                android:textSize="18sp"/>
+                                android:text="201PVF GP"
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/textCarOwnerLabel"
@@ -112,31 +113,117 @@
                                 android:layout_height="wrap_content"
                                 android:text="Car Owner:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtVehicleOwner"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Daniel Antonie"
-                                android:textSize="18sp"/>
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
+
+
+                            <TextView
+                                android:id="@+id/textMakeLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Make:"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
+
+                            <TextView
+                                android:id="@+id/txtVehicleMake"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Honda"
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/textModelLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Model"
+                                android:text="Model:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtVehicleModel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1991 Honda NSX"
-                                android:textSize="18sp"/>
+                                android:text="NSX"
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
+
+                            <TextView
+                                android:id="@+id/textYearLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Model Year:"
+                                android:textStyle="bold"
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
+
+                            <TextView
+                                android:id="@+id/txtModelYear"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1991"
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
+
+                            <LinearLayout
+                                android:id="@+id/LLEditModelYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingBottom="20dp">
+
+                                <TextView
+                                    android:id="@+id/labelEditModelYear"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:text="Edit Model Year:"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"/>
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <NumberPicker
+                                        android:id="@+id/npYearPicker"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"/>
+
+
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                            </LinearLayout>
+
 
                             <TextView
                                 android:id="@+id/textKilometersLabel"
@@ -144,15 +231,19 @@
                                 android:layout_height="wrap_content"
                                 android:text="Kilometers on the clock:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtVehicleKms"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="100000"
-                                android:textSize="18sp"/>
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/textVinNumLabel"
@@ -160,16 +251,20 @@
                                 android:layout_height="wrap_content"
                                 android:text="Vin No.:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
 
-                            <TextView
+                            <EditText
                                 android:id="@+id/txtVinNumber"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="12345667890643223"
-                                android:textSize="18sp"/>
+                                android:textSize="18sp"
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
 
                             <TextView
@@ -178,8 +273,10 @@
                                 android:layout_height="wrap_content"
                                 android:text="Registration date.:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"
-                                android:layout_marginTop="8dp"/>
+                                android:textSize="22sp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
 
                             <TextView
@@ -188,7 +285,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="10/11/2024"
                                 android:textSize="18sp"
-                                android:layout_marginBottom="8dp"/>
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtRegAdmin"
@@ -196,7 +294,9 @@
                                 android:layout_height="wrap_content"
                                 android:text="Vehicle Admin:"
                                 android:textStyle="bold"
-                                android:textSize="18sp"/>
+                                android:textSize="22sp"
+                                android:layout_marginBottom="15dp"
+                                android:layout_gravity="center_horizontal"/>
 
                             <TextView
                                 android:id="@+id/txtAdminFullName"
@@ -204,10 +304,63 @@
                                 android:layout_height="wrap_content"
                                 android:text="Daniel Admin"
                                 android:textSize="18sp"
-                                android:layout_marginBottom="10dp"/>
+                                android:layout_marginBottom="25dp"
+                                android:layout_gravity="center_horizontal"/>
 
 
                         </LinearLayout>
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="73dp">
+
+                            <Button
+                                android:id="@+id/btnSaveChanges"
+                                android:layout_width="143dp"
+                                android:layout_height="62dp"
+                                android:backgroundTint="#038A39"
+                                android:text="Save Changes"
+                                android:textSize="18sp"
+                                android:visibility="invisible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.059"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+
+                            <Button
+                                android:id="@+id/btnEditVehicle"
+                                android:layout_width="143dp"
+                                android:layout_height="62dp"
+                                android:backgroundTint="#038A39"
+                                android:text="Edit"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.059"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                            <Button
+                                android:id="@+id/btnDeleteVehicle"
+                                android:layout_width="143dp"
+                                android:layout_height="62dp"
+                                android:textSize="18sp"
+                                android:backgroundTint="#CA2F2E"
+                                android:text="Delete Vehicle"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.94"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.0" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         <!-- Vehicles Images Section -->
                         <LinearLayout
@@ -290,40 +443,6 @@
 
                         </LinearLayout>
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="73dp">
-
-                            <Button
-                                android:id="@+id/btnEditVehicle"
-                                android:layout_width="143dp"
-                                android:layout_height="62dp"
-                                android:backgroundTint="#038A39"
-                                android:text="Edit"
-                                android:textSize="18sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.059"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.0" />
-
-
-                            <Button
-                                android:id="@+id/btnDeleteVehicle"
-                                android:layout_width="143dp"
-                                android:layout_height="62dp"
-                                android:textSize="18sp"
-                                android:backgroundTint="#CA2F2E"
-                                android:text="Delete Vehicle"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.94"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintVertical_bias="0.0" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>
 
