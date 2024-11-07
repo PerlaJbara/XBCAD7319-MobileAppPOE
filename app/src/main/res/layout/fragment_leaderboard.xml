@@ -23,7 +23,7 @@
             android:paddingBottom="16dp"
             android:text="LEADERBOARD"
             android:textColor="@color/red"
-            android:textSize="30sp"
+            android:textSize="50sp"
             android:textStyle="bold" />
 
         <com.airbnb.lottie.LottieAnimationView
@@ -43,7 +43,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -51,9 +51,10 @@
                     android:orientation="vertical">
 
                     <!-- Player 1 with Gold Medal and Profile Picture -->
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:background="@drawable/player_row_border"
                         android:orientation="horizontal"
                         android:padding="8dp">
@@ -67,26 +68,13 @@
 
                         <!-- Profile Picture -->
                         <ImageView
-                            android:id="@+id/player1_profile_picture"
+                            android:id="@+id/player1pp"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginStart="8dp"
                             android:background="@drawable/circular_border"
                             android:contentDescription="Player Profile Picture"
                             android:src="@drawable/vector_myprofile" />
-
-                        <!--                &lt;!&ndash; Rank &ndash;&gt;-->
-                        <!--                <TextView-->
-                        <!--                    android:id="@+id/player1_rank"-->
-                        <!--                    android:layout_width="40dp"-->
-                        <!--                    android:layout_height="wrap_content"-->
-                        <!--                    android:text="1"-->
-                        <!--                    android:textColor="#FF0000"-->
-                        <!--                    android:textSize="18sp"-->
-                        <!--                    android:textStyle="bold"-->
-                        <!--                    android:gravity="center"-->
-                        <!--                    android:layout_gravity="center_vertical"-->
-                        <!--                    android:paddingStart="8dp" />-->
 
 
                         <TextView
@@ -111,7 +99,6 @@
                             android:textSize="18sp" />
                     </LinearLayout>
 
-                    <!-- Player 1 with Gold Medal and Profile Picture -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -127,7 +114,7 @@
 
                         <!-- Profile Picture -->
                         <ImageView
-                            android:id="@+id/player2_profile_picture"
+                            android:id="@+id/player2_pp"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginStart="8dp"
@@ -157,7 +144,6 @@
                             android:textSize="18sp" />
                     </LinearLayout>
 
-                    <!-- Player 1 with Gold Medal and Profile Picture -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -165,16 +151,16 @@
                         android:orientation="horizontal"
                         android:padding="8dp">
 
-                        <!-- Gold Medal Icon -->
+
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:contentDescription="Gold Medal"
                             android:src="@drawable/vector_bronzemedal" />
 
-                        <!-- Profile Picture -->
+
                         <ImageView
-                            android:id="@+id/player3_profile_picture"
+                            android:id="@+id/player3_pp"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginStart="8dp"
@@ -204,112 +190,13 @@
                             android:textSize="18sp" />
                     </LinearLayout>
 
-
                     <LinearLayout
+                        android:id="@+id/leaderboardContainer"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/player_row_border"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"></LinearLayout>
 
-                        <!-- Rank -->
-                        <TextView
-                            android:id="@+id/player4_rank"
-                            android:layout_width="40dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center"
-                            android:paddingStart="8dp"
-                            android:text="4"
-                            android:textColor="@color/red"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <!-- Profile Picture -->
-                        <ImageView
-                            android:id="@+id/player4_profile_picture"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="20dp"
-                            android:background="@drawable/circular_border"
-                            android:contentDescription="Player Profile Picture"
-                            android:src="@drawable/vector_myprofile" />
-
-                        <!-- Player Name -->
-                        <TextView
-                            android:id="@+id/player4_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp"
-                            android:text="Player Name"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp" />
-
-                        <!-- Player Score -->
-                        <TextView
-                            android:id="@+id/player4_score"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="2721"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/player_row_border"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
-
-                        <!-- Rank -->
-                        <TextView
-                            android:id="@+id/player5_rank"
-                            android:layout_width="40dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center"
-                            android:paddingStart="8dp"
-                            android:text="5"
-                            android:textColor="@color/red"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <!-- Profile Picture -->
-                        <ImageView
-                            android:id="@+id/player5_profile_picture"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="20dp"
-                            android:background="@drawable/circular_border"
-                            android:contentDescription="Player Profile Picture"
-                            android:src="@drawable/vector_myprofile" />
-
-                        <!-- Player Name -->
-                        <TextView
-                            android:id="@+id/player5_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:paddingStart="8dp"
-                            android:text="Player Name"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp" />
-
-                        <!-- Player Score -->
-                        <TextView
-                            android:id="@+id/player5_score"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="2721"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp" />
-                    </LinearLayout>
+                    <!-- Player 1 with Gold Medal and Profile Picture -->
 
 
                 </LinearLayout>

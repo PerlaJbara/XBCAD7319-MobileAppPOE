@@ -54,7 +54,7 @@ class AdminEmpFragment : Fragment() {
         }
 
         imgapprovereg.setOnClickListener {
-            replaceFragment(AdminMainApprovalFragment()) // Replace with your actual fragment class
+            replaceFragment(AdminApproveRegistrationFragment()) // Replace with your actual fragment class
         }
 
 
