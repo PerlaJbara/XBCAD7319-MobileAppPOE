@@ -19,8 +19,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class AdminApproveLeaveFragment : Fragment() {
-
+class AdminApprovesLeaves : Fragment() {
     private lateinit var leaveRequestContainer: LinearLayout
     private lateinit var businessID: String
     private val database = Firebase.database
@@ -30,7 +29,9 @@ class AdminApproveLeaveFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_admin_approve_leave, container, false)
+        Log.d("LeaderboardFragment", "on create view loaded")
+
+        val view = inflater.inflate(R.layout.fragment_admin_approves_leaves, container, false)
         leaveRequestContainer = view.findViewById(R.id.leaveRequestContainer)
 
         // Fetch the current logged-in admin's business ID
@@ -80,8 +81,10 @@ class AdminApproveLeaveFragment : Fragment() {
                     val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: "N/A"
                     val status = leaveSnapshot.child("Status").getValue(String::class.java) ?: "N/A"
 
-                    // Add the leave request to the UI
-                    addLeaveRequestToLayout(employeeId ?: "", leaveType, startDate, endDate, businessId)
+                    // Fetch employee name and add the leave request to the UI
+                    if (employeeId != null) {
+                        fetchEmployeeName(employeeId, leaveType, startDate, endDate, businessId)
+                    }
                 }
             }
 
@@ -91,15 +94,38 @@ class AdminApproveLeaveFragment : Fragment() {
         })
     }
 
+    // Fetch the full name of the employee
+    private fun fetchEmployeeName(employeeId: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
+        val employeeRef = database.reference.child("Users").child(businessId).child("Employees").child(employeeId)
+
+        employeeRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Retrieve first and last name from the database
+                val firstName = snapshot.child("firstName").getValue(String::class.java) ?: "Unknown"
+                val lastName = snapshot.child("lastName").getValue(String::class.java) ?: "Unknown"
+
+                // Concatenate first and last name to get full name
+                val fullName = "$firstName $lastName"
+
+                // Now that we have the employee's full name, add the leave request to the layout
+                addLeaveRequestToLayout(fullName, leaveType, startDate, endDate, businessId)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Failed to fetch employee name", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     // Add leave request to the UI for admin to approve
-    private fun addLeaveRequestToLayout(employeeId: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
+    private fun addLeaveRequestToLayout(employeeName: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
         val leaveRequestLayout = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(16, 16, 16, 16)
         }
 
         val employeeTextView = TextView(requireContext()).apply {
-            text = "Employee ID: $employeeId"
+            text = "Employee Name: $employeeName"
             textSize = 16f
         }
 
@@ -116,7 +142,7 @@ class AdminApproveLeaveFragment : Fragment() {
         val approveButton = Button(requireContext()).apply {
             text = "Approve"
             setOnClickListener {
-                approveLeaveRequest(businessId, employeeId)
+                approveLeaveRequest(businessId, employeeName)
             }
         }
 
@@ -129,8 +155,8 @@ class AdminApproveLeaveFragment : Fragment() {
     }
 
     // Function to approve leave request and update status
-    private fun approveLeaveRequest(businessId: String, employeeId: String) {
-        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeId).child("Status")
+    private fun approveLeaveRequest(businessId: String, employeeName: String) {
+        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeName).child("Status")
         leaveRef.setValue("approved")
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Leave request approved", Toast.LENGTH_SHORT).show()
@@ -142,4 +168,3 @@ class AdminApproveLeaveFragment : Fragment() {
             }
     }
 }
-

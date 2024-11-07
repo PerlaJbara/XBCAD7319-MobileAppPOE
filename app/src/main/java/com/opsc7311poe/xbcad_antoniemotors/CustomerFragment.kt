@@ -45,10 +45,11 @@ class CustomerFragment : Fragment() {
 
 
         // Set click listener for the "Add Customer" button
-        vectorPlusButton.setOnClickListener {
+        //this button will be linked to the customer registration page for the web application
+       /* vectorPlusButton.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(AddCustomerFragment())
-        }
+        }*/
 
         // Set click listener for the "Back" button
         btnBack.setOnClickListener {
