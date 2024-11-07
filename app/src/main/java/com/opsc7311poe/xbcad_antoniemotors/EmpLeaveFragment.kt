@@ -160,7 +160,8 @@ class EmpLeaveFragment : Fragment() {
         val leaveDetails = mapOf(
             "leaveType" to leaveType,
             "startDate" to startDate,
-            "endDate" to endDate
+            "endDate" to endDate,
+            "Status" to "pending"
         )
 
         // Save leave request details under business and user node in Firebase

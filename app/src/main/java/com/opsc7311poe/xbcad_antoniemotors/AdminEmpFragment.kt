@@ -15,6 +15,7 @@ class AdminEmpFragment : Fragment() {
     private lateinit var imgSearchAndReg: ImageView
     private lateinit var imgTask: ImageView
     private lateinit var imganalytic: ImageView
+    private lateinit var imgapprovereg : ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +29,7 @@ class AdminEmpFragment : Fragment() {
         imgSearchAndReg = view.findViewById(R.id.imgsearchandreg)
         imgTask = view.findViewById(R.id.imgtask)
         imganalytic = view.findViewById(R.id.imganalytics)
+        imgapprovereg= view.findViewById(R.id.imgadminapprove)
 
 
         // Set click listeners for the image views
@@ -51,6 +53,9 @@ class AdminEmpFragment : Fragment() {
             replaceFragment(AdminAnalyticsFragment()) // Replace with your actual fragment class
         }
 
+        imgapprovereg.setOnClickListener {
+            replaceFragment(AdminMainApprovalFragment()) // Replace with your actual fragment class
+        }
 
 
 

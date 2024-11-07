@@ -8,6 +8,7 @@
     android:paddingBottom="5dp"
     tools:context=".AdminMainApprovalFragment">
 
+
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"

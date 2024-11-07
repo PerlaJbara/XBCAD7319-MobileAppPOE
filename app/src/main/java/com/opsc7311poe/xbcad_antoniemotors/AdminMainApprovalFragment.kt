@@ -14,7 +14,7 @@ import com.opsc7311poe.xbcad_antoniemotors.AdminApproveRegistrationFragment
 import com.opsc7311poe.xbcad_antoniemotors.R
 import android.util.Log
 
-class AdminMainApprovalFragment : Fragment() {
+ class AdminMainApprovalFragment : Fragment() {
 
     private lateinit var ivSwitchRole: ImageView
     private lateinit var ivDeny: ImageView
