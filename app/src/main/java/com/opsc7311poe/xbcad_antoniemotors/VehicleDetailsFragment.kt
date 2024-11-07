@@ -24,29 +24,19 @@ class VehicleDetailsFragment : Fragment() {
     private lateinit var txtVehicleKms: TextView
     private lateinit var txtVinNumber: TextView
     private lateinit var txtVehicleReg: TextView
+    private lateinit var txtAdminFN: TextView // New TextView for Admin Full Name
     private lateinit var vehicleImagesRecyclerView: RecyclerView
     private lateinit var btnEditVehicleDetails: Button
     private lateinit var btnDeleteVehicle: Button
 
-    private lateinit var databaseRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var databaseRef: DatabaseReference
     private var vehicleId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vehicleId = arguments?.getString("vehicleId")
         auth = FirebaseAuth.getInstance()
-
-        if (vehicleId.isNullOrEmpty()) {
-            Toast.makeText(requireContext(), "Invalid Vehicle ID.", Toast.LENGTH_SHORT).show()
-            // Optionally, navigate back or close the fragment
-        } else {
-            // Adjust Firebase path to Users -> userId -> Vehicles -> vehicleId
-            databaseRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(auth.currentUser?.uid ?: "")
-                .child("Vehicles")
-                .child(vehicleId!!)
-        }
     }
 
     override fun onCreateView(
@@ -61,56 +51,59 @@ class VehicleDetailsFragment : Fragment() {
         txtVehicleKms = view.findViewById(R.id.txtVehicleKms)
         txtVinNumber = view.findViewById(R.id.txtVinNumber)
         txtVehicleReg = view.findViewById(R.id.txtVehicleRegDate)
+        txtAdminFN = view.findViewById(R.id.txtAdminFullName) // New TextView initialization
         btnEditVehicleDetails = view.findViewById(R.id.btnEditVehicle)
         btnDeleteVehicle = view.findViewById(R.id.btnDeleteVehicle)
 
-
         vehicleImagesRecyclerView = view.findViewById(R.id.vehicleImagesRecyclerView)
-
-        // Set an empty adapter initially
         vehicleImagesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        loadVehicleDetails()
-        loadVehicleImages()
+        searchVehicleAcrossBusinesses()
 
         return view
     }
 
-    private fun loadVehicleDetails() {
-        vehicleId?.let {
-            databaseRef.get().addOnSuccessListener { snapshot ->
-                Log.d("VehicleDetails", "Snapshot: ${snapshot.value}")
+    private fun searchVehicleAcrossBusinesses() {
+        val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
-                txtVehicleNumberPlate.text = snapshot.child("vehicleNumPlate").getValue(String::class.java) ?: "N/A"
-                txtVehicleOwner.text = snapshot.child("vehicleOwner").getValue(String::class.java) ?: "N/A"
-                txtVehicleModel.text = snapshot.child("vehicleModel").getValue(String::class.java) ?: "N/A"
-                txtVehicleKms.text = snapshot.child("vehicleKms").getValue(String::class.java) ?: "N/A"
-                txtVinNumber.text = snapshot.child("vinNumber").getValue(String::class.java) ?: "N/A"
-                txtVehicleReg.text = snapshot.child("registrationDate").getValue(String::class.java) ?: "N/A"
+        usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(usersSnapshot: DataSnapshot) {
+                for (businessSnapshot in usersSnapshot.children) {
+                    val vehiclesSnapshot = businessSnapshot.child("Vehicles").child(vehicleId ?: "")
 
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to load vehicle details.", Toast.LENGTH_SHORT).show()
-                Log.e("VehicleDetails", "Error loading vehicle details: ${it.message}")
+                    if (vehiclesSnapshot.exists()) {
+                        val vehicleData = vehiclesSnapshot.getValue(VehicleData::class.java)
+                        vehicleData?.let {
+                            displayVehicleDetails(it)
+                        }
+                        return  // Exit loop once vehicle is found
+                    }
+                }
+                Toast.makeText(requireContext(), "Vehicle not found.", Toast.LENGTH_SHORT).show()
             }
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error searching vehicle.", Toast.LENGTH_SHORT).show()
+                Log.e("VehicleDetailsFragment", "Database error: ${error.message}")
+            }
+        })
     }
 
-    private fun loadVehicleImages() {
-        vehicleId?.let {
-            databaseRef.child("images").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val imageUrls = mutableListOf<String>()
-                    for (imageSnapshot in snapshot.children) {
-                        imageSnapshot.getValue(String::class.java)?.let { imageUrls.add(it) }
-                    }
-                    vehicleImagesRecyclerView.adapter = VehicleImagesAdapter(imageUrls)
-                }
+    private fun displayVehicleDetails(vehicle: VehicleData) {
+        txtVehicleNumberPlate.text = vehicle.VehicleNumPlate
+        txtVehicleOwner.text = vehicle.VehicleOwner
+        txtVehicleModel.text = vehicle.VehicleModel
+        txtVehicleKms.text = vehicle.VehicleKms
+        txtVinNumber.text = vehicle.VinNumber
+        txtVehicleReg.text = vehicle.registrationDate
+        txtAdminFN.text = vehicle.AdminFullName // Set Admin Full Name from VehicleData
 
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Failed to load vehicle images.", Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
+        loadVehicleImages(vehicle.images)
+    }
+
+    private fun loadVehicleImages(images: Map<String, String>) {
+        val imageUrls = images.values.toList()
+        vehicleImagesRecyclerView.adapter = VehicleImagesAdapter(imageUrls)
     }
 
     companion object {

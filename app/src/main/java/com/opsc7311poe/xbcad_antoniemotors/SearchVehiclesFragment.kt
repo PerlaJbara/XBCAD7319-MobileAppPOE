@@ -71,46 +71,6 @@ class SearchVehiclesFragment : Fragment() {
         return view
     }
 
-    /*private fun fetchVehicles() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Vehicles")
-
-            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    vehicleList.clear()
-
-                    if (!snapshot.exists()) {
-                        Toast.makeText(requireContext(), "No saved vehicles found.", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-
-                    for (vehicleSnapshot in snapshot.children) {
-                        val vehicle = vehicleSnapshot.getValue(VehicleData::class.java)
-
-                        vehicle?.let {
-                            it.vehicleId = vehicleSnapshot.key ?: "" // Assign vehicleId from snapshot key
-                            // The 'images' field is already deserialized as Map<String, String>
-                            vehicleList.add(it)
-                        }
-                    }
-
-                    if (vehicleList.isEmpty()) {
-                        Toast.makeText(requireContext(), "No saved vehicles found.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        vehicleAdapter.notifyDataSetChanged()
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(requireContext(), "Error fetching vehicles.", Toast.LENGTH_SHORT).show()
-                    Log.e("SearchVehiclesFragment", "Database error: ${error.message}")
-                }
-            })
-        } else {
-            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
-        }
-    }*/
 
     private fun fetchVehicles() {
         val adminId = FirebaseAuth.getInstance().currentUser?.uid
