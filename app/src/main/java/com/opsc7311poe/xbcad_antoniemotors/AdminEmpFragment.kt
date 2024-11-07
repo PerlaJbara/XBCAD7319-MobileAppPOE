@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import AdminMainApprovalFragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -36,7 +37,7 @@ class AdminEmpFragment : Fragment() {
         }
 
         imgSearchAndReg.setOnClickListener {
-            replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
+            replaceFragment(AdminApproveRegistrationFragment()) // Replace with your actual fragment class
         }
 
         imgTask.setOnClickListener {
@@ -47,7 +48,7 @@ class AdminEmpFragment : Fragment() {
 
         //add fragment
         imganalytic.setOnClickListener {
-            replaceFragment(EmployeeFragment()) // Replace with your actual fragment class
+            replaceFragment(AdminAnalyticsFragment()) // Replace with your actual fragment class
         }
 
 
