@@ -6,7 +6,8 @@
     android:orientation="horizontal"
     android:padding="8dp"
     android:gravity="center_vertical"
-    android:background="@drawable/task_item_background">
+    android:background="@drawable/white_border"
+   >
 
     <!-- Task Checkbox -->
     <CheckBox

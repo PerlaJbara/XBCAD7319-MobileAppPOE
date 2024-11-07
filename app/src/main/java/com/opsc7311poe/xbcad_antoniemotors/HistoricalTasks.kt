@@ -1,11 +1,20 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,6 +30,10 @@ class HistoricalTasks : Fragment() {
     private var startDate: Long? = null
     private var endDate: Long? = null
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+    private lateinit var businessId: String
+    private lateinit var db: FirebaseFirestore
+    private lateinit var userId: String
 
     companion object {
         private const val ARG_COMPLETED_TASKS = "completed_tasks"
@@ -38,28 +51,40 @@ class HistoricalTasks : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             completedTasks = it.getParcelableArrayList(ARG_COMPLETED_TASKS)
+
+
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("HistoricalTasks", "onCreateView called")  // Add this line
         val view = inflater.inflate(R.layout.fragment_historical_tasks, container, false)
 
-        // Reference the ScrollView and LinearLayout from the layout
-        svTasksOld = view.findViewById(R.id.svTasksOld) as ScrollView // Use ScrollView for svTasksOld
-        taskContainer = view.findViewById(R.id.svlinlay) // Use svlinlay for the inner LinearLayout
+        val sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        businessId = sharedPreferences.getString("business_id", null) ?: ""
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+
+        svTasksOld = view.findViewById(R.id.svTasksOld)
+        taskContainer = view.findViewById(R.id.svlinlay)
 
         dpStartDate = view.findViewById(R.id.dpStartDate)
         dpEndDate = view.findViewById(R.id.dpEndDate)
 
-        // Set up click listeners for date pickers
-        dpStartDate.setOnClickListener { showDatePickerDialog(true) }
-        dpEndDate.setOnClickListener { showDatePickerDialog(false) }
 
-        // Display completed tasks
-        displayCompletedTasks()
+        dpStartDate.setOnClickListener {
+            showDatePickerDialog(isStartDate = true)
+            fetchCompletedTasks()
+        }
+        dpEndDate.setOnClickListener {
+            showDatePickerDialog(isStartDate = false)
+            fetchCompletedTasks()
+        }
+
+        fetchCompletedTasks()
 
         return view
     }
+
 
     private fun displayCompletedTasks() {
         taskContainer.removeAllViews() // Clear previous task views
@@ -68,25 +93,93 @@ class HistoricalTasks : Fragment() {
         val tasksToDisplay = completedTasks?.filter { it.completedDate != null } ?: emptyList()
 
         tasksToDisplay.forEach { task ->
-            val taskView = layoutInflater.inflate(R.layout.old_tasks_item, taskContainer, false)
+            // Inflate the new card layout for each task
+            val taskView = layoutInflater.inflate(R.layout.card_historical_task, taskContainer, false)
 
-            // Get references to the TextViews in each task item layout
-            val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-            val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
-            val taskCompletedDateText = taskView.findViewById<TextView>(R.id.taskDateDone)
+            // Reference TextViews and Button in the card layout
+            val txtTaskName = taskView.findViewById<TextView>(R.id.txtTaskName)
+            val txtTaskDesc = taskView.findViewById<TextView>(R.id.txtTaskDesc)
+            val txtVehNumPlate = taskView.findViewById<TextView>(R.id.txtVehNumPlate)
+            val txtDueDate = taskView.findViewById<TextView>(R.id.txtDueDate)
+            val txtDateCompleted = taskView.findViewById<TextView>(R.id.txtDateCompleted)
+            val btnRestoreTask = taskView.findViewById<Button>(R.id.btnRestoreTask)
 
             // Set data from the task
-            numberPlateText.text = task.vehicleNumberPlate ?: "No Number Plate"
-            taskDescriptionText.text = task.taskDescription ?: "No Description"
-            taskCompletedDateText.text = "Date Completed: ${dateFormat.format(Date(task.completedDate ?: 0))}"
+            txtTaskName.text = task.taskName ?: "No Task Name"
+            txtTaskDesc.text = task.taskDescription ?: "No Description"
+            txtVehNumPlate.text = task.vehicleNumberPlate ?: "No Number Plate"
+            txtDueDate.text = dateFormat.format(Date(task.creationDate ?: 0))
+            txtDateCompleted.text = dateFormat.format(Date(task.completedDate ?: 0))
 
-            // Add click listener to show task details in a popup
-            taskView.setOnClickListener { showTaskPopup(task) }
+            // Set click listener for the "Restore Task" button
+            btnRestoreTask.setOnClickListener {
+                val taskId = task.taskID // Make sure you have a unique ID for each task
+                val taskRef = taskId?.let { it1 ->
+                    Firebase.database.reference
+                        .child("Users")
+                        .child(businessId)
+                        .child("Employees")
+                        .child(userId)
+                        .child("Tasks")
+                        .child(it1)
+                }
+
+                // Remove the `completedDate` field
+                taskRef?.child("completedDate")?.removeValue()
+                    ?.addOnSuccessListener {
+                        Toast.makeText(context, "Task restored successfully", Toast.LENGTH_SHORT).show()
+                        fetchCompletedTasks() // Refresh the list of completed tasks after restoring
+                    }
+                    ?.addOnFailureListener { error ->
+                        Toast.makeText(context, "Failed to restore task: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("HistoricalTasks", "Error restoring task: ${error.message}")
+                    }
+            }
 
             // Add the task view to the LinearLayout container inside ScrollView
             taskContainer.addView(taskView)
         }
     }
+
+    private fun filterTasksByDate() {
+        val filteredTasks = completedTasks?.filter { task ->
+            val taskCompletedDate = task.completedDate
+            val isWithinRange = taskCompletedDate != null &&
+                    (startDate?.let { taskCompletedDate >= it } ?: true) &&
+                    (endDate?.let { taskCompletedDate <= it } ?: true)
+
+            isWithinRange
+        }
+
+        Log.d("HistoricalTasks", "Filtered tasks: ${filteredTasks?.size ?: 0}")
+
+        taskContainer.removeAllViews() // Clear current views
+
+        filteredTasks?.forEach { task ->
+            val taskView = layoutInflater.inflate(R.layout.card_historical_task, taskContainer, false)
+
+            val txtTaskName = taskView.findViewById<TextView>(R.id.txtTaskName)
+            val txtTaskDesc = taskView.findViewById<TextView>(R.id.txtTaskDesc)
+            val txtVehNumPlate = taskView.findViewById<TextView>(R.id.txtVehNumPlate)
+            val txtDueDate = taskView.findViewById<TextView>(R.id.txtDueDate)
+            val txtDateCompleted = taskView.findViewById<TextView>(R.id.txtDateCompleted)
+            val btnRestoreTask = taskView.findViewById<Button>(R.id.btnRestoreTask)
+
+            txtTaskName.text = task.taskName ?: "No Task Name"
+            txtTaskDesc.text = task.taskDescription ?: "No Description"
+            txtVehNumPlate.text = task.vehicleNumberPlate ?: "No Vehicle Selected"
+            txtDueDate.text = dateFormat.format(Date(task.creationDate ?: 0))
+            txtDateCompleted.text = dateFormat.format(Date(task.completedDate ?: 0))
+
+            btnRestoreTask.setOnClickListener {
+                // Handle the restore task action here
+            }
+
+            taskContainer.addView(taskView)
+        }
+    }
+
+
 
     private fun showTaskPopup(task: Tasks) {
         val popupView = layoutInflater.inflate(R.layout.popup_task_details, null)
@@ -111,6 +204,14 @@ class HistoricalTasks : Fragment() {
 
     private fun showDatePickerDialog(isStartDate: Boolean) {
         val calendar = Calendar.getInstance()
+
+        // Initialize with existing start or end date if already set
+        if (isStartDate && startDate != null) {
+            calendar.timeInMillis = startDate!!
+        } else if (!isStartDate && endDate != null) {
+            calendar.timeInMillis = endDate!!
+        }
+
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             { _, year, month, dayOfMonth ->
@@ -119,11 +220,13 @@ class HistoricalTasks : Fragment() {
                 if (isStartDate) {
                     startDate = selectedDate.time
                     dpStartDate.text = dateFormat.format(selectedDate)
+                    Log.d("HistoricalTasks", "Start date selected: ${dpStartDate.text}")
                 } else {
                     endDate = selectedDate.time
                     dpEndDate.text = dateFormat.format(selectedDate)
+                    Log.d("HistoricalTasks", "End date selected: ${dpEndDate.text}")
                 }
-                filterTasksByDate()
+                filterTasksByDate() // Apply filtering after selecting dates
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -132,33 +235,75 @@ class HistoricalTasks : Fragment() {
         datePickerDialog.show()
     }
 
-    private fun filterTasksByDate() {
-        val filteredTasks = completedTasks?.filter { task ->
-            val taskCompletedDate = task.completedDate
+    private fun fetchCompletedTasks() {
+        val database = Firebase.database.reference
+            .child("Users")
+            .child(businessId)
+            .child("Employees")
+            .child(userId)
+            .child("Tasks")
 
-            val isWithinRange = taskCompletedDate != null &&
-                    (startDate?.let { taskCompletedDate >= it } ?: true) &&
-                    (endDate?.let { taskCompletedDate <= it } ?: true)
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val tasks = mutableListOf<Tasks>()
+                for (taskSnapshot in snapshot.children) {
+                    val task = taskSnapshot.getValue(Tasks::class.java)
+                    task?.let {
+                        // Set the task ID from the snapshot key
+                        it.taskID = taskSnapshot.key // Ensure your Tasks class has a `taskId` property
+                        // Only add tasks that have a non-null `completedDate`
+                        if (it.completedDate != null) {
+                            tasks.add(it)
+                            Log.d("HistoricalTasks", "Fetched task: ${it.taskName}, ID: ${it.taskID}, completed date: ${it.completedDate}")
+                        }
+                    }
+                }
+                completedTasks = tasks
+                Log.d("HistoricalTasks", "Total completed tasks fetched: ${tasks.size}")
+                displayCompletedTasks()
+            }
 
-            isWithinRange
-        }
-
-        taskContainer.removeAllViews() // Clear current views
-
-        filteredTasks?.forEach { task ->
-            val taskView = layoutInflater.inflate(R.layout.old_tasks_item, taskContainer, false)
-
-            val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-            val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
-            val taskCompletedDateText = taskView.findViewById<TextView>(R.id.taskDateDone)
-
-            numberPlateText.text = task.vehicleNumberPlate ?: "No Number Plate"
-            taskDescriptionText.text = task.taskDescription ?: "No Description"
-            taskCompletedDateText.text = "Date Completed: ${dateFormat.format(Date(task.completedDate ?: 0))}"
-
-            taskView.setOnClickListener { showTaskPopup(task) }
-
-            taskContainer.addView(taskView)
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Failed to load tasks", Toast.LENGTH_SHORT).show()
+                Log.e("HistoricalTasks", "Database error: ${error.message}")
+            }
+        })
     }
+
+
+
+
+    //THIS ONE WORKS
+//    private fun fetchCompletedTasks() {
+//        val database = Firebase.database.reference
+//            .child("Users")
+//            .child(businessId)
+//            .child("Employees")
+//            .child(userId)
+//            .child("Tasks")
+//
+//        database.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val tasks = mutableListOf<Tasks>()
+//                for (taskSnapshot in snapshot.children) {
+//                    val task = taskSnapshot.getValue(Tasks::class.java)
+//                    // Only add tasks that have a non-null `completedDate`
+//                    if (task?.completedDate != null) {
+//                        tasks.add(task)
+//                        Log.d("HistoricalTasks", "Fetched task: ${task.taskName}, completed date: ${task.completedDate}")
+//                    }
+//                }
+//                completedTasks = tasks
+//                Log.d("HistoricalTasks", "Total completed tasks fetched: ${tasks.size}")
+//                displayCompletedTasks()
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Toast.makeText(context, "Failed to load tasks", Toast.LENGTH_SHORT).show()
+//                Log.e("HistoricalTasks", "Database error: ${error.message}")
+//            }
+//        })
+//    }
+
+
 }

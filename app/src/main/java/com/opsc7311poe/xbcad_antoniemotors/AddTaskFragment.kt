@@ -33,6 +33,7 @@ class AddTaskFragment : Fragment() {
 
     private lateinit var btnBack: ImageView
     private lateinit var txtTask: EditText
+    private lateinit var txtTaskName: EditText
     private lateinit var btnSubmit: Button
     private lateinit var charCount: TextView
     private lateinit var db: FirebaseFirestore
@@ -59,10 +60,11 @@ class AddTaskFragment : Fragment() {
         businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         btnBack = view.findViewById(R.id.ivBackButton)
-        txtTask = view.findViewById(R.id.txtTaskDescription)
+        txtTask = view.findViewById(R.id.txtTaskDescriptions)
         btnSubmit = view.findViewById(R.id.btnAddTask)
         charCount = view.findViewById(R.id.charCount)
         carSelected = view.findViewById(R.id.spChooseVehicle)
+        txtTaskName = view.findViewById(R.id.txtTaskName)
 
 
         db = FirebaseFirestore.getInstance()
@@ -95,6 +97,14 @@ class AddTaskFragment : Fragment() {
     }
 
     private fun submitTask() {
+
+        val tName = txtTaskName.text.toString().trim()
+
+        if (tName.isBlank()) {
+            Toast.makeText(requireContext(), "Please give your task a name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+      
         val taskDescription = txtTask.text.toString().trim()
 
         if (taskDescription.isBlank()) {
@@ -112,6 +122,7 @@ class AddTaskFragment : Fragment() {
                 val task = if (selectedVehicle == "No Vehicle" || selectedVehicle.isBlank()) {
                     Tasks(
                         taskID = tId,
+                        taskName = tName,
                         taskDescription = taskDescription,
                         vehicleNumberPlate = null, // No vehicle selected
                         creationDate = System.currentTimeMillis(),
@@ -120,6 +131,7 @@ class AddTaskFragment : Fragment() {
                 } else {
                     Tasks(
                         taskID = tId,
+                        taskName = tName,
                         taskDescription = taskDescription,
                         vehicleNumberPlate = selectedVehicle,
                         creationDate = System.currentTimeMillis(),
@@ -149,12 +161,11 @@ class AddTaskFragment : Fragment() {
 
 
 
-
     private fun loadVehicles() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val userId = currentUser.uid
-            val vehicleRef = FirebaseDatabase.getInstance().getReference(userId).child("Vehicles")
+            val vehicleRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId).child("Vehicles")
 
             vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

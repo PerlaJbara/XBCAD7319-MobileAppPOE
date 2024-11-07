@@ -62,84 +62,110 @@
 
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/albert_sans"
-        android:text="Task Description:"
-        android:textSize="25sp"
+    <ScrollView
+        android:layout_width="395dp"
+        android:layout_height="506dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
 
-    <EditText
-        android:id="@+id/txtTaskDescription"
-        android:layout_width="0dp"
-        android:layout_height="156dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/txtgradientgtor"
-        android:inputType="text"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView8"
-        app:layout_constraintWidth_percent="0.9" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView32"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Task Name:"
+                android:textAlignment="viewStart"
+                android:textSize="25sp"
+                android:fontFamily="@font/albert_sans"
+                android:paddingBottom="5dp"
+                android:paddingTop="7dp"/>
+
+            <EditText
+                android:id="@+id/txtTaskName"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:inputType="text"
+                android:background="@drawable/txtgradientgtor"/>
+
+            <TextView
+                android:id="@+id/textView39"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Task Description:"
+                android:textAlignment="viewStart"
+                android:textSize="25sp"
+                android:fontFamily="@font/albert_sans"
+                android:paddingTop="23dp"
+                android:paddingBottom="5dp"/>
+
+            <EditText
+                android:id="@+id/txtTaskDescriptions"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:ems="10"
+                android:inputType="text"
+                android:background="@drawable/txtgradientgtor" />
+
+            <TextView
+                android:id="@+id/charCount"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:text="400 words"
+                android:textAlignment="viewEnd"
+                android:paddingTop="5dp"
+                android:paddingBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/textView41"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select A Vehicle:"
+                android:textAlignment="viewStart"
+                android:textSize="25sp"
+                android:fontFamily="@font/albert_sans"
+                android:paddingTop="17dp"
+                android:paddingBottom="5dp"/>
+
+            <Spinner
+                android:id="@+id/spChooseVehicle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/txtgradientgtor"
+               />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+
+                <Button
+                    android:id="@+id/btnAddTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Task"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/cherryred"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 
     <!-- Add Task Button -->
-    <TextView
-        android:id="@+id/charCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="272dp"
-        android:layout_marginTop="4dp"
-        android:text="400 characters"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTaskDescription" />
 
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="268dp"
-        android:fontFamily="@font/albert_sans"
-        android:text="Select Vehicle:"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnAddTask"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        app:layout_constraintVertical_bias="0.022" />
-
-    <Button
-        android:id="@+id/btnAddTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
-        android:backgroundTint="#FF750A0B"
-        android:text="Add Task"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTaskDescription"
-        app:layout_constraintVertical_bias="0.718" />
-
-    <Spinner
-        android:id="@+id/spChooseVehicle"
-        android:layout_width="332dp"
-        android:layout_height="46dp"
-        android:background="@drawable/txtgradientgtor"
-        app:layout_constraintBottom_toTopOf="@+id/btnAddTask"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
-        app:layout_constraintVertical_bias="0.348" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

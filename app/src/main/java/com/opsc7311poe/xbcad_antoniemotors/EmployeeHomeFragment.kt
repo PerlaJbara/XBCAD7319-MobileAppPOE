@@ -205,6 +205,7 @@ class EmployeeHomeFragment : Fragment() {
                         val tasksSnapshot = vehicleSnapshot.child("Tasks")
                         for (taskSnapshot in tasksSnapshot.children) {
                             val taskID = taskSnapshot.key
+                            val taskName = taskSnapshot.child("taskDescription").getValue(String::class.java)
                             val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
                             val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
                             val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
@@ -213,6 +214,7 @@ class EmployeeHomeFragment : Fragment() {
                             if (taskID != null && taskDescription != null && completedDate == null) {
                                 val task = Tasks(
                                     taskID = taskID,
+                                    taskName = taskName,
                                     taskDescription = taskDescription,
                                     vehicleNumberPlate = numberPlate,
                                     creationDate = creationDate,

@@ -61,7 +61,7 @@ class HomeFragment : Fragment() {
             LottieProperty.COLOR_FILTER
         ) { PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP) }
 
-        // Ensure all IDs are correct and present in fragment_home.xml
+
         btnSettings = view.findViewById(R.id.ivSettings)
         btnGoToTask = view.findViewById(R.id.ivGoToAddTask)
         taskContainer = view.findViewById(R.id.taskContainer)
@@ -87,10 +87,6 @@ class HomeFragment : Fragment() {
             replaceFragment(SettingsFragment())
         }
 
-        /*btnRegVehicle.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(RegisterVehicleFragment())
-        }*/
 
         // Attach methods to ImageViews
 
@@ -139,6 +135,7 @@ class HomeFragment : Fragment() {
                     val tasksSnapshot = vehicleSnapshot.child("Tasks")
                     for (taskSnapshot in tasksSnapshot.children) {
                         val taskID = taskSnapshot.key
+                        val taskName = taskSnapshot.child("taskName").getValue(String::class.java)
                         val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
                         val vehicleNumberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
                         val taskCompletedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
@@ -148,6 +145,7 @@ class HomeFragment : Fragment() {
                             // Use the correct constructor for the Tasks class
                             val task = Tasks(
                                 taskID = taskID,
+                                taskName = taskName,
                                 taskDescription = taskDescription,
                                 vehicleNumberPlate = vehicleNumberPlate,
                                 creationDate = null, // If creationDate is available, pass it here; otherwise, use null
@@ -229,14 +227,14 @@ class HomeFragment : Fragment() {
             // If loading general tasks, consider each child as a task directly
             val tasksSnapshot = if (isGeneralTask) listOf(vehicleSnapshot) else vehicleSnapshot.child("Tasks").children
             val vehicleModel = if (!isGeneralTask) vehicleSnapshot.child("vehicleModel").getValue(String::class.java) else null
-            val numberPlate = if (!isGeneralTask) vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java) else null
+            val numberPlate = if (!isGeneralTask) vehicleSnapshot.child("vehicleNumberPlate").getValue(String::class.java) else null
             val vehicleID = if (!isGeneralTask) vehicleSnapshot.key else null
 
             for (taskSnapshot in tasksSnapshot) {
                 val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
                 val taskId = taskSnapshot.key
-                val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
-                val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+                val creationDate = taskSnapshot.child("creationDate").getValue(Long::class.java)
+                val completedDate = taskSnapshot.child("completedDate").getValue(Long::class.java)
 
                 if (taskId != null && taskDescription != null && completedDate == null) {
                     // Inflate the task item layout
@@ -267,7 +265,7 @@ class HomeFragment : Fragment() {
                     // Handle task completion
                     taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
-                            markTaskAsCompleted(vehicleID ?: "", taskId, taskView, creationDate ?: System.currentTimeMillis())
+                            markTaskAsCompleted( taskId, taskView, creationDate ?: System.currentTimeMillis())
                         }
                     }
 
@@ -281,23 +279,39 @@ class HomeFragment : Fragment() {
 
 
 
-    private fun markTaskAsCompleted(vehicleID: String, taskId: String, taskView: View, creationDate: Long) {
-        val database = Firebase.database.reference.child(userId).child("Vehicles").child(vehicleID).child("Tasks").child(taskId)
+    private fun markTaskAsCompleted(taskId: String, taskView: View, creationDate: Long) {
 
+        if (taskId.isBlank()) {
+            Log.e("markTaskAsCompleted", "Invalid taskId.")
+            return
+        }
+
+        val database = Firebase.database.reference
+            .child("Users")
+            .child(businessId)
+            .child("Employees")
+            .child(userId)
+            .child("Tasks")
+            .child(taskId)
+
+        // Prepare data for completion
         val taskUpdate = mapOf(
-            "taskCompletedDate" to System.currentTimeMillis(), // Add completed date
-            "taskCreatedDate" to creationDate // Ensure original creation date is stored
+            "completedDate" to System.currentTimeMillis(), // Set completed date to the current time
+            "creationDate" to creationDate // Keep the original creation date
         )
 
+        // Update the Firebase node with the completed date
         database.updateChildren(taskUpdate)
             .addOnSuccessListener {
                 taskContainer.removeView(taskView) // Remove the task view from the container
                 Toast.makeText(requireContext(), "Task completed!", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
+            .addOnFailureListener { e ->
+                Log.e("markTaskAsCompleted", "Failed to mark task as completed: ${e.message}")
                 Toast.makeText(requireContext(), "Failed to mark task as completed", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
 
@@ -331,6 +345,7 @@ class HomeFragment : Fragment() {
                         val tasksSnapshot = vehicleSnapshot.child("Tasks")
                         for (taskSnapshot in tasksSnapshot.children) {
                             val taskID = taskSnapshot.key
+                            val taskName = taskSnapshot.child("taskName").getValue(String::class.java)
                             val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
                             val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
                             val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
@@ -339,6 +354,7 @@ class HomeFragment : Fragment() {
                             if (taskID != null && taskDescription != null && completedDate == null) {
                                 val task = Tasks(
                                     taskID = taskID,
+                                    taskName = taskName,
                                     taskDescription = taskDescription,
                                     vehicleNumberPlate = numberPlate,
                                     creationDate = creationDate,
@@ -374,7 +390,6 @@ class HomeFragment : Fragment() {
                     taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             markTaskAsCompleted(
-                                vehicleID = task.vehicleNumberPlate ?: "",
                                 taskId = task.taskID ?: "",
                                 taskView = taskView,
                                 creationDate = task.creationDate ?: System.currentTimeMillis()
@@ -435,41 +450,6 @@ class HomeFragment : Fragment() {
             }
         })
     }
-
-   /* private fun loadCompletedTasksForHistoricalFragment() {
-        val database = Firebase.database.reference.child(userId).child("Vehicles")
-
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val completedTasks = mutableListOf<Tasks>()
-
-                for (vehicleSnapshot in snapshot.children) {
-                    val tasksSnapshot = vehicleSnapshot.child("Tasks")
-                    for (taskSnapshot in tasksSnapshot.children) {
-                        val taskID = taskSnapshot.key
-                        val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                        val vehicleNumberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
-                        val taskCompletedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
-
-                        // Add the task to the list if it has been completed
-                        if (taskCompletedDate != null && taskID != null && taskDescription != null && vehicleNumberPlate != null) {
-                            val task = Tasks(taskID, taskDescription, vehicleNumberPlate)
-                            completedTasks.add(task)
-                        }
-                    }
-                }
-
-                // Pass the completed tasks to the HistoricalTasksFragment
-                displayHistoricalTasksFragment(completedTasks)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load completed tasks: ${error.message}")
-            }
-        })
-    } */
-
-
 
 
 

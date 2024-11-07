@@ -4,22 +4,27 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Tasks(
-    val taskID: String?,
-    val taskDescription: String?,
-    val vehicleNumberPlate: String?,
-    val creationDate: Long?,      // New property for task creation date
-    val completedDate: Long?      // New property for task completion date
+    var taskID: String? = null,
+    val taskName: String? = null,
+    val taskDescription: String? = null,
+    val vehicleNumberPlate: String? = null,
+    val creationDate: Long? = null,      // Property for task creation date
+    val completedDate: Long? = null      // Property for task completion date
 ) : Parcelable {
+    constructor() : this(null, null, null, null, null, null)  // No-argument constructor for Firebase
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readLong(),           // Read creation date from parcel
-        parcel.readLong()            // Read completed date from parcel
+        parcel.readString(),
+        parcel.readLong().takeIf { it != -1L },
+        parcel.readLong().takeIf { it != -1L }
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(taskID)
+        parcel.writeString(taskName)
         parcel.writeString(taskDescription)
         parcel.writeString(vehicleNumberPlate)
         parcel.writeLong(creationDate ?: -1)  // Write creation date to parcel
