@@ -85,25 +85,34 @@ class AdminAnalyticsFragment : Fragment() {
                 }
 
                 // Map to store total tasks for each day of the week
-                val dayOfWeekCounts = mutableMapOf<Int, MutableList<Int>>()
+                val dayOfWeekCounts = mutableMapOf<Int, Int>() // Day of the week -> Task count
+                val dayOfWeekOccurrences = mutableMapOf<Int, Int>() // Day of the week -> Number of occurrences
 
+                // Count the number of tasks completed on each day
                 for (taskSnapshot in snapshot.children) {
                     val completedDate = taskSnapshot.child("completedDate").getValue(Long::class.java)
 
                     if (completedDate != null && completedDate in thirtyDaysAgo..today) {
                         calendar.timeInMillis = completedDate
-                        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Get day of the week (1 = Sunday, 7 = Saturday)
+                        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Get the day of the week (1 = Sunday, 7 = Saturday)
 
-                        if (!dayOfWeekCounts.containsKey(dayOfWeek)) {
-                            dayOfWeekCounts[dayOfWeek] = mutableListOf()
-                        }
-                        dayOfWeekCounts[dayOfWeek]?.add(1) // Add one task for this day
+                        // Increment task count for the day
+                        dayOfWeekCounts[dayOfWeek] = dayOfWeekCounts.getOrDefault(dayOfWeek, 0) + 1
                     }
                 }
 
+                // Calculate occurrences of each day of the week in the past 30 days
+                calendar.timeInMillis = thirtyDaysAgo
+                while (calendar.timeInMillis <= today) {
+                    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+                    dayOfWeekOccurrences[dayOfWeek] = dayOfWeekOccurrences.getOrDefault(dayOfWeek, 0) + 1
+                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                }
+
                 // Calculate averages
-                val dayOfWeekAverages = dayOfWeekCounts.mapValues { (_, tasks) ->
-                    tasks.sum().toDouble() / tasks.size // Average for each day
+                val dayOfWeekAverages = dayOfWeekCounts.mapValues { (dayOfWeek, taskCount) ->
+                    val occurrences = dayOfWeekOccurrences[dayOfWeek] ?: 1 // Avoid division by zero
+                    taskCount.toDouble() / occurrences
                 }
 
                 // Find the most productive day
@@ -112,7 +121,7 @@ class AdminAnalyticsFragment : Fragment() {
                     val dayOfWeekName = getDayOfWeekName(mostProductiveDay.key)
                     val averageTasks = mostProductiveDay.value
 
-                    txtMostProdDay.text = "$dayOfWeekName"
+                    txtMostProdDay.text = dayOfWeekName
                     txtAverageTasks.text = "Average Tasks Completed: %.2f".format(averageTasks)
                 } else {
                     txtMostProdDay.text = "Not enough data available"
@@ -126,6 +135,7 @@ class AdminAnalyticsFragment : Fragment() {
             }
         })
     }
+
     private fun getDayOfWeekName(dayOfWeek: Int): String {
         return when (dayOfWeek) {
             Calendar.SUNDAY -> "Sunday"
@@ -138,6 +148,7 @@ class AdminAnalyticsFragment : Fragment() {
             else -> "Unknown"
         }
     }
+
 
 
 
