@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
+            android:layout_marginHorizontal="10dp"
             android:gravity="center_horizontal"
             android:text="Employee Analytics"
             android:textAlignment="center"

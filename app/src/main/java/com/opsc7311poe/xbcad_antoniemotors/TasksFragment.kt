@@ -116,7 +116,6 @@ class TasksFragment : Fragment() {
 
                     if (task.employeeID == userId){
 
-
                         //adding service to list to filter later
                         listOfAllTasks.add(task);
 
@@ -305,28 +304,78 @@ class TasksFragment : Fragment() {
 
         val taskRef = Firebase.database.reference.child("Users/$businessId/EmployeeTasks").child(taskID)
 
-        //if status completed save current time for completion, else remove it
-        if (tempStatus == "Completed") {
-            // Save the current time as completedDate
-            taskRef.child("completedDate").setValue(System.currentTimeMillis())
-                .addOnSuccessListener {
-                    Log.d("saveStatus Method", "Completion date saved for TaskID: $taskID")
+        // Fetch the employee ID for the task
+        taskRef.child("employeeID").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val employeeID = snapshot.getValue(String::class.java)
+                if (employeeID == null) {
+                    Log.e("saveStatus Method", "No employeeID found for TaskID: $taskID")
+                    return
                 }
-                .addOnFailureListener {
-                    Log.e("saveStatus Method", "Error saving completion date: ${it.message}")
-                }
-        } else {
-            // Remove the completedDate value if the status is not "Completed"
-            taskRef.child("completedDate").removeValue()
-                .addOnSuccessListener {
-                    Log.d("saveStatus Method", "Completion date removed for TaskID: $taskID")
-                }
-                .addOnFailureListener {
-                    Log.e("saveStatus Method", "Error removing completion date: ${it.message}")
-                }
-        }
 
+                val empRef = Firebase.database.reference.child("Users/$businessId/Employees").child(employeeID).child("completedTasks")
 
+                if (tempStatus == "Completed") {
+                    // Save the current time as completedDate
+                    taskRef.child("completedDate").setValue(System.currentTimeMillis())
+                        .addOnSuccessListener {
+                            Log.d("saveStatus Method", "Completion date saved for TaskID: $taskID")
+
+                            // Increment completedTasks count
+                            empRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
+                                override fun doTransaction(mutableData: com.google.firebase.database.MutableData): com.google.firebase.database.Transaction.Result {
+                                    val currentCount = mutableData.getValue(Int::class.java) ?: 0
+                                    mutableData.value = currentCount + 1
+                                    return com.google.firebase.database.Transaction.success(mutableData)
+                                }
+
+                                override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
+                                    if (committed) {
+                                        Log.d("saveStatus Method", "Incremented completedTasks for EmployeeID: $employeeID")
+                                    } else {
+                                        Log.e("saveStatus Method", "Error incrementing completedTasks: ${error?.message}")
+                                    }
+                                }
+                            })
+                        }
+                        .addOnFailureListener {
+                            Log.e("saveStatus Method", "Error saving completion date: ${it.message}")
+                        }
+                } else {
+                    // Remove the completedDate value if the status is not "Completed"
+                    taskRef.child("completedDate").removeValue()
+                        .addOnSuccessListener {
+                            Log.d("saveStatus Method", "Completion date removed for TaskID: $taskID")
+
+                            // Decrement completedTasks count
+                            empRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
+                                override fun doTransaction(mutableData: com.google.firebase.database.MutableData): com.google.firebase.database.Transaction.Result {
+                                    val currentCount = mutableData.getValue(Int::class.java) ?: 0
+                                    mutableData.value = if (currentCount > 0) currentCount - 1 else 0
+                                    return com.google.firebase.database.Transaction.success(mutableData)
+                                }
+
+                                override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
+                                    if (committed) {
+                                        Log.d("saveStatus Method", "Decremented completedTasks for EmployeeID: $employeeID")
+                                    } else {
+                                        Log.e("saveStatus Method", "Error decrementing completedTasks: ${error?.message}")
+                                    }
+                                }
+                            })
+                        }
+                        .addOnFailureListener {
+                            Log.e("saveStatus Method", "Error removing completion date: ${it.message}")
+                        }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("saveStatus Method", "Error fetching employeeID: ${error.message}")
+            }
+        })
+
+        // Update the task's status
         taskRef.child("status").setValue(tempStatus).addOnSuccessListener {
             Toast.makeText(requireContext(), "Task status updated", Toast.LENGTH_LONG).show()
         }.addOnFailureListener {
