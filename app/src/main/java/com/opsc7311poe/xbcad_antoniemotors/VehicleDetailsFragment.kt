@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import java.util.Calendar
 
 class VehicleDetailsFragment : Fragment() {
@@ -72,6 +73,8 @@ class VehicleDetailsFragment : Fragment() {
         btnDeleteVehicle = view.findViewById(R.id.btnDeleteVehicle)
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
 
+
+
         btnSave.visibility = View.INVISIBLE
         btnDeleteVehicle.visibility = View.INVISIBLE
         ynpYearPicker.visibility = View.GONE
@@ -80,10 +83,14 @@ class VehicleDetailsFragment : Fragment() {
         vehicleImagesRecyclerView = view.findViewById(R.id.vehicleImagesRecyclerView)
         vehicleImagesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        setupYearPicker()
         checkUserRole()
+        setupYearPicker()
+
         btnEditVehicleDetails.setOnClickListener { enableEditing(true) }
         btnSave.setOnClickListener { showSaveConfirmationDialog() }
+        // Set up the delete button listener
+        btnDeleteVehicle.setOnClickListener { showDeleteConfirmationDialog() }
+
         searchVehicleAcrossBusinesses()
 
         return view
@@ -151,7 +158,13 @@ class VehicleDetailsFragment : Fragment() {
 
 
     private fun checkUserRole() {
+        Log.d("VehicleDetailsFragment", "Checking user role with businessId: $businessId")
         val userId = auth.currentUser?.uid ?: return
+        if (businessId == null) {
+            Log.e("VehicleDetailsFragment", "Business ID is null, skipping role check.")
+            return
+        }
+
         val userRef = FirebaseDatabase.getInstance().getReference("Users/$businessId/Employees/$userId")
 
         userRef.child("role").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -217,6 +230,58 @@ class VehicleDetailsFragment : Fragment() {
             }
     }
 
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Vehicle")
+            .setMessage("Are you sure you want to delete this vehicle?")
+            .setPositiveButton("Delete") { _, _ -> deleteVehicle() }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    // Delete vehicle and associated images from Firebase
+    private fun deleteVehicle() {
+        if (businessId == null || vehicleId == null) {
+            Toast.makeText(requireContext(), "Error: Missing business or vehicle ID.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val vehicleRef = FirebaseDatabase.getInstance()
+            .getReference("Users/$businessId/Vehicles/$vehicleId")
+
+        vehicleRef.child("images").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Delete each image from Firebase Storage
+                for (imageSnapshot in snapshot.children) {
+                    val imageUrl = imageSnapshot.value.toString()
+                    deleteImageFromStorage(imageUrl)
+                }
+
+                // Now delete the vehicle data
+                vehicleRef.removeValue().addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Vehicle successfully deleted.", Toast.LENGTH_SHORT).show()
+                    // Navigate back or update UI as needed
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to delete vehicle.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error deleting vehicle images.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Function to delete an image from Firebase Storage
+    private fun deleteImageFromStorage(imageUrl: String) {
+        val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+        storageRef.delete().addOnSuccessListener {
+            Log.d("VehicleDetailsFragment", "Image deleted: $imageUrl")
+        }.addOnFailureListener {
+            Log.e("VehicleDetailsFragment", "Failed to delete image: $imageUrl", it)
+        }
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
@@ -224,6 +289,11 @@ class VehicleDetailsFragment : Fragment() {
     }
 }
 
+
+
+
+
+//VehicleImagesAdapter
 class VehicleImagesAdapter(private val imageUrls: List<String>) : RecyclerView.Adapter<VehicleImagesAdapter.VehicleImageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleImageViewHolder {

@@ -90,7 +90,6 @@ class CustomerFragment : Fragment() {
         Log.d("fetchCustomers", "userId found for admin: $adminId")
 
         if (adminId != null) {
-            // Reference to the "Users" node in Firebase
             val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -102,8 +101,10 @@ class CustomerFragment : Fragment() {
                         val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
 
                         if (employeeSnapshot.exists()) {
-                            // Found the employee record; extract the associated BusinessID
+                            // Check for both variations of the business ID key
                             businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
+                                ?: employeeSnapshot.child("businessId").getValue(String::class.java)
+
                             Log.d("fetchCustomers", "BusinessID found for admin: $businessID")
                             break
                         }
@@ -130,7 +131,6 @@ class CustomerFragment : Fragment() {
                                     }
                                 }
 
-                                // Notify the adapter that data has changed
                                 customerAdapter.notifyDataSetChanged()
                             }
 
@@ -155,6 +155,7 @@ class CustomerFragment : Fragment() {
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
 

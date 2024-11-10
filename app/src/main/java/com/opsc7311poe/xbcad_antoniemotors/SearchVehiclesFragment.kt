@@ -26,6 +26,7 @@ class SearchVehiclesFragment : Fragment() {
     private lateinit var vehicleAdapter: VehicleAdapter
     private lateinit var vehicleList: ArrayList<VehicleData>
     private lateinit var searchVehicle: SearchView
+    private var businessId: String? = null // Store businessID here
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,21 +38,19 @@ class SearchVehiclesFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
         searchVehicle = view.findViewById(R.id.vehicleSearch)
         recyclerView = view.findViewById(R.id.recyclerViewVehicle)
-        
-        // Set click listener for the "Add Vehicle" button
+
         vectorPlusButton.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(RegisterVehicleFragment())
         }
 
-        // Set click listener for the "Back" button
         btnBack.setOnClickListener {
             replaceFragment(HomeFragment())
         }
 
         vehicleList = ArrayList()
         vehicleAdapter = VehicleAdapter(vehicleList) { selectedVehicle ->
-            openVehicleDetailsFragment(selectedVehicle) // Updated to pass vehicleId
+            businessId?.let { openVehicleDetailsFragment(selectedVehicle, it) }
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -60,12 +59,11 @@ class SearchVehiclesFragment : Fragment() {
         searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
-                vehicleAdapter.filterList(newText) // Use the filterList method in VehicleAdapter
+                vehicleAdapter.filterList(newText)
                 return false
             }
         })
 
-        // Fetch vehicle data
         fetchVehicles()
 
         return view
@@ -76,29 +74,25 @@ class SearchVehiclesFragment : Fragment() {
         val adminId = FirebaseAuth.getInstance().currentUser?.uid
 
         if (adminId != null) {
-            // Reference to the "Users" node in Firebase
             val usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
-            // Locate the business associated with this admin
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(usersSnapshot: DataSnapshot) {
-                    var businessID: String? = null
-
                     // Iterate over each business node to find where adminId exists under Employees
                     for (businessSnapshot in usersSnapshot.children) {
                         val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
 
                         if (employeeSnapshot.exists()) {
-                            // Found the employee record; extract the associated BusinessID
-                            businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
-                            Log.d("fetchVehicles", "BusinessID found for admin: $businessID")
+                            businessId = employeeSnapshot.child("businessID").getValue(String::class.java)
+                                ?: employeeSnapshot.child("businessId").getValue(String::class.java)
+
+                            Log.d("fetchVehicles", "BusinessID found for admin: $businessId")
                             break
                         }
                     }
 
-                    if (businessID != null) {
-                        // Now use BusinessID to retrieve vehicles under the correct business
-                        val vehicleReference = usersReference.child(businessID).child("Vehicles")
+                    if (businessId != null) {
+                        val vehicleReference = usersReference.child(businessId!!).child("Vehicles")
 
                         vehicleReference.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
@@ -109,12 +103,10 @@ class SearchVehiclesFragment : Fragment() {
                                     return
                                 }
 
-                                // Retrieve each vehicle and add to the list
                                 for (vehicleSnapshot in snapshot.children) {
                                     val vehicle = vehicleSnapshot.getValue(VehicleData::class.java)
-
                                     vehicle?.let {
-                                        it.vehicleId = vehicleSnapshot.key ?: "" // Assign vehicleId from snapshot key
+                                        it.vehicleId = vehicleSnapshot.key ?: ""
                                         vehicleList.add(it)
                                     }
                                 }
@@ -147,10 +139,7 @@ class SearchVehiclesFragment : Fragment() {
         }
     }
 
-
-
-
-    private fun openVehicleDetailsFragment(vehicle: VehicleData) {
+    private fun openVehicleDetailsFragment(vehicle: VehicleData, businessId: String) {
         if (vehicle.vehicleId.isEmpty()) {
             Toast.makeText(requireContext(), "Invalid Vehicle ID.", Toast.LENGTH_SHORT).show()
             return
@@ -159,6 +148,7 @@ class SearchVehiclesFragment : Fragment() {
         val fragment = VehicleDetailsFragment().apply {
             arguments = Bundle().apply {
                 putString("vehicleId", vehicle.vehicleId) // Pass vehicleId
+                putString("businessId", businessId) // Pass businessID
             }
         }
 
@@ -168,9 +158,6 @@ class SearchVehiclesFragment : Fragment() {
             .commit()
     }
 
-
-
-    // Replaces the current fragment with the specified fragment
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
@@ -178,3 +165,4 @@ class SearchVehiclesFragment : Fragment() {
             .commit()
     }
 }
+
