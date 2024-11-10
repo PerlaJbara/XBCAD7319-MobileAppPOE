@@ -3,6 +3,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.ContentValues
 import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -37,7 +38,6 @@ import java.util.*
 
 class RegisterVehicleFragment : Fragment() {
 
-    //private lateinit var spinCustomer: Spinner
     private lateinit var edtCustomer: EditText
     private lateinit var edtVehicleNoPlate: EditText
     private lateinit var edtVehicleMake: EditText
@@ -46,11 +46,26 @@ class RegisterVehicleFragment : Fragment() {
     private lateinit var edtVinNumber: EditText
     private lateinit var edtVehicleKms: EditText
     private lateinit var btnSubmitRegVehicle: Button
-    private lateinit var imgCars: ImageView
-    private lateinit var imgBtnGalleryCars: ImageView
-    private lateinit var galleryCars: RecyclerView
-    //private lateinit var display: ImageView
-    private lateinit var display: RecyclerView
+
+    //side specific vehicle camera buttons
+    private lateinit var imgFront: ImageView
+    private lateinit var imgRight: ImageView
+    private lateinit var imgRear: ImageView
+    private lateinit var imgLeft: ImageView
+
+    // Separate lists for each side
+    private val frontImageUris = mutableListOf<Uri>()
+    private val rightImageUris = mutableListOf<Uri>()
+    private val rearImageUris = mutableListOf<Uri>()
+    private val leftImageUris = mutableListOf<Uri>()
+    private var currentSide: String? = null
+
+
+
+    private lateinit var displayFront: RecyclerView
+    private lateinit var displayRight: RecyclerView
+    private lateinit var displayRear: RecyclerView
+    private lateinit var displayLeft: RecyclerView
     private var selectedCustomerId: String = ""
     private val imageUris = mutableListOf<Uri>()
     private lateinit var btnBack: ImageView
@@ -63,6 +78,7 @@ class RegisterVehicleFragment : Fragment() {
     // Reference to the Customers node in your database
     val databaseRef = FirebaseDatabase.getInstance().getReference("Customers")
     val databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
+
     // List to hold vehicle makes
     val vehicleMakesList = mutableListOf<String>()
 
@@ -74,6 +90,7 @@ class RegisterVehicleFragment : Fragment() {
     //accessing the camera
     private val CAMERA_PERMISSION_REQUEST_CODE = 100
     private val CAMERA_REQUEST_CODE = 101
+    private val REQUEST_IMAGE_CAPTURE = 102
 
 
     override fun onCreateView(
@@ -83,7 +100,6 @@ class RegisterVehicleFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_register_vehicle, container, false)
 
         // Initialize views
-        //spinCustomer = view.findViewById(R.id.customerspinner)
         edtCustomer = view.findViewById(R.id.edtCustomerNames)
         edtVehicleNoPlate = view.findViewById(R.id.edttxtVehicleNoPlate)
         edtVehicleModel = view.findViewById(R.id.edttxtVehicleModel)
@@ -93,13 +109,17 @@ class RegisterVehicleFragment : Fragment() {
         edtVehicleKms = view.findViewById(R.id.edttxtVehicleKms)
         btnSubmitRegVehicle = view.findViewById(R.id.btnSubmitRegVehicle)
         btnBack = view.findViewById(R.id.ivBackButton)
-        display = view.findViewById(R.id.cameraRecyclerView)
-        imgBtnGalleryCars = view.findViewById(R.id.imgAttachImage)
-        galleryCars = view.findViewById(R.id.gimgRecyclerView)
-        imgCars = view.findViewById(R.id.imgCamera)
+
+        displayFront = view.findViewById(R.id.rvVehicleFront)
+        displayRight = view.findViewById(R.id.rvVehicleRightSide)
+        displayRear = view.findViewById(R.id.rvVehicleLeftSide)
+        displayLeft = view.findViewById(R.id.rvVehicleRear)
+
+        imgFront = view.findViewById(R.id.imgVehicleFront)
+        imgRight = view.findViewById(R.id.imgVehicleRightSide)
+        imgRear = view.findViewById(R.id.imgVehicleRear)
+        imgLeft = view.findViewById(R.id.imgVehicleLeftSide)
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
-
-
 
 
         edtCustomer.setOnClickListener {
@@ -107,9 +127,6 @@ class RegisterVehicleFragment : Fragment() {
             showCustomerSelectionDialog()
         }
 
-        // Populate Spinner with customer names
-        // val userId = FirebaseAuth.getInstance().currentUser?.uid
-        //userId?.let { populateCustomerSpinner() } //it
 
         vehiclePORList = ArrayList()
 
@@ -122,35 +139,36 @@ class RegisterVehicleFragment : Fragment() {
 
         fetchVehicleMakes()
 
-        // Image upload click listeners
-        imgBtnGalleryCars.setOnClickListener { selectImagesFromGallery() }
 
-        galleryCars = view.findViewById(R.id.gimgRecyclerView)
-        val imageAdapter = ImageAdapter(imageUris) { uri ->
-            // Handle removing the image when the user clicks the remove button
-            removeImage(uri)
-        }
-        galleryCars.adapter = imageAdapter
-        galleryCars.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        //imgCars.setOnClickListener { captureImageWithCamera() }
+        imgFront.setOnClickListener { handleCameraPermission("front") }
+        imgRight.setOnClickListener { handleCameraPermission("right") }
+        imgRear.setOnClickListener { handleCameraPermission("rear") }
+        imgLeft.setOnClickListener { handleCameraPermission("left") }
 
 
-        imgCars.setOnClickListener { handleCameraPermission() }
+        val frontAdapter = ImageAdapter(frontImageUris) { uri -> removeImage(uri, frontImageUris) }
+        val rightAdapter = ImageAdapter(rightImageUris) { uri -> removeImage(uri, rightImageUris) }
+        val rearAdapter = ImageAdapter(rearImageUris) { uri -> removeImage(uri, rearImageUris) }
+        val leftAdapter = ImageAdapter(leftImageUris) { uri -> removeImage(uri, leftImageUris) }
 
-        // Initialize adapter for camera images
-        /* val cameraImageAdapter = ImageAdapter(imageUris) { uriToRemove ->
-             imageUris.remove(uriToRemove)  // Remove image from the list
-             display.adapter?.notifyDataSetChanged()  // Notify adapter
-         }*/
+        displayFront.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        displayFront.adapter = frontAdapter
 
-        val cameraImageAdapter = ImageAdapter(imageUris) { uri ->
-            // Handle removing the image when the user clicks the remove button
-            removeImage(uri)
-        }
+        displayRight.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        displayRight.adapter = rightAdapter
 
-        // Set up RecyclerView with adapter
-        display.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        display.adapter = cameraImageAdapter
+        displayRear.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        displayRear.adapter = rearAdapter
+
+        displayLeft.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        displayLeft.adapter = leftAdapter
+
+
+        // Set click listeners for capturing images
+        imgFront.setOnClickListener { handleCameraPermission("front") }
+        imgRight.setOnClickListener { handleCameraPermission("right") }
+        imgRear.setOnClickListener { handleCameraPermission("rear") }
+        imgLeft.setOnClickListener { handleCameraPermission("left") }
 
         edtVehicleMake.setOnClickListener {
             showVehicleMakeDialog()
@@ -395,7 +413,7 @@ class RegisterVehicleFragment : Fragment() {
 
         edtVehicleKms.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                galleryCars.requestFocus()
+                imgFront.requestFocus()
                 true
             } else {
                 false
@@ -658,7 +676,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    private fun uploadVehicleImages(businessId: String, vehicleId: String) {
+   /* private fun uploadVehicleImages(businessId: String, vehicleId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null && imageUris.isNotEmpty()) {
             // Proceed with uploading each image to Firebase Storage and saving URLs to the database
@@ -691,94 +709,180 @@ class RegisterVehicleFragment : Fragment() {
                     }
             }
         }
-    }
+    }*/
 
-
-
-
-
-
-    private fun selectImagesFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+    private fun uploadVehicleImages(businessId: String, vehicleId: String) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            uploadImagesForSide(businessId, vehicleId, "front", frontImageUris)
+            uploadImagesForSide(businessId, vehicleId, "right", rightImageUris)
+            uploadImagesForSide(businessId, vehicleId, "rear", rearImageUris)
+            uploadImagesForSide(businessId, vehicleId, "left", leftImageUris)
         }
-        startActivityForResult(intent, PICK_IMAGES_REQUEST)
     }
 
-    private fun handleCameraPermission() {
+
+    private fun uploadImagesForSide(businessId: String, vehicleId: String, side: String, imageUris: List<Uri>) {
+        if (imageUris.isNotEmpty()) {
+            for (uri in imageUris) {
+                val uniqueImageId = UUID.randomUUID().toString()
+                val storageRef = storage.child("$businessId/Vehicles/$vehicleId/$side/$uniqueImageId.jpg")
+
+                storageRef.putFile(uri)
+                    .addOnSuccessListener { taskSnapshot ->
+                        storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                            val imageRef = FirebaseDatabase.getInstance().getReference("Users")
+                                .child(businessId)
+                                .child("Vehicles")
+                                .child(vehicleId)
+                                .child("images")
+                                .child(side)
+                                .child(uniqueImageId)
+
+                            imageRef.setValue(downloadUri.toString()).addOnSuccessListener {
+                                Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener {
+                                Toast.makeText(context, "Failed to save image URL in database", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
+    }
+
+
+
+
+    private fun handleCameraPermission(side: String) {
+        currentSide = side // Set the current side for later use
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         } else {
-            captureImageWithCamera()
+            captureImageWithCamera(side)
         }
     }
 
-    private fun captureImageWithCamera() {
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
+
+    // Capture image and add it to the respective list
+    private fun captureImageWithCamera(side: String) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+        } else {
+            // Set the current side being captured
+            currentSide = side
+            // Start the camera intent
+            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
+        }
     }
 
-    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path)
+    private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
+        val resolver = context.contentResolver
+        val imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+
+        // Create a unique file name by appending the current timestamp
+        val imageName = "Title_${System.currentTimeMillis()}.jpg"
+
+        // Configure the file metadata
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, imageName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/")
+        }
+
+        // Insert the new image record into the MediaStore
+        val imageUri = resolver.insert(imageCollection, contentValues)
+
+        return try {
+            if (imageUri != null) {
+                resolver.openOutputStream(imageUri)?.use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                }
+            }
+            imageUri
+        } catch (e: Exception) {
+            // Log the error and remove the image entry from MediaStore if insertion fails
+            e.printStackTrace()
+            imageUri?.let { resolver.delete(it, null, null) }
+            null
+        }
     }
+
+
+
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                captureImageWithCamera()
+                currentSide?.let { captureImageWithCamera(it) } // Use currentSide as the side parameter
             }
         }
     }
 
-    private fun removeImage(uri: Uri) {
-        imageUris.remove(uri)
-        galleryCars.adapter?.notifyDataSetChanged()
-        display.adapter?.notifyDataSetChanged()
+    private fun removeImage(uri: Uri, imageList: MutableList<Uri>) {
+        imageList.remove(uri)
+        // Notify the appropriate adapter based on the list being passed
+        when (imageList) {
+            frontImageUris -> displayFront.adapter?.notifyDataSetChanged()
+            rightImageUris -> displayRight.adapter?.notifyDataSetChanged()
+            rearImageUris -> displayRear.adapter?.notifyDataSetChanged()
+            leftImageUris -> displayLeft.adapter?.notifyDataSetChanged()
+        }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                PICK_IMAGES_REQUEST -> {
-                    handleGalleryImages(data)
-                }
-                CAMERA_REQUEST_CODE -> {
+                REQUEST_IMAGE_CAPTURE -> {
                     handleCameraImage(data)
                 }
             }
         }
     }
 
-    private fun handleGalleryImages(data: Intent?) {
-        data?.let {
-            if (it.clipData != null) {
-                for (i in 0 until it.clipData!!.itemCount) {
-                    imageUris.add(it.clipData!!.getItemAt(i).uri)
-                }
-            } else if (it.data != null) {
-                imageUris.add(it.data!!)
-            }
-            galleryCars.adapter?.notifyDataSetChanged() // Update RecyclerView with new images
-        }
-    }
 
     private fun handleCameraImage(data: Intent?) {
         val photoBitmap = data?.extras?.get("data") as? Bitmap
-        photoBitmap?.let {
-            val tempUri = getImageUriFromBitmap(requireContext(), it)
-            imageUris.add(tempUri)  // Add the captured image URI to the list
-            display.adapter?.notifyDataSetChanged() // Notify the adapter of data change
+        if (photoBitmap == null) {
+            Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val tempUri = getImageUriFromBitmap(requireContext(), photoBitmap)
+
+        if (tempUri != null) {
+            when (currentSide) {
+                "front" -> {
+                    frontImageUris.add(tempUri)
+                    displayFront.adapter?.notifyDataSetChanged()
+                }
+                "right" -> {
+                    rightImageUris.add(tempUri)
+                    displayRight.adapter?.notifyDataSetChanged()
+                }
+                "rear" -> {
+                    rearImageUris.add(tempUri)
+                    displayRear.adapter?.notifyDataSetChanged()
+                }
+                "left" -> {
+                    leftImageUris.add(tempUri)
+                    displayLeft.adapter?.notifyDataSetChanged()
+                }
+                else -> {
+                    Toast.makeText(requireContext(), "Unknown side: $currentSide", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
 
     private fun replaceFragment(fragment: Fragment) {
