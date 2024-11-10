@@ -313,39 +313,34 @@ class RegisterVehicleFragment : Fragment() {
 
 
     private fun fetchVehiclePORData() {
-        // Reference to VehiclePOR node in Firebase
         val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
 
-        // Attach listener to fetch data
         vehiclePORRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Clear the list first
                 vehiclePORList.clear()
 
-                // Loop through the data to get values
-                for (vehiclePORSnapshot in snapshot.children) {
-                    // Check if the snapshot can be cast to a String
-                    val value = vehiclePORSnapshot.getValue(String::class.java)
-
-                    if (value != null) {
-                        // Add the string value to the list
-                        vehiclePORList.add(value)
-                    } else {
-                        // Handle the case where the snapshot is not a String
-                        Log.e("fetchVehiclePORData", "Expected String but found different structure. Skipping.")
+                // Loop through each area under VehiclePOR
+                for (areaSnapshot in snapshot.children) {
+                    val provinceCode = areaSnapshot.child("provinceCode").getValue(String::class.java)
+                    if (provinceCode != null) {
+                        // Add each province code to the list
+                        vehiclePORList.add(provinceCode)
                     }
                 }
+
+                // Sort province codes alphabetically
+                vehiclePORList.sort()
 
                 // Notify adapter about the data change
                 vehiclePORAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle possible errors
                 Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 
 
     private fun setupYearPicker() {
@@ -526,6 +521,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
     private fun registerVehicle() {
+        // Retrieve and format inputs
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
         val vehicleModel = edtVehicleModel.text.toString().trim()
         val vinNumber = edtVinNumber.text.toString().trim().uppercase()
@@ -538,112 +534,112 @@ class RegisterVehicleFragment : Fragment() {
             Toast.makeText(context, "Please fill in all mandatory fields", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Validate vehicle number plate
         if (!vehicleNoPlate.matches(Regex("^[a-zA-Z0-9]{1,7}$"))) {
             Toast.makeText(context, "Invalid number plate. It must be alphanumeric and 1-7 characters long.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Validate VIN number (only if it's not empty)
         if (vinNumber.isNotEmpty() && !vinNumber.matches(Regex("^[A-Z0-9]{17}$"))) {
             Toast.makeText(context, "Invalid VIN number. It must be exactly 17 alphanumeric characters.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Validate vehicle kilometers
         if (!vehicleKms.matches(Regex("^[0-9]+$"))) {
             Toast.makeText(context, "Invalid kilometers. It must be a number.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // Check if the customer is selected
         if (selectedCustomerId.isEmpty()) {
             Toast.makeText(context, "Please select a customer", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Combine VehicleNumPlate and VehiclePOR
-        val fullVehicleNumPlate = "$vehicleNoPlate $vehiclePOR"
+        // Reference to the selected POR in Firebase
+        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR/$vehiclePOR")
+        vehiclePORRef.child("layout").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(layoutSnapshot: DataSnapshot) {
+                val layout = layoutSnapshot.getValue(Int::class.java) ?: 1
 
-        // Get the current date and time
-        val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
-
-        // Get the selected year from the NumberPicker
-        val selectedYear = ynpYearPicker.value.toString()
-
-        // Get the current user's (admin's) ID
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val adminId = currentUser?.uid ?: return
-
-        // Reference to the Users node
-        val usersReference = FirebaseDatabase.getInstance().getReference("Users")
-
-        // Iterate over each business node to find where adminId exists under Employees
-        usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(usersSnapshot: DataSnapshot) {
-                var businessId: String? = null
-                var adminFullName: String? = null
-
-                // Iterate over each business node in Users
-                for (businessSnapshot in usersSnapshot.children) {
-                    val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
-
-                    if (employeeSnapshot.exists()) {
-                        // Found the business record; get the businessId and admin's full name
-                        businessId = businessSnapshot.key
-                        val firstName = employeeSnapshot.child("firstName").getValue(String::class.java) ?: ""
-                        val lastName = employeeSnapshot.child("lastName").getValue(String::class.java) ?: ""
-                        adminFullName = "$firstName $lastName"
-                        break
-                    }
+                // Construct fullVehicleNumPlate based on layout
+                val fullVehicleNumPlate = if (layout == 1) {
+                    "$vehiclePOR $vehicleNoPlate"
+                } else {
+                    "$vehicleNoPlate $vehiclePOR"
                 }
 
-                if (businessId != null && adminFullName != null) {
-                    // Constructing the VehicleData object
-                    val vehicle = VehicleData(
-                        VehicleOwner = vehicleOwner, // Customer's full name
-                        customerID = selectedCustomerId, // Use the selected customer's ID
-                        VehicleNumPlate = fullVehicleNumPlate,
-                        VehiclePOR = vehiclePOR,
-                        VehicleModel = vehicleModel,
-                        VehicleMake = edtVehicleMake.text.toString(),
-                        VehicleYear = selectedYear,
-                        VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
-                        VehicleKms = vehicleKms,
-                        registrationDate = currentDate,
-                        AdminID = adminId, // Attach admin ID
-                        AdminFullName = adminFullName // Attach admin full name
-                    )
+                // Get current date and year
+                val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+                val selectedYear = ynpYearPicker.value.toString()
 
-                    // Reference to the Vehicles node under the correct businessId
-                    val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
+                // Get the current user's (admin's) ID
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                val adminId = currentUser?.uid ?: return
 
-                    // Assign the generated unique key as the vehicleId
-                    vehicle.vehicleId = vehicleRef.key ?: ""
+                // Reference to the Users node
+                val usersReference = FirebaseDatabase.getInstance().getReference("Users")
+                usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(usersSnapshot: DataSnapshot) {
+                        var businessId: String? = null
+                        var adminFullName: String? = null
 
-                    vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // Pass the businessId and vehicleId to uploadVehicleImages
-                            uploadVehicleImages(businessId, vehicleRef.key!!)
-                            Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
-                            clearInputFields()
+                        // Locate the admin's business ID and full name
+                        for (businessSnapshot in usersSnapshot.children) {
+                            val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
+                            if (employeeSnapshot.exists()) {
+                                businessId = businessSnapshot.key
+                                val firstName = employeeSnapshot.child("firstName").getValue(String::class.java) ?: ""
+                                val lastName = employeeSnapshot.child("lastName").getValue(String::class.java) ?: ""
+                                adminFullName = "$firstName $lastName"
+                                break
+                            }
+                        }
+
+                        if (businessId != null && adminFullName != null) {
+                            // Construct the VehicleData object
+                            val vehicle = VehicleData(
+                                VehicleOwner = vehicleOwner,
+                                customerID = selectedCustomerId,
+                                VehicleNumPlate = fullVehicleNumPlate,
+                                VehiclePOR = vehiclePOR,
+                                VehicleModel = vehicleModel,
+                                VehicleMake = edtVehicleMake.text.toString(),
+                                VehicleYear = selectedYear,
+                                VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
+                                VehicleKms = vehicleKms,
+                                registrationDate = currentDate,
+                                AdminID = adminId,
+                                AdminFullName = adminFullName
+                            )
+
+                            // Reference to Vehicles node under the correct businessId
+                            val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
+                            vehicle.vehicleId = vehicleRef.key ?: ""
+
+                            vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    uploadVehicleImages(businessId, vehicleRef.key!!)
+                                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                                    clearInputFields()
+                                } else {
+                                    Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         } else {
-                            Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                            Log.e("registerVehicle", "Business ID not found for the current admin.")
+                            Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
                         }
                     }
-                } else {
-                    Log.e("registerVehicle", "Business ID not found for the current admin.")
-                    Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
-                }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("registerVehicle", "Error fetching business information: ${error.message}")
+                        Toast.makeText(context, "Error fetching business information.", Toast.LENGTH_SHORT).show()
+                    }
+                })
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("registerVehicle", "Error fetching business information: ${error.message}")
-                Toast.makeText(context, "Error fetching business information.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error retrieving layout for POR.", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 
 
 

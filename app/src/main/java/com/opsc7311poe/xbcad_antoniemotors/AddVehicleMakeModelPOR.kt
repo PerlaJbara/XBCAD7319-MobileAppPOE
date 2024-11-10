@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -26,6 +27,8 @@ private lateinit var edtNewPOR: EditText
 private lateinit var btnAddNewVMake: Button
 private lateinit var btnAddNewVModel: Button
 private lateinit var btnAddNewPOR: Button
+private lateinit var rbBNumPlate: RadioButton
+private lateinit var rbENumPlate: RadioButton
 
 class AddVehicleMakeModelPOR : Fragment() {
 
@@ -48,6 +51,8 @@ class AddVehicleMakeModelPOR : Fragment() {
         btnAddNewVModel = view.findViewById(R.id.btnAddVehicleModel)
         btnAddNewPOR = view.findViewById(R.id.btnAddPOR)
         btnBack = view.findViewById(R.id.ivBackButton)
+        rbBNumPlate = view.findViewById(R.id.rbBeginning)
+        rbENumPlate = view.findViewById(R.id.rbEnd)
 
         databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
 
@@ -97,6 +102,29 @@ class AddVehicleMakeModelPOR : Fragment() {
             replaceFragment(VehicleMenuFragment())
         }
 
+        rbBNumPlate.setOnClickListener {
+            if (rbBNumPlate.isChecked) {
+                // If `rbBNumPlate` is already checked, uncheck it
+                rbBNumPlate.isChecked = true
+            } else {
+                // Otherwise, check it and uncheck `rbENumPlate`
+                rbBNumPlate.isChecked = true
+                rbENumPlate.isChecked = false
+            }
+        }
+
+        rbENumPlate.setOnClickListener {
+            if (rbENumPlate.isChecked) {
+                // If `rbENumPlate` is already checked, uncheck it
+                rbENumPlate.isChecked = true
+            } else {
+                // Otherwise, check it and uncheck `rbBNumPlate`
+                rbENumPlate.isChecked = true
+                rbBNumPlate.isChecked = false
+            }
+        }
+
+
         return view
     }
 
@@ -138,16 +166,27 @@ class AddVehicleMakeModelPOR : Fragment() {
         })
     }
 
-    // Check and add Province/Area Registration code
     private fun checkAndAddPOR(province: String, por: String) {
         val porRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+
+        // Determine Layout value based on radio button selection
+        val layout = if (rbBNumPlate.isChecked) 1 else if (rbENumPlate.isChecked) 2 else 0
+
+        if (layout == 0) {
+            Toast.makeText(requireContext(), "Please select Beginning or End layout.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val provinceData = ProvinceCodeData(province, por, layout)
+
         porRef.child(province).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     Toast.makeText(requireContext(), "Province/Area name already exists.", Toast.LENGTH_SHORT).show()
                 } else {
-                    porRef.child(province).setValue(ProvinceCodeData(province, por))
+                    porRef.child(province).setValue(provinceData)
                     Toast.makeText(requireContext(), "Province/Area and POR Code added.", Toast.LENGTH_SHORT).show()
+                    clearPORFields()
                 }
             }
 
@@ -156,6 +195,7 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
         })
     }
+
 
     // Fetch vehicle makes to display in the dialog
     private fun fetchVehicleMakes() {
@@ -207,6 +247,13 @@ class AddVehicleMakeModelPOR : Fragment() {
         })
 
         alertDialog.show()
+    }
+
+    private fun clearPORFields() {
+        edtNewProvinceAreaName.text?.clear()
+        edtNewPOR.text?.clear()
+        rbBNumPlate.isChecked = false
+        rbENumPlate.isChecked = false
     }
 
     private fun replaceFragment(fragment: Fragment) {
