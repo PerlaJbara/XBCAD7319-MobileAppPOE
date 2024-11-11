@@ -18,10 +18,16 @@
 
 
     <string-array name="leave_types">
-        <item>ANNUAL LEAVE</item>
-        <item>SICK LEAVE</item>
-        <item>MATERNITY LEAVE</item>
-        <item>FAMILY RESPONSIBILITY LEAVE</item>
+        <item>Annual Leave</item>
+        <item>Sick Leave</item>
+        <item>Family Responsibility Leave</item>
+        <item>Bereavement Leave</item>
+        <item>Maternity Leave</item>
+        <item>Parental Leave</item>
+        <item>Religious Leave</item>
+        <item>Study Leave</item>
+        <item>Unpaid Leave</item>
+
     </string-array>
 
 </resources>

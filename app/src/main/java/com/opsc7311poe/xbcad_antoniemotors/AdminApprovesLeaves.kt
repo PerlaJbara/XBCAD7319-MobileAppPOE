@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AdminApprovesLeaves : Fragment() {
     private lateinit var leaveRequestContainer: LinearLayout
@@ -51,8 +54,8 @@ class AdminApprovesLeaves : Fragment() {
                     if (employees.hasChild(currentAdminId)) {
                         // The admin is associated with this business
                         businessID = businessSnapshot.key.toString()
-                        // Now fetch pending leave requests for the business
-                        fetchPendingLeaveRequests(businessID)
+                        // Now fetch leave requests for this business
+                        fetchLeaveRequestsForBusiness(businessID, currentAdminId)
                         break
                     }
                 }
@@ -64,25 +67,49 @@ class AdminApprovesLeaves : Fragment() {
         })
     }
 
-    // Fetch pending leave requests for the business
-    private fun fetchPendingLeaveRequests(businessId: String) {
-        val leaveRef = database.reference.child("Users").child(businessId).child("Leave")
+    // Fetch leave requests for the business where managerID matches the logged-in admin
+    private fun fetchLeaveRequestsForBusiness(businessId: String, managerId: String) {
+        val employeesRef = database.reference.child("Users").child(businessId).child("Employees")
 
-        leaveRef.orderByChild("Status").equalTo("pending").addListenerForSingleValueEvent(object : ValueEventListener {
+        employeesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 leaveRequestContainer.removeAllViews()  // Clear previous leave requests
 
-                // Iterate through the pending leave requests and display them
+                // Loop through all employees
+                for (employeeSnapshot in snapshot.children) {
+                    val employeeId = employeeSnapshot.key
+                    val managerID = employeeSnapshot.child("managerID").getValue(String::class.java)
+
+                    // Check if the managerID matches the logged-in admin's ID
+                    if (managerID == managerId) {
+                        // Now fetch the pending leave requests for this employee
+                        fetchPendingLeaveRequests(businessId, employeeId)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Failed to fetch employees", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Fetch pending leave requests for the employee
+    private fun fetchPendingLeaveRequests(businessId: String, employeeId: String?) {
+        if (employeeId == null) return
+
+        val leaveRef = database.reference.child("Users").child(businessId).child("Employees")
+            .child(employeeId).child("PendingLeave")
+
+        leaveRef.orderByChild("Status").equalTo("pending").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
                 for (leaveSnapshot in snapshot.children) {
-                    val employeeId = leaveSnapshot.key
                     val leaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
                     val startDate = leaveSnapshot.child("startDate").getValue(String::class.java) ?: "N/A"
                     val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: "N/A"
 
                     // Fetch employee name and add the leave request to the UI
-                    if (employeeId != null) {
-                        fetchEmployeeName(employeeId, leaveType, startDate, endDate, businessId)
-                    }
+                    fetchEmployeeName(employeeId, leaveType, startDate, endDate, businessId)
                 }
             }
 
@@ -117,74 +144,47 @@ class AdminApprovesLeaves : Fragment() {
 
     // Add leave request to the UI for admin to approve
     private fun addLeaveRequestToLayout(employeeId: String, employeeName: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
-        val leaveRequestLayout = LinearLayout(requireContext()).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16, 16, 16, 16)
+        // Inflate the card layout
+        val cardView = layoutInflater.inflate(R.layout.card_leave_approval, leaveRequestContainer, false) as CardView
+
+        // Set values for each field in the card layout
+        val txtEmployeeName = cardView.findViewById<TextView>(R.id.txtEmployeeName)
+        val txtLeaveType = cardView.findViewById<TextView>(R.id.txtLeaveType)
+        val txtStartDate = cardView.findViewById<TextView>(R.id.txtStartDate)
+        val txtEndDate = cardView.findViewById<TextView>(R.id.txtEndDate)
+        val txtTotalDuration = cardView.findViewById<TextView>(R.id.txtTotalDuration)
+        val btnViewMore = cardView.findViewById<Button>(R.id.btnRestoreTask)
+
+        // Populate the text fields with data
+        txtEmployeeName.text = employeeName
+        txtLeaveType.text = leaveType
+        txtStartDate.text = startDate
+        txtEndDate.text = endDate
+
+        // Calculate the total duration (in days)
+        val totalDuration = calculateLeaveDuration(startDate, endDate)
+        txtTotalDuration.text = "$totalDuration days"
+
+        // Set button click listeners for approving and denying the leave request
+        btnViewMore.setOnClickListener {
+            // Example of action for the View More button, like showing more details in a new screen
+            Toast.makeText(requireContext(), "Viewing more for $employeeName", Toast.LENGTH_SHORT).show()
         }
 
-        val employeeTextView = TextView(requireContext()).apply {
-            text = "Employee Name: $employeeName"
-            textSize = 16f
-        }
-
-        val leaveTypeTextView = TextView(requireContext()).apply {
-            text = "Leave Type: $leaveType"
-            textSize = 16f
-        }
-
-        val leaveDatesTextView = TextView(requireContext()).apply {
-            text = "Start: $startDate - End: $endDate"
-            textSize = 16f
-        }
-
-        val approveButton = Button(requireContext()).apply {
-            text = "Approve"
-            setOnClickListener {
-                approveLeaveRequest(businessId, employeeId)  // Pass employeeId here
-            }
-        }
-
-        val denyButton = Button(requireContext()).apply {
-            text = "Deny"
-            setOnClickListener {
-                denyLeaveRequest(businessId, employeeId)  // Pass employeeId here
-            }
-        }
-
-        leaveRequestLayout.addView(employeeTextView)
-        leaveRequestLayout.addView(leaveTypeTextView)
-        leaveRequestLayout.addView(leaveDatesTextView)
-        leaveRequestLayout.addView(approveButton)
-        leaveRequestLayout.addView(denyButton)
-
-        leaveRequestContainer.addView(leaveRequestLayout)
+        // Add the card to the container
+        leaveRequestContainer.addView(cardView)
     }
 
-    // Function to approve leave request and update status
-    private fun approveLeaveRequest(businessId: String, employeeId: String) {
-        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeId).child("Status")
-        leaveRef.setValue("approved")
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Leave request approved", Toast.LENGTH_SHORT).show()
-                // Refresh the leave requests after approval
-                fetchPendingLeaveRequests(businessId)
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to approve leave request", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    // Function to deny and remove leave request
-    private fun denyLeaveRequest(businessId: String, employeeId: String) {
-        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeId)
-        leaveRef.removeValue()
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Leave request denied", Toast.LENGTH_SHORT).show()
-                // Refresh the leave requests after denial
-                fetchPendingLeaveRequests(businessId)
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to deny leave request", Toast.LENGTH_SHORT).show()
-            }
+    // Helper function to calculate the total duration of leave
+    private fun calculateLeaveDuration(startDate: String, endDate: String): Int {
+        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        return try {
+            val start = format.parse(startDate)
+            val end = format.parse(endDate)
+            val difference = end.time - start.time
+            (difference / (1000 * 60 * 60 * 24)).toInt()
+        } catch (e: Exception) {
+            0
+        }
     }
 }

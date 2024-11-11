@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import Leave
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,8 +16,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.android.material.badge.BadgeDrawable
+import java.text.SimpleDateFormat
 import java.util.Calendar
-
+import java.util.Date
+import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
@@ -197,6 +200,7 @@ class MainActivity : AppCompatActivity() {
                 bottomNavView.menu.clear()
                 bottomNavView.inflateMenu(R.menu.empmenu) // Load employee menu
                 resetCompletedTasks()
+                assignAndCheckLeave()
             }
             else -> {
                 Log.w("MainActivity", "Unknown user role: $userRole")
@@ -205,6 +209,63 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun assignAndCheckLeave() {
+        val userId = auth.currentUser?.uid ?: return
+        val leaveRef = FirebaseDatabase.getInstance().reference.child("Users").child(businessId).child("Employees").child(userId).child("Leave")
+
+        leaveRef.setValue(defaultLeaveTypes()).addOnSuccessListener {
+            Log.d("Firebase", "Leave assigned successfully")
+            checkAndRenewLeave(userId, businessId)
+        }.addOnFailureListener { e ->
+            Log.e("Firebase", "Error assigning leave", e)
+        }
+    }
+
+
+    fun checkAndRenewLeave(userId: String, businessId: String) {
+        val database = FirebaseDatabase.getInstance().reference
+        val leaveRef = database.child("Users").child(businessId).child("Employees").child(userId).child("Leave")
+
+        leaveRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+                snapshot.children.forEach { leaveType ->
+                    val leave = leaveType.getValue(Leave::class.java)
+                    leave?.let {
+                        val expiryDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it.expiryDate)
+                        val expiryYear = Calendar.getInstance().apply { time = expiryDate }.get(Calendar.YEAR)
+
+                        // If it's a new year and leave has expired
+                        if (currentYear > expiryYear) {
+                            val newLeaveDays =
+                                (it.leaveDays + defaultLeaveTypes()[leaveType.key]?.leaveDays!!)
+                                    ?: 0
+
+                            // Update with renewed leave days and set new expiry date
+                            leaveRef.child(leaveType.key!!).setValue(
+                                Leave(
+                                    leaveDays = newLeaveDays,
+                                    dateAssigned = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                                    expiryDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+                                        calendar.add(Calendar.YEAR, 1)
+                                    }.format(Date())
+                                )
+                            ).addOnSuccessListener {
+                                Log.d("Firebase", "${leaveType.key} renewed successfully")
+                            }.addOnFailureListener { e ->
+                                Log.e("Firebase", "Error renewing ${leaveType.key}", e)
+                            }
+                        }
+                    }
+                }
+            }
+        }.addOnFailureListener { e ->
+            Log.e("Firebase", "Error retrieving leave data", e)
+        }
+    }
+
+
 
     fun resetCompletedTasks() {
         // Get today's date
@@ -232,6 +293,103 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+    fun defaultLeaveTypes(): Map<String, Leave> {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val calendar = Calendar.getInstance()
+
+        return mapOf(
+            // Sick Leave expires in 36 months (3 years)
+            "Sick Leave" to Leave(
+                leaveDays = 30,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.MONTH, 36)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Parental Leave expires in 12 months (1 year)
+            "Parental Leave" to Leave(
+                leaveDays = 10,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.YEAR, 1)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Study Leave expires in 12 months (1 year)
+            "Study Leave" to Leave(
+                leaveDays = 5,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.YEAR, 1)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Bereavement Leave expires in 6 months
+            "Bereavement Leave" to Leave(
+                leaveDays = 3,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.MONTH, 6)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Annual Leave expires in 18 months
+            "Annual Leave" to Leave(
+                leaveDays = 15,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.MONTH, 18)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Maternity Leave expires in 12 months
+            "Maternity Leave" to Leave(
+                leaveDays = 120,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.YEAR, 1)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Unpaid Leave (no expiration, using an arbitrary far future date)
+            "Unpaid Leave" to Leave(
+                leaveDays = 0,
+                dateAssigned = today,
+                expiryDate = "2099-12-31"
+            ),
+
+            // Family Responsibility Leave expires in 12 months
+            "Family Responsibility Leave" to Leave(
+                leaveDays = 3,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.YEAR, 1)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            ),
+
+            // Religious Leave expires in 12 months
+            "Religious Leave" to Leave(
+                leaveDays = 5,
+                dateAssigned = today,
+                expiryDate = calendar.apply {
+                    time = Date()
+                    add(Calendar.YEAR, 1)
+                }.time.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) }
+            )
+        )
+    }
+
+
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
