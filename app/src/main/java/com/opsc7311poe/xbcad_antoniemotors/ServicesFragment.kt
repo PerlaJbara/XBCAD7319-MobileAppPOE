@@ -270,8 +270,8 @@ class ServicesFragment : Fragment() {
                     for (customerSnapshot in snapshot.children) {
                         if(customerSnapshot.key == custID){
                             Log.d("CustomerIDForServiceCard", "CustIDInput: $custID CustIDFound: ${customerSnapshot.key}")
-                            val custName = customerSnapshot.child("customerName").getValue(String::class.java)
-                            val custSurname = customerSnapshot.child("customerSurname").getValue(String::class.java)
+                            val custName = customerSnapshot.child("CustomerName").getValue(String::class.java)
+                            val custSurname = customerSnapshot.child("CustomerSurname").getValue(String::class.java)
                             cv.findViewById<TextView>(R.id.txtCustName).text = "$custName $custSurname"
                         }
                     }
@@ -299,7 +299,8 @@ class ServicesFragment : Fragment() {
                             Log.d("VehicleIDForServiceCard", "VehIDInput: $vehID VehIDFound: ${vehSnapshot.key}")
                             val vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
                             val vehicleModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
-                            cv.findViewById<TextView>(R.id.txtVehicleName).text = "$vehNumPlate ($vehicleModel)"
+                            val vehicleMake = vehSnapshot.child("vehicleMake").getValue(String::class.java)
+                            cv.findViewById<TextView>(R.id.txtVehicleName).text = "$vehNumPlate ($vehicleMake $vehicleModel)"
                         }
                     }
                 }

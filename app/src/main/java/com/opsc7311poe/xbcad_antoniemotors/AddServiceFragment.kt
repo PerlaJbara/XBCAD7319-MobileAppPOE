@@ -275,11 +275,11 @@ class AddServiceFragment : Fragment() {
                 // Loop through all customers associated with this user
                 for (customerSnapshot in snapshot.children) {
                     val customerId = customerSnapshot.key // Get customer ID
-                    val firstName = customerSnapshot.child("customerName").getValue(String::class.java)
-                    val lastName = customerSnapshot.child("customerSurname").getValue(String::class.java)
+                    val firstName = customerSnapshot.child("CustomerName").getValue(String::class.java)
+                    val lastName = customerSnapshot.child("CustomerSurname").getValue(String::class.java)
 
                     // Log data to check if it's being fetched correctly
-                    Log.d("FirebaseData", "Customer: $firstName $lastName, ID: $customerId")
+                    Log.d("AddServiceFragment", "Customer: $firstName $lastName, ID: $customerId")
 
                     // Only add customer if names are not null or empty
                     if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {

@@ -314,8 +314,8 @@ class ServiceDetailsFragment : Fragment() {
         vehRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 //fetching and assigning vehicle info
-                var custFName = dataSnapshot.child("customerName").getValue(String::class.java)
-                var custSurname = dataSnapshot.child("customerSurname").getValue(String::class.java)
+                var custFName = dataSnapshot.child("CustomerName").getValue(String::class.java)
+                var custSurname = dataSnapshot.child("CustomerSurname").getValue(String::class.java)
                 btnCust.text = "$custFName $custSurname"
             }
             override fun onCancelled(databaseError: DatabaseError) {

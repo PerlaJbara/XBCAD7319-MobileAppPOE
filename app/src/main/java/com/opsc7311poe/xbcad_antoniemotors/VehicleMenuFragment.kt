@@ -14,6 +14,7 @@ class VehicleMenuFragment : Fragment() {
     private lateinit var btnVehicleReg: ImageView
     private lateinit var btnAddVehicleMakes: ImageView
     private lateinit var btnPartsInventory: ImageView
+    private lateinit var btnServices: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +30,7 @@ class VehicleMenuFragment : Fragment() {
         // Initialize views here, where view is guaranteed to be non-null
         btnVehicleReg = view.findViewById(R.id.btnRegVehicle)
         btnAddVehicleMakes = view.findViewById(R.id.btnAddVehicleMake)
+        btnServices = view.findViewById(R.id.btnServices)
         btnPartsInventory = view.findViewById(R.id.btnManageInventory) // Updated ID
 
         // Set up button click listeners or other view logic here
@@ -46,6 +48,11 @@ class VehicleMenuFragment : Fragment() {
         btnPartsInventory.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(ViewInventoryFragment())
+        }
+
+        btnServices.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(ServicesFragment())
         }
     }
 
