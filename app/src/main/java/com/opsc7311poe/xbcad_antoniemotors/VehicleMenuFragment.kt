@@ -34,6 +34,7 @@ class VehicleMenuFragment : Fragment() {
         btnVehicleReg.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(SearchVehiclesFragment())
+            //replaceFragment(RegisterVehicleFragment())
         }
 
         btnAddVehicleMakes.setOnClickListener {

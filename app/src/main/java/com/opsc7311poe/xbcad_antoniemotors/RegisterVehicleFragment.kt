@@ -139,13 +139,6 @@ class RegisterVehicleFragment : Fragment() {
 
         fetchVehicleMakes()
 
-
-        imgFront.setOnClickListener { handleCameraPermission("front") }
-        imgRight.setOnClickListener { handleCameraPermission("right") }
-        imgRear.setOnClickListener { handleCameraPermission("rear") }
-        imgLeft.setOnClickListener { handleCameraPermission("left") }
-
-
         val frontAdapter = ImageAdapter(frontImageUris) { uri -> removeImage(uri, frontImageUris) }
         val rightAdapter = ImageAdapter(rightImageUris) { uri -> removeImage(uri, rightImageUris) }
         val rearAdapter = ImageAdapter(rearImageUris) { uri -> removeImage(uri, rearImageUris) }
@@ -488,7 +481,10 @@ class RegisterVehicleFragment : Fragment() {
 
                     if (employeeSnapshot.exists()) {
                         // Found the employee record; extract the associated BusinessID
+                        //businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
                         businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
+                            ?: employeeSnapshot.child("businessId").getValue(String::class.java)
+
                         Log.d("populateCustomerList", "BusinessID found for admin: $businessID")
                         break
                     }
@@ -538,7 +534,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    private fun registerVehicle() {
+    /*private fun registerVehicle() {
         // Retrieve and format inputs
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
         val vehicleModel = edtVehicleModel.text.toString().trim()
@@ -656,7 +652,128 @@ class RegisterVehicleFragment : Fragment() {
                 Toast.makeText(context, "Error retrieving layout for POR.", Toast.LENGTH_SHORT).show()
             }
         })
+    }*/
+
+    private fun registerVehicle() {
+        // Retrieve and format inputs
+        val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
+        val vehicleModel = edtVehicleModel.text.toString().trim()
+        val vinNumber = edtVinNumber.text.toString().trim().uppercase()
+        val vehicleKms = edtVehicleKms.text.toString().trim()
+        val vehiclePOR = spnVehiclePOR.selectedItem.toString()
+        val vehicleOwner = edtCustomer.text.toString()
+
+        // Validate inputs
+        if (vehicleNoPlate.isEmpty() || vehicleModel.isEmpty() || vehicleKms.isEmpty()) {
+            Toast.makeText(context, "Please fill in all mandatory fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (!vehicleNoPlate.matches(Regex("^[a-zA-Z0-9]{1,7}$"))) {
+            Toast.makeText(context, "Invalid number plate. It must be alphanumeric and 1-7 characters long.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (vinNumber.isNotEmpty() && !vinNumber.matches(Regex("^[A-Z0-9]{17}$"))) {
+            Toast.makeText(context, "Invalid VIN number. It must be exactly 17 alphanumeric characters.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (!vehicleKms.matches(Regex("^[0-9]+$"))) {
+            Toast.makeText(context, "Invalid kilometers. It must be a number.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (selectedCustomerId.isEmpty()) {
+            Toast.makeText(context, "Please select a customer", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Check if images are taken for all sides
+        if (frontImageUris.isEmpty() || rightImageUris.isEmpty() || rearImageUris.isEmpty() || leftImageUris.isEmpty()) {
+            Toast.makeText(context, "Please capture at least one image for each side of the vehicle", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Reference to the selected POR in Firebase
+        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR/$vehiclePOR")
+        vehiclePORRef.child("layout").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(layoutSnapshot: DataSnapshot) {
+                val layout = layoutSnapshot.getValue(Int::class.java) ?: 1
+                val fullVehicleNumPlate = if (layout == 1) "$vehiclePOR $vehicleNoPlate" else "$vehicleNoPlate $vehiclePOR"
+                val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+                val selectedYear = ynpYearPicker.value.toString()
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                val adminId = currentUser?.uid ?: return
+
+                // Retrieve business ID and full name
+                val usersReference = FirebaseDatabase.getInstance().getReference("Users")
+                usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(usersSnapshot: DataSnapshot) {
+                        var businessId: String? = null
+                        var adminFullName: String? = null
+
+                        for (businessSnapshot in usersSnapshot.children) {
+                            val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
+                            if (employeeSnapshot.exists()) {
+                                businessId = businessSnapshot.key
+                                val firstName = employeeSnapshot.child("firstName").getValue(String::class.java)
+                                val lastName = employeeSnapshot.child("lastName").getValue(String::class.java)
+                                val name = employeeSnapshot.child("name").getValue(String::class.java)
+                                val surname = employeeSnapshot.child("surname").getValue(String::class.java)
+                                adminFullName = when {
+                                    !firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() -> "$firstName $lastName"
+                                    !name.isNullOrEmpty() && !surname.isNullOrEmpty() -> "$name $surname"
+                                    else -> "Unknown Admin"
+                                }
+                                break
+                            }
+                        }
+
+                        if (businessId != null && adminFullName != null) {
+                            val vehicle = VehicleData(
+                                VehicleOwner = vehicleOwner,
+                                customerID = selectedCustomerId,
+                                VehicleNumPlate = fullVehicleNumPlate,
+                                VehiclePOR = vehiclePOR,
+                                VehicleModel = vehicleModel,
+                                VehicleMake = edtVehicleMake.text.toString(),
+                                VehicleYear = selectedYear,
+                                VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
+                                VehicleKms = vehicleKms,
+                                registrationDate = currentDate,
+                                AdminID = adminId,
+                                AdminFullName = adminFullName
+                            )
+
+                            val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
+                            vehicle.vehicleId = vehicleRef.key ?: ""
+
+                            vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    uploadVehicleImages(businessId, vehicleRef.key!!)
+                                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                                    clearInputFields()
+                                    clearAllImages()
+                                } else {
+                                    Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            Log.e("registerVehicle", "Business ID not found for the current admin.")
+                            Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("registerVehicle", "Error fetching business information: ${error.message}")
+                        Toast.makeText(context, "Error fetching business information.", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Error retrieving layout for POR.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
+
 
 
 
@@ -669,47 +786,23 @@ class RegisterVehicleFragment : Fragment() {
         edtVehicleKms.text.clear()  // Clear the vehicle kilometers input
         edtCustomer.text.clear()  // Clear the selected customer input
         imageUris.clear()  // Clear the image URIs
-        //display.setImageResource(R.drawable.camera)  // Reset image display to default
         spnVehiclePOR.setSelection(0)  // Reset the vehicle POR spinner to the first option
         ynpYearPicker.value = ynpYearPicker.minValue  // Reset the year picker to the minimum value
     }
 
+    private fun clearAllImages() {
+        frontImageUris.clear()
+        rightImageUris.clear()
+        rearImageUris.clear()
+        leftImageUris.clear()
+
+        displayFront.adapter?.notifyDataSetChanged()
+        displayRight.adapter?.notifyDataSetChanged()
+        displayRear.adapter?.notifyDataSetChanged()
+        displayLeft.adapter?.notifyDataSetChanged()
+    }
 
 
-   /* private fun uploadVehicleImages(businessId: String, vehicleId: String) {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null && imageUris.isNotEmpty()) {
-            // Proceed with uploading each image to Firebase Storage and saving URLs to the database
-            for (uri in imageUris) {
-                val uniqueImageId = UUID.randomUUID().toString()
-                // Use businessId in the storage path to make images accessible to all users in the business
-                val storageRef = storage.child("$businessId/Vehicles/$vehicleId/$uniqueImageId.jpg")
-
-                storageRef.putFile(uri)
-                    .addOnSuccessListener { taskSnapshot ->
-                        // Get the download URL
-                        storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                            // Save the image URL in the database under the specific vehicle node
-                            val imageRef = FirebaseDatabase.getInstance().getReference("Users")
-                                .child(businessId)
-                                .child("Vehicles")
-                                .child(vehicleId)
-                                .child("images")
-                                .child(uniqueImageId)
-
-                            imageRef.setValue(downloadUri.toString()).addOnSuccessListener {
-                                Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
-                            }.addOnFailureListener {
-                                Toast.makeText(context, "Failed to save image URL in database", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                    }
-            }
-        }
-    }*/
 
     private fun uploadVehicleImages(businessId: String, vehicleId: String) {
         val currentUser = FirebaseAuth.getInstance().currentUser

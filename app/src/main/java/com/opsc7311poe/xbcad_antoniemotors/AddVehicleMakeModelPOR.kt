@@ -17,21 +17,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 
-private lateinit var database: DatabaseReference
-private lateinit var btnBack: ImageView
-private lateinit var edtNewVehicleMake: EditText
-private lateinit var edtSelectedVehicleMake: EditText
-private lateinit var edtNewModel: EditText
-private lateinit var edtNewProvinceAreaName: EditText
-private lateinit var edtNewPOR: EditText
-private lateinit var btnAddNewVMake: Button
-private lateinit var btnAddNewVModel: Button
-private lateinit var btnAddNewPOR: Button
-private lateinit var rbBNumPlate: RadioButton
-private lateinit var rbENumPlate: RadioButton
+
 
 class AddVehicleMakeModelPOR : Fragment() {
 
+    private lateinit var database: DatabaseReference
+    private lateinit var btnBack: ImageView
+    private lateinit var edtNewVehicleMake: EditText
+    private lateinit var edtSelectedVehicleMake: EditText
+    private lateinit var edtNewModel: EditText
+    private lateinit var edtNewProvinceAreaName: EditText
+    private lateinit var edtNewPOR: EditText
+    private lateinit var btnAddNewVMake: Button
+    private lateinit var btnAddNewVModel: Button
+    private lateinit var btnAddNewPOR: Button
+    private lateinit var rbBNumPlate: RadioButton
+    private lateinit var rbENumPlate: RadioButton
     private val vehicleMakesList = mutableListOf<String>()
     private lateinit var databaseVRef: DatabaseReference
 
@@ -79,7 +80,7 @@ class AddVehicleMakeModelPOR : Fragment() {
         btnAddNewVModel.setOnClickListener {
             val selectedMake = edtSelectedVehicleMake.text.toString().trim()
             val newModel = edtNewModel.text.toString().trim()
-            if (selectedMake.isNotEmpty() && newModel.isNotEmpty() && newModel.matches(Regex("^[a-zA-Z0-9]*$"))) {
+            if (selectedMake.isNotEmpty() && newModel.isNotEmpty() && newModel.matches(Regex("^[a-zA-Z0-9 ]*$"))) {
                 checkAndAddVehicleModel(selectedMake, newModel)
             } else {
                 Toast.makeText(requireContext(), "Please fill in both fields. No special characters allowed in the model.", Toast.LENGTH_SHORT).show()
