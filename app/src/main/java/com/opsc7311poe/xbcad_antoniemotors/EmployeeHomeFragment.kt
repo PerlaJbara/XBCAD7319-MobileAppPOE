@@ -72,7 +72,7 @@ class EmployeeHomeFragment : Fragment() {
 
         btnSettings.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(SettingsFragment())
+            replaceFragment(EmpSettingsFragment())
         }
 
         ivFilter.setOnClickListener {
