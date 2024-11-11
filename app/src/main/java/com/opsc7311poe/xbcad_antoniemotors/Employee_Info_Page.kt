@@ -73,7 +73,6 @@ class Employee_Info_Page : Fragment() {
 
         displayDetails()
 
-
         // Setup listeners
         btnBack.setOnClickListener {
             replaceFragment(EmployeeFragment())
@@ -87,6 +86,13 @@ class Employee_Info_Page : Fragment() {
             saveEmployeeData(employeeName)
         }
 
+        // Delete employee
+        btnDeleteEmployee.setOnClickListener {
+            // Confirm employeeId is available
+            employeeName?.let { empId ->
+                deleteEmployee(empId)
+            }
+        }
 
         // Fetch and display employee data
         if (employeeName != null) {
@@ -153,8 +159,6 @@ class Employee_Info_Page : Fragment() {
         }
     }
 
-
-
     private fun saveEmployeeData(employeeName: String?) {
         val newNumber = txtnewNum.text.toString()
         val newEmail = txtnewEmail.text.toString()
@@ -162,7 +166,6 @@ class Employee_Info_Page : Fragment() {
         val newSalary = txtnewSal.text.toString()
 
         if (newNumber.isNotEmpty() && newEmail.isNotEmpty() && newAddress.isNotEmpty() && newSalary.isNotEmpty()) {
-
             val userId = FirebaseAuth.getInstance().currentUser?.uid
             if (userId != null && employeeName != null) {
                 val database = Firebase.database
@@ -186,8 +189,6 @@ class Employee_Info_Page : Fragment() {
             Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
     private fun toggleEditing(isEditing: Boolean) {
         this.isEditing = isEditing
@@ -218,6 +219,67 @@ class Employee_Info_Page : Fragment() {
             btnSaveup.visibility = View.GONE
         }
     }
+
+    private fun replaceFragment(fragment: Fragment) {
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
+    }
+
+    private fun deleteEmployee(employeeId: String) {
+        val auth = FirebaseAuth.getInstance()
+        val database = Firebase.database
+
+        val user = auth.currentUser
+
+        // Ensure the employeeId matches the currently authenticated user
+        if (user != null && user.uid == employeeId) {
+            // Delete the Firebase Authentication account first
+            user.delete().addOnCompleteListener { deleteAuthTask ->
+                if (deleteAuthTask.isSuccessful) {
+                    // If authentication deletion is successful, proceed to delete employee data from the database
+                    val employeeRef = database.getReference("Users").child(businessID).child("Employees").child(employeeId)
+
+                    employeeRef.removeValue().addOnSuccessListener {
+                        // Both authentication and database deletion were successful
+                        Toast.makeText(requireContext(), "Employee and authentication deleted successfully.", Toast.LENGTH_SHORT).show()
+
+                        // Navigate back to EmployeeFragment after deletion
+                        replaceFragment(EmployeeFragment())
+                    }.addOnFailureListener { dbError ->
+                        // Failed to delete employee data from the database
+                        Toast.makeText(requireContext(), "Failed to delete employee data: ${dbError.message}", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Failed to delete the authentication account
+                    Toast.makeText(requireContext(), "Failed to delete employee authentication: ${deleteAuthTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            // Employee's UID does not match the authenticated user or no user is logged in
+            Toast.makeText(requireContext(), "Employee authentication not found or mismatched.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    private fun fetchEmployeeDetails(firstName: String, lastName: String) {
 //        val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -259,9 +321,3 @@ class Employee_Info_Page : Fragment() {
 //        txtnewAddress.setText(employee.address)
 //        txtnewSal.setText(employee.salary)
 //    }
-
-
-    private fun replaceFragment(fragment: Fragment) {
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
-    }
-}

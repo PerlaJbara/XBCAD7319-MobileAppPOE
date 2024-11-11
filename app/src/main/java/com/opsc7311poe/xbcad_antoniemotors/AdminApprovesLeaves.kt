@@ -18,7 +18,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-
 class AdminApprovesLeaves : Fragment() {
     private lateinit var leaveRequestContainer: LinearLayout
     private lateinit var businessID: String
@@ -79,7 +78,6 @@ class AdminApprovesLeaves : Fragment() {
                     val leaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
                     val startDate = leaveSnapshot.child("startDate").getValue(String::class.java) ?: "N/A"
                     val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: "N/A"
-                    val status = leaveSnapshot.child("Status").getValue(String::class.java) ?: "N/A"
 
                     // Fetch employee name and add the leave request to the UI
                     if (employeeId != null) {
@@ -108,7 +106,7 @@ class AdminApprovesLeaves : Fragment() {
                 val fullName = "$firstName $lastName"
 
                 // Now that we have the employee's full name, add the leave request to the layout
-                addLeaveRequestToLayout(fullName, leaveType, startDate, endDate, businessId)
+                addLeaveRequestToLayout(employeeId, fullName, leaveType, startDate, endDate, businessId)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -118,7 +116,7 @@ class AdminApprovesLeaves : Fragment() {
     }
 
     // Add leave request to the UI for admin to approve
-    private fun addLeaveRequestToLayout(employeeName: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
+    private fun addLeaveRequestToLayout(employeeId: String, employeeName: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
         val leaveRequestLayout = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(16, 16, 16, 16)
@@ -142,7 +140,14 @@ class AdminApprovesLeaves : Fragment() {
         val approveButton = Button(requireContext()).apply {
             text = "Approve"
             setOnClickListener {
-                approveLeaveRequest(businessId, employeeName)
+                approveLeaveRequest(businessId, employeeId)  // Pass employeeId here
+            }
+        }
+
+        val denyButton = Button(requireContext()).apply {
+            text = "Deny"
+            setOnClickListener {
+                denyLeaveRequest(businessId, employeeId)  // Pass employeeId here
             }
         }
 
@@ -150,13 +155,14 @@ class AdminApprovesLeaves : Fragment() {
         leaveRequestLayout.addView(leaveTypeTextView)
         leaveRequestLayout.addView(leaveDatesTextView)
         leaveRequestLayout.addView(approveButton)
+        leaveRequestLayout.addView(denyButton)
 
         leaveRequestContainer.addView(leaveRequestLayout)
     }
 
     // Function to approve leave request and update status
-    private fun approveLeaveRequest(businessId: String, employeeName: String) {
-        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeName).child("Status")
+    private fun approveLeaveRequest(businessId: String, employeeId: String) {
+        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeId).child("Status")
         leaveRef.setValue("approved")
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Leave request approved", Toast.LENGTH_SHORT).show()
@@ -165,6 +171,20 @@ class AdminApprovesLeaves : Fragment() {
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed to approve leave request", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    // Function to deny and remove leave request
+    private fun denyLeaveRequest(businessId: String, employeeId: String) {
+        val leaveRef = database.reference.child("Users").child(businessId).child("Leave").child(employeeId)
+        leaveRef.removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Leave request denied", Toast.LENGTH_SHORT).show()
+                // Refresh the leave requests after denial
+                fetchPendingLeaveRequests(businessId)
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to deny leave request", Toast.LENGTH_SHORT).show()
             }
     }
 }

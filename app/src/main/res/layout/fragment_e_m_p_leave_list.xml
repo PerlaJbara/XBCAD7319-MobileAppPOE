@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/scrllDspemp">
+        app:layout_constraintBottom_toTopOf="@id/scrllemponleave">
 
         <!-- Filter By Label -->
         <TextView
@@ -125,13 +125,28 @@
 
     <!-- Empty ScrollView Below Linear Layout -->
     <ScrollView
-        android:id="@+id/scrllDspemp"
+        android:id="@+id/scrllemponleave"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutTextboxes"
-        tools:ignore="SpeakableTextPresentCheck"></ScrollView>
+        tools:ignore="SpeakableTextPresentCheck">
+
+        <!-- Container for Leave Requests Inside ScrollView -->
+        <LinearLayout
+            android:id="@+id/leaveListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        </LinearLayout>
+
+
+
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
