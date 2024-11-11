@@ -48,14 +48,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Request Access Again"
-            android:backgroundTint="@color/black"/>
+            android:backgroundTint="@color/black"
+            android:textColor="@color/red"/>
 
         <Button
             android:id="@+id/btnDeleteAccountDenied"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete My Account"
-            android:backgroundTint="@color/black"/>
+            android:backgroundTint="@color/black"
+            android:textColor="@color/red"/>
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/red" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -15,6 +17,7 @@ class DeniedActivity : AppCompatActivity() {
 
     private lateinit var btnRequestAgain: Button
     private lateinit var btnDeleteAcc: Button
+    private lateinit var btnLogout: Button
 
     private var businessId: String? = null
     private var userId: String? = null
@@ -26,6 +29,7 @@ class DeniedActivity : AppCompatActivity() {
 
         btnDeleteAcc = findViewById(R.id.btnDeleteAccountDenied)
         btnRequestAgain = findViewById(R.id.btnRequestAccess)
+        btnLogout = findViewById(R.id.btnLogout)
 
         // Fetch businessId and userId from Firebase
         fetchUserData()
@@ -36,6 +40,10 @@ class DeniedActivity : AppCompatActivity() {
 
         btnDeleteAcc.setOnClickListener {
             deleteAccount()
+        }
+
+        btnLogout.setOnClickListener(){
+           logoutUser()
         }
     }
 
@@ -107,6 +115,16 @@ class DeniedActivity : AppCompatActivity() {
         })
     }
 
+    fun logoutUser() {
+        // Get the Firebase Auth instance
+        val auth = FirebaseAuth.getInstance()
+
+
+        auth.signOut()
+        startActivity(Intent(this@DeniedActivity, Login::class.java))
+        finish()
+    }
+
 
     private fun deleteAccount() {
         if (businessId == null || userId == null) {
@@ -149,22 +167,6 @@ class DeniedActivity : AppCompatActivity() {
         }
     }
 
-
-
-//    private fun deleteAccount() {
-//        if (businessId == null || userId == null) {
-//            Toast.makeText(this, "Business ID or User ID is missing.", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//
-//        val dbRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId!!).child("Pending").child(userId!!)
-//        dbRef.removeValue().addOnSuccessListener {
-//            Toast.makeText(this, "Account deleted successfully.", Toast.LENGTH_SHORT).show()
-//            finish() // Close the activity
-//        }.addOnFailureListener {
-//            Toast.makeText(this, "Failed to delete account.", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     private fun updateStatus() {
         if (businessId == null || userId == null) {
