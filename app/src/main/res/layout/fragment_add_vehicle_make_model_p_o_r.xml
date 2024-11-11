@@ -101,7 +101,7 @@
                             android:layout_height="50dp"
                             android:background="@drawable/spingradientgtor"
                             android:hint ="eg.BMW"
-                            />
+                            android:padding="12dp"/>
 
 
                     </LinearLayout>
@@ -171,7 +171,8 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/spingradientgtor"
-                            android:hint ="eg. Honda"/>
+                            android:hint ="eg. Honda"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -197,7 +198,8 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:hint ="eg. Accord"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -270,7 +272,8 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/spingradientgtor"
-                            android:hint ="eg. Gauteng Province"/>
+                            android:hint ="eg. Gauteng Province"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -297,7 +300,8 @@
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
                             android:background="@drawable/spingradientgtor"
-                            android:hint ="eg. GP" />
+                            android:hint ="eg. GP"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 

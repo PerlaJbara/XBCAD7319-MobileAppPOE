@@ -98,7 +98,7 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:background="@drawable/spingradientgtor"
-                            />
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -127,6 +127,7 @@
                                 android:id="@+id/edttxtVehicleNoPlate"
                                 android:layout_width="240dp"
                                 android:layout_height="50dp"
+                                android:padding="12dp"
                                 android:background="@drawable/spingradientgtor"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -174,7 +175,8 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -199,7 +201,9 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:padding="12dp"
+                            />
 
                     </LinearLayout>
 
@@ -259,7 +263,8 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 
@@ -284,7 +289,8 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:padding="12dp"/>
 
                     </LinearLayout>
 

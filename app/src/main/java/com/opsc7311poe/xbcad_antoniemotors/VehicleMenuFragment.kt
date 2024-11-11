@@ -13,7 +13,7 @@ class VehicleMenuFragment : Fragment() {
 
     private lateinit var btnVehicleReg: ImageView
     private lateinit var btnAddVehicleMakes: ImageView
-    private lateinit var btnPartsInventory: Button
+    private lateinit var btnPartsInventory: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
