@@ -19,12 +19,12 @@ tools:context=".VehicleMenuFragment">
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Vehicle
-         Menu"
+        android:text="Vehicle\nMenu"
         android:textAlignment="center"
         android:textColor="#D3CDCD"
         android:textSize="65sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginBottom="30dp"/>
 
 
 
@@ -39,7 +39,8 @@ tools:context=".VehicleMenuFragment">
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_marginBottom="40dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -50,7 +51,94 @@ tools:context=".VehicleMenuFragment">
                 android:textSize="25sp"
                 android:textStyle="bold"/>
 
-            <Button
+            <!-- Row 1: Vehicle Management-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginBottom="30dp">
+
+
+                <!-- Leave Manager -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#787771"
+                        app:cardCornerRadius="75dp"
+                        app:cardElevation="4dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <ImageView
+                            android:id="@+id/btnRegVehicle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="4dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/viewvehicle" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="View and Register\n Vehicles"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Search -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#787771"
+                        app:cardCornerRadius="75dp"
+                        app:cardElevation="4dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <ImageView
+                            android:id="@+id/btnAddVehicleMake"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="4dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/newarea" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Makes Models and PORS"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+           <!-- <Button
                 android:id="@+id/btnRegVehicle"
                 android:layout_width="191dp"
                 android:layout_height="53dp"
@@ -61,8 +149,8 @@ tools:context=".VehicleMenuFragment">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer" />
-
-            <Button
+-->
+            <!--<Button
                 android:id="@+id/btnAddVehicleMake"
                 android:layout_width="191dp"
                 android:layout_height="53dp"
@@ -73,7 +161,7 @@ tools:context=".VehicleMenuFragment">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer" />
-
+-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -84,8 +172,59 @@ tools:context=".VehicleMenuFragment">
                 android:textSize="25sp"
                 android:textStyle="bold"/>
 
+            <!-- Row 1: Vehicle Management-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:layout_marginBottom="30dp">
 
-            <Button
+
+                <!-- Leave Manager -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="#787771"
+                        app:cardCornerRadius="75dp"
+                        app:cardElevation="4dp"
+                        app:cardPreventCornerOverlap="true"
+                        app:cardUseCompatPadding="true">
+
+                        <ImageView
+                            android:id="@+id/btnManageInventory"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="4dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/inventory" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Inventory"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
+           <!-- <Button
                 android:id="@+id/btnManageInventory"
                 android:layout_width="191dp"
                 android:layout_height="53dp"
@@ -96,7 +235,7 @@ tools:context=".VehicleMenuFragment">
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtSelecctCustomer" />
-
+-->
 
 
         </LinearLayout>
@@ -114,7 +253,7 @@ tools:context=".VehicleMenuFragment">
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="40dp"/>
 
 
     </LinearLayout>
