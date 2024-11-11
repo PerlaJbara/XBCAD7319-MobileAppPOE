@@ -371,12 +371,12 @@
 
 
                             <TextView
-                                android:layout_width="330dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:text="Vehicle Images"
+                                android:text="Front Images"
                                 android:paddingBottom="20dp"
-                                android:layout_gravity="center_horizontal"
+                                android:textAlignment="center"
                                 android:textSize="30sp"
                                 android:textStyle="bold" />
 
@@ -388,7 +388,7 @@
 
                                     <!-- RecyclerView without ScrollView -->
                                     <androidx.recyclerview.widget.RecyclerView
-                                        android:id="@+id/vehicleImagesRecyclerView"
+                                        android:id="@+id/rvFrontSideImages"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:scrollbars="horizontal" />
@@ -396,13 +396,113 @@
 
                                 </LinearLayout>
 
-
-
-
                         </LinearLayout>
 
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingBottom="20dp">
 
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:text="Right Side Images"
+                                android:paddingBottom="20dp"
+                                android:textAlignment="center"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingBottom="20dp">
+
+                                <!-- RecyclerView without ScrollView -->
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvRightSideImages"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:scrollbars="horizontal" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingBottom="20dp">
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:text="Rear Images"
+                                android:paddingBottom="20dp"
+                                android:textAlignment="center"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingBottom="20dp">
+
+                                <!-- RecyclerView without ScrollView -->
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvRearSideImages"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:scrollbars="horizontal" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingBottom="20dp">
+
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:text="Left Side Images"
+                                android:paddingBottom="20dp"
+                                android:textAlignment="center"
+                                android:textSize="30sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingBottom="20dp">
+
+                                <!-- RecyclerView without ScrollView -->
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rvLeftSideImages"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:scrollbars="horizontal" />
+
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                         <!-- History Information Section -->
                         <LinearLayout

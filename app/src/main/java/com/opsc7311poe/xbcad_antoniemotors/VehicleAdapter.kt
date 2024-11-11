@@ -41,36 +41,41 @@ class VehicleAdapter(
         holder.bind(filteredList[position])
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.vehicle_snippet, parent, false)
+        return VehicleViewHolder(view)
+    }
+
     inner class VehicleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val txtVehicleNumPlate: TextView = view.findViewById(R.id.txtVehicleNumPlate)
-        val txtVehicleModel: TextView = view.findViewById(R.id.txtVehicleModel)
-        val txtVehicleOwner: TextView = view.findViewById(R.id.txtVehicleOwner)
-        val imgVehicle: ImageView = view.findViewById(R.id.imgVehicle)
+        private val txtVehicleNumPlate: TextView = view.findViewById(R.id.txtVehicleNumPlate)
+        private val txtVehicleModel: TextView = view.findViewById(R.id.txtVehicleModel)
+        private val txtVehicleOwner: TextView = view.findViewById(R.id.txtVehicleOwner)
+        private val imgVehicle: ImageView = view.findViewById(R.id.imgVehicle)
 
         fun bind(vehicle: VehicleData) {
             txtVehicleNumPlate.text = vehicle.VehicleNumPlate
             txtVehicleModel.text = vehicle.VehicleModel
             txtVehicleOwner.text = vehicle.VehicleOwner
 
-            // Load the first image from the images map if available
             if (vehicle.images.isNotEmpty()) {
-                val firstImageUrl = vehicle.images.values.first()
-                Glide.with(imgVehicle.context)
-                    .load(firstImageUrl) // Load the first image URL
-                    .into(imgVehicle)
+                val frontImages = vehicle.images["front"]
+                val firstImageUrl = frontImages?.values?.firstOrNull() // Get the first image URL for the front view if available
+                if (firstImageUrl != null) {
+                    Glide.with(imgVehicle.context)
+                        .load(firstImageUrl)
+                        .into(imgVehicle)
+                } else {
+                    imgVehicle.setImageResource(R.drawable.vehicledetails)
+                }
             } else {
                 imgVehicle.setImageResource(R.drawable.vehicledetails) // Fallback image
             }
 
-            itemView.setOnClickListener { onVehicleClick(vehicle) }
+            // Set up click listener for the entire item view
+            itemView.setOnClickListener {
+                onVehicleClick(vehicle)
+            }
         }
-    }
-
-
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.vehicle_snippet, parent, false)
-        return VehicleViewHolder(view)
     }
 }

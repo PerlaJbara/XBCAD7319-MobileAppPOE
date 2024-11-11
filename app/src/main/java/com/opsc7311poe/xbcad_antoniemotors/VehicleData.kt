@@ -13,6 +13,6 @@ var VinNumber: String = "",
 var VehicleKms: String = "",
 var AdminID: String = "",
 var AdminFullName: String = "",
-var images: Map<String, String> = emptyMap(),
+var images: Map<String, Map<String, String>> = mapOf(),
 var registrationDate: String = "" // New field for registration date
 )

@@ -63,12 +63,13 @@
                 <!-- RecyclerView without ScrollView -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewVehicle"
-                    android:layout_width="310dp"
+                    android:layout_width="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:padding="16dp"
-                    android:scrollbars="vertical" />
+                    android:scrollbars="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"/>
 
             <!-- Plus Button for Adding New Customers -->
             <LinearLayout

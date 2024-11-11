@@ -33,7 +33,10 @@ class VehicleDetailsFragment : Fragment() {
     private lateinit var txtVinNumber: EditText
     private lateinit var txtVehicleReg: TextView
     private lateinit var txtAdminFN: TextView // New TextView for Admin Full Name
-    private lateinit var vehicleImagesRecyclerView: RecyclerView
+    private lateinit var rvFront: RecyclerView
+    private lateinit var rvRight: RecyclerView
+    private lateinit var rvRear: RecyclerView
+    private lateinit var rvLeft: RecyclerView
     private lateinit var ynpYearPicker: NumberPicker
     private lateinit var btnEditVehicleDetails: Button
     private lateinit var btnDeleteVehicle: Button
@@ -80,8 +83,17 @@ class VehicleDetailsFragment : Fragment() {
         ynpYearPicker.visibility = View.GONE
         txtlabelMYear.visibility = View.GONE
 
-        vehicleImagesRecyclerView = view.findViewById(R.id.vehicleImagesRecyclerView)
-        vehicleImagesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvFront = view.findViewById(R.id.rvFrontSideImages)
+        rvFront.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        rvRear = view.findViewById(R.id.rvRearSideImages)
+        rvRear.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        rvRight = view.findViewById(R.id.rvRightSideImages)
+        rvRight.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        rvLeft = view.findViewById(R.id.rvLeftSideImages)
+        rvLeft.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         checkUserRole()
         setupYearPicker()
@@ -216,9 +228,16 @@ class VehicleDetailsFragment : Fragment() {
         }
     }
 
-    private fun loadVehicleImages(images: Map<String, String>) {
-        val imageUrls = images.values.toList()
-        vehicleImagesRecyclerView.adapter = VehicleImagesAdapter(imageUrls)
+    private fun loadVehicleImages(images: Map<String, Map<String, String>>) {
+        val frontImages = images["front"]?.values?.toList() ?: emptyList()
+        val rearImages = images["rear"]?.values?.toList() ?: emptyList()
+        val rightImages = images["right"]?.values?.toList() ?: emptyList()
+        val leftImages = images["left"]?.values?.toList() ?: emptyList()
+
+        rvFront.adapter = VehicleImagesAdapter(frontImages)
+        rvRear.adapter = VehicleImagesAdapter(rearImages)
+        rvRight.adapter = VehicleImagesAdapter(rightImages)
+        rvLeft.adapter = VehicleImagesAdapter(leftImages)
     }
 
     companion object {
