@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.android.material.badge.BadgeDrawable
+import java.util.Calendar
 
 
 
@@ -195,11 +196,39 @@ class MainActivity : AppCompatActivity() {
             "employee" -> {
                 bottomNavView.menu.clear()
                 bottomNavView.inflateMenu(R.menu.empmenu) // Load employee menu
+                resetCompletedTasks()
             }
             else -> {
                 Log.w("MainActivity", "Unknown user role: $userRole")
                 bottomNavView.menu.clear()
                 bottomNavView.inflateMenu(R.menu.empmenu) // Load a default menu for unknown roles
+            }
+        }
+    }
+
+    fun resetCompletedTasks() {
+        // Get today's date
+        val today = Calendar.getInstance()
+        val dayOfMonth = today.get(Calendar.DAY_OF_MONTH)
+
+
+        if (dayOfMonth == 1) {
+            val database = FirebaseDatabase.getInstance()
+            val employeesRef = database.getReference("Users/$businessId/Employees")
+
+            // Retrieve employees and update completedTasks
+            employeesRef.get().addOnSuccessListener { snapshot ->
+                for (employeeSnapshot in snapshot.children) {
+                    // Check if the employee has a completedTasks field
+                    val completedTasks = employeeSnapshot.child("completedTasks").value as? Long
+                    if (completedTasks != null) {
+                        // Set completedTasks to 0
+                        employeeSnapshot.ref.child("completedTasks").setValue(0)
+                    }
+                }
+            }.addOnFailureListener {
+                // Handle any errors here
+                Log.e("Firebase", "Error updating completedTasks", it)
             }
         }
     }
