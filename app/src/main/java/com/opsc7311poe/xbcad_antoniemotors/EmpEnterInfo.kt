@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -64,7 +65,9 @@ class EmpEnterInfo : AppCompatActivity() {
 
         // Register button click listener
         btnRegisterEmp.setOnClickListener {
-            registerEmployee()
+            if (validateFields()) {
+                registerEmployee()
+            }
         }
     }
 
@@ -118,6 +121,7 @@ class EmpEnterInfo : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val uid = task.result?.user?.uid
+                    auth.currentUser?.sendEmailVerification()
                     if (uid != null) {
                         if (selectedImageUri != null) {
                             uploadImageToFirebaseStorage { imageUrl ->
@@ -162,6 +166,56 @@ class EmpEnterInfo : AppCompatActivity() {
                     btnRegisterEmp.visibility = View.VISIBLE
                 }
             }
+    }
+
+    private fun validateFields(): Boolean {
+        val firstName = txtEmpFirstName.text.toString().trim()
+        val lastName = txtEmpLastName.text.toString().trim()
+        val email = txtEmpEmail.text.toString().trim()
+        val password = txtEmpPassword.text.toString().trim()
+        val phone = txtEmpPhone.text.toString().trim()
+        val address = txtEmpPAddress.text.toString().trim()
+
+        if (firstName.isEmpty()) {
+            txtEmpFirstName.error = "First name is required"
+            return false
+        }
+
+        if (lastName.isEmpty()) {
+            txtEmpLastName.error = "Last name is required"
+            return false
+        }
+
+        if (email.isEmpty()) {
+            txtEmpEmail.error = "Email is required"
+            return false
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            txtEmpEmail.error = "Please enter a valid email"
+            return false
+        }
+
+        if (password.isEmpty()) {
+            txtEmpPassword.error = "Password is required"
+            return false
+        } else if (password.length < 6) {
+            txtEmpPassword.error = "Password must be at least 6 characters"
+            return false
+        }
+
+        if (phone.isEmpty()) {
+            txtEmpPhone.error = "Phone number is required"
+            return false
+        } else if (!Patterns.PHONE.matcher(phone).matches()) {
+            txtEmpPhone.error = "Please enter a valid phone number"
+            return false
+        }
+
+        if (address.isEmpty()) {
+            txtEmpPAddress.error = "Address is required"
+            return false
+        }
+
+        return true
     }
 
 
@@ -209,7 +263,6 @@ class EmpEnterInfo : AppCompatActivity() {
             "firstName" to firstName,
             "lastName" to lastName,
             "email" to email,
-            "password" to password,
             "phone" to phone,
             "address" to address,
             "role" to role,
@@ -219,6 +272,8 @@ class EmpEnterInfo : AppCompatActivity() {
             "leaderboard" to leaderboardOptIn,
             "profileImageUrl" to imageUrl
         )
+
+
 
         // Use Firebase Authentication uid as the unique key for the employee
         dbRef.child(uid).setValue(employeeData).addOnCompleteListener { task ->

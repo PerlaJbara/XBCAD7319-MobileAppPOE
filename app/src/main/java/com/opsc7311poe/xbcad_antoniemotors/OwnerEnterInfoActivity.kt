@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Patterns
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -27,6 +28,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
 
     private var selectedProfilePicUri: Uri? = null
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
 
         // Initialize FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         // Getting data from the intent
         val businessName = intent.getStringExtra("businessName")
@@ -64,20 +67,20 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
 
         // Registering owner account
         btnRegisterOwnerAccount.setOnClickListener {
-            val name = ownersName.text.toString().trim()
-            val surname = ownersSurname.text.toString().trim()
-            val email = ownersEmail.text.toString().trim()
-            val phone = ownersPhone.text.toString().trim()
-            val address = ownersAddress.text.toString().trim()
-            val password = ownersPassword.text.toString().trim()
-
-            if (name.isNotEmpty() && surname.isNotEmpty() && email.isNotEmpty() && phone.isNotEmpty() && address.isNotEmpty() && password.isNotEmpty() && selectedProfilePicUri != null) {
+            if (validateInputs()) {
                 // Create user account in Firebase Auth
-                registerOwnerAccount(email, password, name, surname, businessName!!, phone, address)
-            } else {
-                Toast.makeText(this, "Please fill in all fields and select a profile picture!", Toast.LENGTH_SHORT).show()
+                registerOwnerAccount(
+                    ownersEmail.text.toString().trim(),
+                    ownersPassword.text.toString().trim(),
+                    ownersName.text.toString().trim(),
+                    ownersSurname.text.toString().trim(),
+                    businessName!!,
+                    ownersPhone.text.toString().trim(),
+                    ownersAddress.text.toString().trim()
+                )
             }
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,20 +91,75 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
         }
     }
 
+    // Function to validate all input fields
+    private fun validateInputs(): Boolean {
+        // Validate profile picture
+        if (selectedProfilePicUri == null) {
+            Toast.makeText(this, "Please select a profile picture.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        // Validate name
+        if (ownersName.text.toString().trim().isEmpty()) {
+            ownersName.error = "Name is required."
+            return false
+        }
+
+        // Validate surname
+        if (ownersSurname.text.toString().trim().isEmpty()) {
+            ownersSurname.error = "Surname is required."
+            return false
+        }
+
+        // Validate email
+        if (ownersEmail.text.toString().trim().isEmpty() ||
+            !Patterns.EMAIL_ADDRESS.matcher(ownersEmail.text.toString().trim()).matches()
+        ) {
+            ownersEmail.error = "Valid email is required."
+            return false
+        }
+
+        // Validate phone
+        if (ownersPhone.text.toString().trim().isEmpty() ||
+            !ownersPhone.text.toString().trim().matches(Regex("^\\d{10,15}$"))
+        ) {
+            ownersPhone.error = "Valid phone number is required."
+            return false
+        }
+
+        // Validate address
+        if (ownersAddress.text.toString().trim().isEmpty()) {
+            ownersAddress.error = "Address is required."
+            return false
+        }
+
+        // Validate password
+        val password = ownersPassword.text.toString().trim()
+        if (password.isEmpty() || password.length < 6) {
+            ownersPassword.error = "Password must be at least 6 characters."
+            return false
+        }
+
+        return true
+    }
+
     // Function to register owner account with Firebase Authentication
     private fun registerOwnerAccount(email: String, password: String, name: String, surname: String, businessName: String, phone: String, address: String) {
         // Show progress bar
         progressBar.visibility = ProgressBar.VISIBLE
+        btnRegisterOwnerAccount.visibility = Button.GONE
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // User registered successfully, now save owner info to Firebase Database
                     val ownerId = firebaseAuth.currentUser?.uid // Get the UID of the registered user
+                    auth.currentUser?.sendEmailVerification()
                     saveOwnerInfo(ownerId!!, name, surname, businessName, email, phone, address)
                 } else {
                     // Failed to register user
                     progressBar.visibility = ProgressBar.GONE
+                    btnRegisterOwnerAccount.visibility = Button.VISIBLE
                     Toast.makeText(this, "Failed to register owner account: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -144,6 +202,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                                     .addOnCompleteListener { task ->
                                         // Hide progress bar
                                         progressBar.visibility = ProgressBar.GONE
+                                        btnRegisterOwnerAccount.visibility = Button.VISIBLE
 
                                         if (task.isSuccessful) {
                                             // Data saved successfully
@@ -158,6 +217,8 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                         }.addOnFailureListener {
                             // Hide progress bar and show error message
                             progressBar.visibility = ProgressBar.GONE
+                            btnRegisterOwnerAccount.visibility = Button.VISIBLE
+
                             Toast.makeText(this@OwnerEnterInfoActivity, "Failed to upload profile picture!", Toast.LENGTH_SHORT).show()
                         }
                     } else {
@@ -170,6 +231,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                 override fun onCancelled(databaseError: com.google.firebase.database.DatabaseError) {
                     // Hide progress bar and show error message
                     progressBar.visibility = ProgressBar.GONE
+                    btnRegisterOwnerAccount.visibility = Button.VISIBLE
                     Toast.makeText(this@OwnerEnterInfoActivity, "Error finding business. Please try again.", Toast.LENGTH_SHORT).show()
                 }
             })

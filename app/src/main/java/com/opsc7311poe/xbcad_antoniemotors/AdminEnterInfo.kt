@@ -71,6 +71,9 @@ class AdminEnterInfo : AppCompatActivity() {
         txtBusinessName.setText(businessName)
 
         btnRegisterAdmin.setOnClickListener {
+
+            validateData()
+
             val firstName = txtAdminFirstName.text.toString()
             val lastName = txtAdminLastName.text.toString()
             val email = txtAdminEmail.text.toString()
@@ -92,6 +95,7 @@ class AdminEnterInfo : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val userId = auth.currentUser?.uid
+                        auth.currentUser?.sendEmailVerification()
                         retrieveBusinessIdAndOwnerId(businessName) { ownerId, businessId ->
                             if (businessId != null) {
                                 saveAdminInfoToFirebase(userId, ownerId, businessId, businessName, firstName, lastName, email, phone, address)
@@ -109,6 +113,47 @@ class AdminEnterInfo : AppCompatActivity() {
                 }
         }
     }
+
+    private fun validateData(): Boolean {
+        var isValid = true
+
+        // Validate each field and show a Toast message if any field is empty or invalid
+        if (txtBusinessName.text.toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter the name of your business!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminFirstName.text.toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your first name!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminLastName.text.toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your last name!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminEmail.text.toString().trim().isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(txtAdminEmail.text.toString()).matches()) {
+            Toast.makeText(this, "Please enter a valid email address!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminPassword.text.toString().trim().isEmpty() || txtAdminPassword.text.toString().length < 6) {
+            Toast.makeText(this, "Password must be at least 6 characters long!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminPhone.text.toString().trim().isEmpty() || !txtAdminPhone.text.toString().matches(Regex("\\d{10,}"))) {
+            Toast.makeText(this, "Please enter a valid phone number!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (txtAdminAddress.text.toString().trim().isEmpty()) {
+            Toast.makeText(this, "Please enter your address!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "Please select a profile image!", Toast.LENGTH_SHORT).show()
+            isValid = false
+        }
+
+        return isValid
+    }
+
 
     private fun displayImage(uri: Uri) {
         Glide.with(this)
