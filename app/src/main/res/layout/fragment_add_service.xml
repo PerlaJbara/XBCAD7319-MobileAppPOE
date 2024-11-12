@@ -57,7 +57,7 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="450dp">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -471,7 +471,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="25dp"
                         android:layout_marginTop="5dp"
-                        android:layout_marginBottom="300dp">
+                        android:layout_marginBottom="30dp">
 
                         <TextView
                             android:id="@+id/textView5"
@@ -496,32 +496,33 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView5"
                             app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnAdd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            android:layout_marginBottom="20dp"
+                            android:backgroundTint="@color/green"
+                            android:fontFamily="@font/fontpoppinsmedium"
+                            android:paddingHorizontal="45dp"
+                            android:paddingVertical="2dp"
+                            android:text="Add"
+                            android:textSize="24dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
             </ScrollView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/btnAdd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="20dp"
-                    android:backgroundTint="@color/green"
-                    android:fontFamily="@font/fontpoppinsmedium"
-                    android:paddingHorizontal="45dp"
-                    android:paddingVertical="2dp"
-                    android:text="Add"
-                    android:textSize="24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </LinearLayout>
