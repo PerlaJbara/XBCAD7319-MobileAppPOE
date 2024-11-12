@@ -31,7 +31,7 @@ class AdminApprovesLeaves : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("LeaderboardFragment", "on create view loaded")
+
 
         val view = inflater.inflate(R.layout.fragment_admin_approves_leaves, container, false)
         leaveRequestContainer = view.findViewById(R.id.leaveRequestContainer)
@@ -73,7 +73,7 @@ class AdminApprovesLeaves : Fragment() {
 
         employeesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                leaveRequestContainer.removeAllViews()  // Clear previous leave requests
+               // leaveRequestContainer.removeAllViews()  // Clear previous leave requests
 
                 // Loop through all employees
                 for (employeeSnapshot in snapshot.children) {
@@ -101,7 +101,7 @@ class AdminApprovesLeaves : Fragment() {
         val leaveRef = database.reference.child("Users").child(businessId).child("Employees")
             .child(employeeId).child("PendingLeave")
 
-        leaveRef.orderByChild("Status").equalTo("pending").addListenerForSingleValueEvent(object : ValueEventListener {
+        leaveRef.orderByChild("status").equalTo("pending").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (leaveSnapshot in snapshot.children) {
                     val leaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
@@ -143,11 +143,16 @@ class AdminApprovesLeaves : Fragment() {
     }
 
     // Add leave request to the UI for admin to approve
-    private fun addLeaveRequestToLayout(employeeId: String, employeeName: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
-        // Inflate the card layout
+    private fun addLeaveRequestToLayout(
+        employeeId: String,
+        employeeName: String,
+        leaveType: String,
+        startDate: String,
+        endDate: String,
+        businessId: String
+    ) {
         val cardView = layoutInflater.inflate(R.layout.card_leave_approval, leaveRequestContainer, false) as CardView
 
-        // Set values for each field in the card layout
         val txtEmployeeName = cardView.findViewById<TextView>(R.id.txtEmployeeName)
         val txtLeaveType = cardView.findViewById<TextView>(R.id.txtLeaveType)
         val txtStartDate = cardView.findViewById<TextView>(R.id.txtStartDate)
@@ -155,35 +160,54 @@ class AdminApprovesLeaves : Fragment() {
         val txtTotalDuration = cardView.findViewById<TextView>(R.id.txtTotalDuration)
         val btnViewMore = cardView.findViewById<Button>(R.id.btnRestoreTask)
 
-        // Populate the text fields with data
         txtEmployeeName.text = employeeName
         txtLeaveType.text = leaveType
         txtStartDate.text = startDate
         txtEndDate.text = endDate
 
-        // Calculate the total duration (in days)
         val totalDuration = calculateLeaveDuration(startDate, endDate)
         txtTotalDuration.text = "$totalDuration days"
 
-        // Set button click listeners for approving and denying the leave request
         btnViewMore.setOnClickListener {
-            // Example of action for the View More button, like showing more details in a new screen
-            Toast.makeText(requireContext(), "Viewing more for $employeeName", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putString("userId", employeeId)  // Pass the employee ID
+                putString("businessId", businessId)  // Pass the business ID
+
+            }
+            val leaveApprovalFragment = LeaveApproval().apply {
+                arguments = bundle
+            }
+            requireFragmentManager().beginTransaction()
+                .replace(R.id.frame_container, leaveApprovalFragment)
+                .addToBackStack(null)
+                .commit()
         }
 
-        // Add the card to the container
         leaveRequestContainer.addView(cardView)
     }
 
     // Helper function to calculate the total duration of leave
     private fun calculateLeaveDuration(startDate: String, endDate: String): Int {
-        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return try {
             val start = format.parse(startDate)
             val end = format.parse(endDate)
+
+            // Check if dates were parsed successfully
+            if (start == null || end == null) {
+
+                return 0
+            }
+
+            // Calculate the difference in milliseconds and convert to days
             val difference = end.time - start.time
-            (difference / (1000 * 60 * 60 * 24)).toInt()
+            val daysDifference = (difference / (1000 * 60 * 60 * 24)).toInt()
+
+
+
+            daysDifference
         } catch (e: Exception) {
+
             0
         }
     }
