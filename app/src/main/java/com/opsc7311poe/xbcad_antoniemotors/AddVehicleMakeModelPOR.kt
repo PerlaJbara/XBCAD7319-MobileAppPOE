@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.SearchView
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +28,8 @@ class AddVehicleMakeModelPOR : Fragment() {
     private lateinit var edtNewVehicleMake: EditText
     private lateinit var edtSelectedVehicleMake: EditText
     private lateinit var edtNewModel: EditText
-    private lateinit var edtNewProvinceAreaName: EditText
+    private lateinit var edtNewAreaName: EditText
+    private lateinit var provinceSpinner: Spinner
     private lateinit var edtNewPOR: EditText
     private lateinit var btnAddNewVMake: Button
     private lateinit var btnAddNewVModel: Button
@@ -46,7 +49,7 @@ class AddVehicleMakeModelPOR : Fragment() {
         edtNewVehicleMake = view.findViewById(R.id.edttextNewVehicleMake)
         edtSelectedVehicleMake = view.findViewById(R.id.edttxtSelectedVehicleMake)
         edtNewModel = view.findViewById(R.id.edttxtNewVehicleModel)
-        edtNewProvinceAreaName = view.findViewById(R.id.edttxtProvince)
+        edtNewAreaName = view.findViewById(R.id.edttxtArea)
         edtNewPOR = view.findViewById(R.id.edttxtAddPOR)
         btnAddNewVMake = view.findViewById(R.id.btnAddNewVehicleMake)
         btnAddNewVModel = view.findViewById(R.id.btnAddVehicleModel)
@@ -54,6 +57,7 @@ class AddVehicleMakeModelPOR : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
         rbBNumPlate = view.findViewById(R.id.rbBeginning)
         rbENumPlate = view.findViewById(R.id.rbEnd)
+        provinceSpinner = view.findViewById(R.id.spnProvince)
 
         databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
 
@@ -63,7 +67,7 @@ class AddVehicleMakeModelPOR : Fragment() {
         // Handle adding a new vehicle make
         btnAddNewVMake.setOnClickListener {
             val newVehicleMake = edtNewVehicleMake.text.toString().trim()
-            if (newVehicleMake.isNotEmpty() && newVehicleMake.matches(Regex("^[a-zA-Z0-9]*$"))) {
+            if (newVehicleMake.isNotEmpty() && newVehicleMake.matches(Regex("^[a-zA-Z0-9 ]*$"))) {
                 checkAndAddVehicleMake(newVehicleMake)
             } else {
                 Toast.makeText(requireContext(), "Invalid Vehicle Make. No special characters allowed.", Toast.LENGTH_SHORT).show()
@@ -87,15 +91,12 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
         }
 
-        // Handle adding a new province or area registration code
+        // Load provinces into the spinner
+        loadProvinces()
+
+        // Handle adding a new  area, and area registration code
         btnAddNewPOR.setOnClickListener {
-            val newProvince = edtNewProvinceAreaName.text.toString().trim()
-            val newPOR = edtNewPOR.text.toString().trim().uppercase()
-            if (newProvince.isNotEmpty() && newPOR.isNotEmpty() && newPOR.length <= 3 && newPOR.matches(Regex("^[A-Z]*$"))) {
-                checkAndAddPOR(newProvince, newPOR)
-            } else {
-                Toast.makeText(requireContext(), "Invalid Province or POR Code. POR Code must be letters only, max 3 characters.", Toast.LENGTH_SHORT).show()
-            }
+            addPOR()
         }
 
         // Back button
@@ -167,26 +168,41 @@ class AddVehicleMakeModelPOR : Fragment() {
         })
     }
 
-    private fun checkAndAddPOR(province: String, por: String) {
-        val porRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
 
-        // Determine Layout value based on radio button selection
-        val layout = if (rbBNumPlate.isChecked) 1 else if (rbENumPlate.isChecked) 2 else 0
-
+    private fun checkAndAddPOR(province: String, areaName: String, porCode: String, layout: Int) {
         if (layout == 0) {
             Toast.makeText(requireContext(), "Please select Beginning or End layout.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val provinceData = ProvinceCodeData(province, por, layout)
-
-        porRef.child(province).addListenerForSingleValueEvent(object : ValueEventListener {
+        val porRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+        porRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    Toast.makeText(requireContext(), "Province/Area name already exists.", Toast.LENGTH_SHORT).show()
+                var isPORCodeDuplicate = false
+                var isAreaNameDuplicate = false
+
+                for (provinceSnapshot in snapshot.children) {
+                    for (areaSnapshot in provinceSnapshot.children) {
+                        val existingPOR = areaSnapshot.child("areaCode").value.toString().uppercase()
+                        val existingAreaName = areaSnapshot.key.toString().uppercase()
+
+                        if (existingPOR == porCode) {
+                            isPORCodeDuplicate = true
+                        }
+                        if (provinceSnapshot.key == province && existingAreaName == areaName.uppercase()) {
+                            isAreaNameDuplicate = true
+                        }
+                    }
+                }
+
+                if (isPORCodeDuplicate) {
+                    Toast.makeText(requireContext(), "POR Code already exists in the system.", Toast.LENGTH_SHORT).show()
+                } else if (isAreaNameDuplicate) {
+                    Toast.makeText(requireContext(), "Area Name already exists in this province.", Toast.LENGTH_SHORT).show()
                 } else {
-                    porRef.child(province).setValue(provinceData)
-                    Toast.makeText(requireContext(), "Province/Area and POR Code added.", Toast.LENGTH_SHORT).show()
+                    val newAreaData = AreaData(porCode, layout)
+                    porRef.child(province).child(areaName).setValue(newAreaData)
+                    Toast.makeText(requireContext(), "Area and POR Code added successfully.", Toast.LENGTH_SHORT).show()
                     clearPORFields()
                 }
             }
@@ -250,8 +266,43 @@ class AddVehicleMakeModelPOR : Fragment() {
         alertDialog.show()
     }
 
+    private fun addPOR() {
+        val selectedProvince = provinceSpinner.selectedItem.toString()
+        val newAreaName = edtNewAreaName.text.toString().trim()
+        val newPOR = edtNewPOR.text.toString().trim().uppercase()
+        val layout = if (rbBNumPlate.isChecked) 1 else if (rbENumPlate.isChecked) 2 else 0
+
+        if (selectedProvince.isNotEmpty() && newAreaName.isNotEmpty() && newPOR.isNotEmpty() && newPOR.length <= 3 && newPOR.matches(Regex("^[A-Z]*$"))) {
+            checkAndAddPOR(selectedProvince, newAreaName, newPOR, layout)
+        } else {
+            Toast.makeText(requireContext(), "Invalid Area or POR Code. POR Code must be letters only, max 3 characters.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun loadProvinces() {
+        val provinceList = mutableListOf<String>()
+        val databaseRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+
+        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (provinceSnapshot in snapshot.children) {
+                    provinceList.add(provinceSnapshot.key ?: "")
+                }
+                // Set data to spinner
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, provinceList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                provinceSpinner.adapter = adapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+            }
+        })
+    }
+
     private fun clearPORFields() {
-        edtNewProvinceAreaName.text?.clear()
+        edtNewAreaName.text?.clear()
         edtNewPOR.text?.clear()
         rbBNumPlate.isChecked = false
         rbENumPlate.isChecked = false

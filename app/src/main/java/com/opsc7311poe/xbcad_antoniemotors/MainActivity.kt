@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navCustomers -> {
-                    replaceFragment(CustomerFragment())
+                    replaceFragment(CustomerMenuFragment())
                     true
                 }
                 R.id.navTasks -> {
