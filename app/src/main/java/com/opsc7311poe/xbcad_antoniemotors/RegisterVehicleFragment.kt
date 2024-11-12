@@ -532,7 +532,6 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-
     private fun registerVehicle() {
         // Retrieve and format inputs
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
@@ -606,34 +605,65 @@ class RegisterVehicleFragment : Fragment() {
                         }
 
                         if (businessId != null && adminFullName != null) {
-                            val vehicle = VehicleData(
-                                VehicleOwner = vehicleOwner,
-                                customerID = selectedCustomerId,
-                                VehicleNumPlate = fullVehicleNumPlate,
-                                VehiclePOR = vehiclePOR,
-                                VehicleModel = vehicleModel,
-                                VehicleMake = edtVehicleMake.text.toString(),
-                                VehicleYear = selectedYear,
-                                VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
-                                VehicleKms = vehicleKms,
-                                registrationDate = currentDate,
-                                AdminID = adminId,
-                                AdminFullName = adminFullName
-                            )
+                            // Check for duplicates
+                            val vehicleReference = usersReference.child(businessId).child("Vehicles")
+                            vehicleReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(vehicleSnapshot: DataSnapshot) {
+                                    var isDuplicate = false
+                                    for (vehicleSnap in vehicleSnapshot.children) {
+                                        val existingPlate = vehicleSnap.child("vehicleNumPlate").getValue(String::class.java)
+                                        val existingVin = vehicleSnap.child("vinNumber").getValue(String::class.java)
 
-                            val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
-                            vehicle.vehicleId = vehicleRef.key ?: ""
+                                        if (existingPlate == fullVehicleNumPlate) {
+                                            Toast.makeText(context, "A vehicle with this number plate already exists.", Toast.LENGTH_SHORT).show()
+                                            isDuplicate = true
+                                            break
+                                        }
+                                        if (vinNumber.isNotEmpty() && existingVin == vinNumber) {
+                                            Toast.makeText(context, "A vehicle with this VIN number already exists.", Toast.LENGTH_SHORT).show()
+                                            isDuplicate = true
+                                            break
+                                        }
+                                    }
 
-                            vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    uploadVehicleImages(businessId, vehicleRef.key!!)
-                                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
-                                    clearInputFields()
-                                    clearAllImages()
-                                } else {
-                                    Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                    if (!isDuplicate) {
+                                        // No duplicates found, proceed with registration
+                                        val vehicle = VehicleData(
+                                            VehicleOwner = vehicleOwner,
+                                            customerID = selectedCustomerId,
+                                            VehicleNumPlate = fullVehicleNumPlate,
+                                            VehiclePOR = vehiclePOR,
+                                            VehicleModel = vehicleModel,
+                                            VehicleMake = edtVehicleMake.text.toString(),
+                                            VehicleYear = selectedYear,
+                                            VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
+                                            VehicleKms = vehicleKms,
+                                            registrationDate = currentDate,
+                                            AdminID = adminId,
+                                            AdminFullName = adminFullName
+                                        )
+
+                                        val vehicleRef = vehicleReference.push()
+                                        vehicle.vehicleId = vehicleRef.key ?: ""
+
+                                        vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                uploadVehicleImages(businessId, vehicleRef.key!!)
+                                                Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                                                clearInputFields()
+                                                clearAllImages()
+                                            } else {
+                                                Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
                                 }
-                            }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("registerVehicle", "Database error: ${error.message}")
+                                    Toast.makeText(context, "Error checking for duplicates.", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         } else {
                             Log.e("registerVehicle", "Business ID not found for the current admin.")
                             Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
@@ -652,6 +682,7 @@ class RegisterVehicleFragment : Fragment() {
             }
         })
     }
+
 
 
 

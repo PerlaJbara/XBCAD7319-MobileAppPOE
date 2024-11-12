@@ -29,6 +29,7 @@ class CustomerFragment : Fragment() {
     //private val customerList = mutableListOf<CustomerData>()
     private lateinit var customerList: ArrayList<CustomerData>
     private lateinit var searchCustomers: SearchView
+    private lateinit var usersReference: DatabaseReference
 
 
     override fun onCreateView(
@@ -66,6 +67,7 @@ class CustomerFragment : Fragment() {
         recyclerView.adapter = customerAdapter
 
 
+        usersReference = FirebaseDatabase.getInstance().getReference("Users")
 
         searchCustomers.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -73,64 +75,50 @@ class CustomerFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                customerAdapter.filter.filter(newText)
+                fetchCustomers(newText)
                 return false
             }
         })
 
-        // Fetch customer data
-        fetchCustomers()
+        // Initial fetch to load all customers
+        fetchCustomers(null)
 
         return view
     }
 
 
-    private fun fetchCustomers() {
+    private fun fetchCustomers(searchQuery: String?) {
         val adminId = FirebaseAuth.getInstance().currentUser?.uid
-        Log.d("fetchCustomers", "userId found for admin: $adminId")
-
         if (adminId != null) {
-            val usersReference = FirebaseDatabase.getInstance().getReference("Users")
-
             usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(usersSnapshot: DataSnapshot) {
                     var businessID: String? = null
-
-                    // Iterate over each business node to find where adminId exists under Employees
                     for (businessSnapshot in usersSnapshot.children) {
                         val employeeSnapshot = businessSnapshot.child("Employees").child(adminId)
-
                         if (employeeSnapshot.exists()) {
-                            // Check for both variations of the business ID key
                             businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
                                 ?: employeeSnapshot.child("businessId").getValue(String::class.java)
-
-                            Log.d("fetchCustomers", "BusinessID found for admin: $businessID")
                             break
                         }
                     }
 
                     if (businessID != null) {
-                        // Now use BusinessID to retrieve customers under the correct business
                         val customerReference = usersReference.child(businessID).child("Customers")
-
                         customerReference.addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 customerList.clear()
 
-                                if (!snapshot.exists()) {
-                                    Toast.makeText(requireContext(), "No saved customers found.", Toast.LENGTH_SHORT).show()
-                                    return
-                                }
-
-                                // Retrieve each customer and add to the list
                                 for (customerSnapshot in snapshot.children) {
                                     val customer = customerSnapshot.getValue(CustomerData::class.java)
-                                    customer?.let {
-                                        customerList.add(it)
+                                    if (customer != null) {
+                                        // If searchQuery is not null, filter by the query
+                                        if (searchQuery.isNullOrBlank() ||
+                                            customer.CustomerName.contains(searchQuery, true) ||
+                                            customer.CustomerSurname.contains(searchQuery, true)) {
+                                            customerList.add(customer)
+                                        }
                                     }
                                 }
-
                                 customerAdapter.notifyDataSetChanged()
                             }
 
@@ -140,7 +128,6 @@ class CustomerFragment : Fragment() {
                             }
                         })
                     } else {
-                        Log.e("fetchCustomers", "BusinessID not found for the current admin.")
                         Toast.makeText(requireContext(), "Unable to find associated business.", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -151,12 +138,9 @@ class CustomerFragment : Fragment() {
                 }
             })
         } else {
-            Log.e("fetchCustomers", "User is not logged in or adminId is null.")
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
     }
-
-
 
 
 

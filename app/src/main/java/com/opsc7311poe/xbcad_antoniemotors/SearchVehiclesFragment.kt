@@ -56,10 +56,18 @@ class SearchVehiclesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = vehicleAdapter
 
-        searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        /*searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
             override fun onQueryTextChange(newText: String?): Boolean {
                 vehicleAdapter.filterList(newText)
+                return false
+            }
+        })*/
+
+        searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterVehicles(newText)
                 return false
             }
         })
@@ -137,6 +145,45 @@ class SearchVehiclesFragment : Fragment() {
             Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show()
         }
     }
+
+
+    private fun filterVehicles(query: String?) {
+        val filteredList = ArrayList<VehicleData>()
+        if (query.isNullOrEmpty()) {
+            filteredList.addAll(vehicleList)
+            vehicleAdapter.updateList(filteredList)
+            return
+        }
+
+        val searchQuery = query.lowercase().trim()
+        val vehicleReference = FirebaseDatabase.getInstance().getReference("Users")
+            .child(businessId ?: return)
+            .child("Vehicles")
+
+        vehicleReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                filteredList.clear()
+                for (vehicleSnapshot in snapshot.children) {
+                    val vehicle = vehicleSnapshot.getValue(VehicleData::class.java)
+                    if (vehicle != null) {
+                        if (vehicle.VehicleNumPlate.lowercase().contains(searchQuery) ||
+                            vehicle.VehicleModel.lowercase().contains(searchQuery)) {
+                            vehicle.vehicleId = vehicleSnapshot.key ?: ""
+                            filteredList.add(vehicle)
+                        }
+                    }
+                }
+                vehicleAdapter.updateList(filteredList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("SearchVehiclesFragment", "Database error: ${error.message}")
+                Toast.makeText(requireContext(), "Error searching vehicles.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 
     private fun openVehicleDetailsFragment(vehicle: VehicleData, businessId: String) {
         if (vehicle.vehicleId.isEmpty()) {
