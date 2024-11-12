@@ -125,7 +125,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/albert_sans"
-                android:text="Select Vehicle:"
+                android:text="Select Service:"
                 android:textAlignment="textStart"
                 android:textSize="25sp" />
 

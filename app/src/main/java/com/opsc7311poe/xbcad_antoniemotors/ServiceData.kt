@@ -3,7 +3,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 import java.util.Date
 
 data class ServiceData(
-
+    var serviceID: String?,
     var name: String?,
     var custID: String?,
     var vehicleID: String?,
@@ -17,7 +17,7 @@ data class ServiceData(
 
 ){
     // No-argument constructor (required by Firebase)
-    constructor() : this(null, null , null, null, null, null, null, null, null, null)
+    constructor() : this(null, null, null , null, null, null, null, null, null, null, null)
 }
 
 data class Part(

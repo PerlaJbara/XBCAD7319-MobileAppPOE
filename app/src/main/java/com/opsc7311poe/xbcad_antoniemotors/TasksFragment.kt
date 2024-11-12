@@ -147,7 +147,7 @@ class TasksFragment : Fragment() {
                             txtTaskName.text = task.taskName ?: "Unnamed Task"
                             txtTaskDesc.text = task.taskDescription ?: "No Description"
                             getAdminName(task.adminID.toString(), taskCardView)
-                            txtVehNumPlate.text = task.vehicleNumberPlate ?: "No vehicle assigned"
+                            getVehicleNumPlate(task.vehicleID.toString(), taskCardView)
                             txtDueDate.text =
                                 task.dueDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
                             txtCompletedDate.text =
@@ -230,7 +230,7 @@ class TasksFragment : Fragment() {
                 txtTaskName.text = task.taskName ?: "Unnamed Task"
                 txtTaskDesc.text = task.taskDescription ?: "No Description"
                 getAdminName(task.employeeID.toString(), taskCardView)
-                txtVehNumPlate.text = task.vehicleNumberPlate ?: "No vehicle assigned"
+                getVehicleNumPlate(task.vehicleID.toString(), taskCardView)
                 txtDueDate.text = task.dueDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
                 txtCompletedDate.text = task.completedDate?.let { dateFormatter.format(Date(it)) } ?: "N/A"
 
@@ -411,6 +411,58 @@ class TasksFragment : Fragment() {
 
 
 
+    }
+
+    private fun getVehicleNumPlate(serviceID: String?, cv: CardView) {
+        if (serviceID == null) {
+            cv.findViewById<TextView>(R.id.txtVehNumPlate).text = "No vehicle assigned"
+            return
+        }
+
+        val serRef = Firebase.database.reference.child("Users/$businessId/Services/$serviceID/vehicleID")
+
+        // Fetch the vehicle ID
+        serRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val vehicleID = snapshot.getValue(String::class.java)
+
+                if (!vehicleID.isNullOrEmpty()) {
+                    // Fetch the vehicle details using the vehicle ID
+                    val empRef = Firebase.database.reference.child("Users/$businessId/Vehicles/$vehicleID")
+
+                    empRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val vehNumPlate = snapshot.child("vehicleNumPlate").getValue(String::class.java)
+                            if (!vehNumPlate.isNullOrEmpty()) {
+                                cv.findViewById<TextView>(R.id.txtVehNumPlate).text = vehNumPlate
+                            } else {
+                                cv.findViewById<TextView>(R.id.txtVehNumPlate).text = "No vehicle assigned"
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e("FirebaseError", "Error loading vehicle data: ${error.message}")
+                            Toast.makeText(
+                                requireContext(),
+                                "Error loading vehicle data",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
+                } else {
+                    cv.findViewById<TextView>(R.id.txtVehNumPlate).text = "No vehicle assigned"
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error loading service data: ${error.message}")
+                Toast.makeText(
+                    requireContext(),
+                    "Error loading service data",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     private fun replaceFragment(fragment: Fragment) {
