@@ -126,7 +126,10 @@ class ServicesFragment : Fragment() {
                         val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
                         cardView.findViewById<TextView>(R.id.txtDateTakenIn).text = formatter.format(service?.dateReceived)
-                        cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
+                        if (service.dateReturned != null){
+                            cardView.findViewById<TextView>(R.id.txtDateGivenBack).text =
+                                formatter.format(service.dateReturned)
+                        }
                         // Set the status ImageView based on status
                         val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
                         when (service.status) {
@@ -193,7 +196,10 @@ class ServicesFragment : Fragment() {
             val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
             cardView.findViewById<TextView>(R.id.txtDateTakenIn).text = formatter.format(service?.dateReceived)
-            cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
+            if (service.dateReturned != null){
+                cardView.findViewById<TextView>(R.id.txtDateGivenBack).text =
+                    formatter.format(service.dateReturned)
+            }
             // Set the status ImageView based on status
             val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
             when (service.status) {

@@ -104,7 +104,9 @@ class ServiceDetailsFragment : Fragment() {
                         // Convert dates to string values
                         val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                         txtDateCarReceived.text = formatter.format(fetchedService.dateReceived)
-                        txtDateCarReturned.text = formatter.format(fetchedService.dateReturned)
+                        if (fetchedService.dateReturned != null){
+                            txtDateCarReturned.text =formatter.format(fetchedService.dateReturned)
+                        }
 
                         // Populate parts textbox
                         var allPartsString = ""
@@ -210,17 +212,21 @@ class ServiceDetailsFragment : Fragment() {
             //checking all fields are filled
             if(txtName.text.toString().isBlank() ||
                 txtDateCarReceived.text.toString().isBlank() ||
-                txtDateCarReturned.text.toString().isBlank() ||
                 txtLabourCost.text.toString().isBlank() )
             {
                 Toast.makeText( requireContext(), "Please ensure all service information is filled correctly.", Toast.LENGTH_SHORT).show()
             }
             else
             {
+                serviceEntered = ServiceData()
+
                 //converting date texts to date values
                 val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val dateReceived: Date? = dateFormatter.parse(txtDateCarReceived.text.toString())
-                val dateReturned: Date? = dateFormatter.parse(txtDateCarReturned.text.toString())
+                if(!txtDateCarReturned.text.toString().isBlank()){
+                    val dateReturned: Date? = dateFormatter.parse(txtDateCarReturned.text.toString())
+                    serviceEntered.dateReturned = dateReturned
+                }
 
                 //totalling cost in order to save
                 //totalling parts
@@ -233,13 +239,11 @@ class ServiceDetailsFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData()
                 serviceEntered.name = txtName.text.toString()
                 serviceEntered.custID = custID
                 serviceEntered.vehicleID = vehicleID
                 serviceEntered.status = currentStatus
                 serviceEntered.dateReceived = dateReceived
-                serviceEntered.dateReturned = dateReturned
                 serviceEntered.parts = fetchedService.parts
                 serviceEntered.labourCost = txtLabourCost.text.toString().toDouble()
                 serviceEntered.totalCost = totalCost

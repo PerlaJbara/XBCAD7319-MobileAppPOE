@@ -166,7 +166,6 @@ class AddServiceFragment : Fragment() {
             //checking all fields are filled
             if(txtName.text.toString().isBlank() ||
                 txtDateReceived.text.toString().isBlank() ||
-                txtDateReturned.text.toString().isBlank() ||
                 txtAllParts.text.toString().isBlank() ||
                 txtLabourCost.text.toString().isBlank() )
             {
@@ -177,7 +176,10 @@ class AddServiceFragment : Fragment() {
                 //converting date texts to date values
                 val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val dateReceived: Date? = dateFormatter.parse(txtDateReceived.text.toString())
+                if(!txtDateReturned.text.toString().isBlank()){
                 val dateReturned: Date? = dateFormatter.parse(txtDateReturned.text.toString())
+                    serviceEntered.dateReturned = dateReturned
+                }
 
                 //totalling cost in order to save
                 //totalling parts
@@ -196,7 +198,6 @@ class AddServiceFragment : Fragment() {
                 serviceEntered.vehicleID = selectedVehicleId
                 serviceEntered.status = spinStatus.selectedItem.toString()
                 serviceEntered.dateReceived = dateReceived
-                serviceEntered.dateReturned = dateReturned
                 serviceEntered.parts = partsEntered
                 serviceEntered.labourCost = txtLabourCost.text.toString().toDouble()
                 serviceEntered.totalCost = totalCost
