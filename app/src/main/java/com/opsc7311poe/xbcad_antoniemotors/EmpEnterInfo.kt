@@ -19,6 +19,8 @@ import java.util.UUID
 class EmpEnterInfo : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var txtBusinessName: EditText
     private lateinit var txtEmpFirstName: EditText
     private lateinit var txtEmpLastName: EditText
     private lateinit var txtEmpEmail: EditText
@@ -32,6 +34,7 @@ class EmpEnterInfo : AppCompatActivity() {
 
     private var businessId: String? = null
     private var managerId: String? = null
+    private var businessName: String? = null
     private var role: String = "employee"
     private var selectedImageUri: Uri? = null
 
@@ -42,12 +45,14 @@ class EmpEnterInfo : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         // Retrieve Intent data
+        businessName = intent.getStringExtra("businessName")
         businessId = intent.getStringExtra("businessId")
         managerId = intent.getStringExtra("adminId") // Receiving admin ID as managerId
         role = intent.getStringExtra("role") ?: "employee"
 
         // Initialize views
         txtEmpFirstName = findViewById(R.id.txtEmpFirstName)
+        txtBusinessName = findViewById(R.id.txtEmpBusinessName)
         txtEmpLastName = findViewById(R.id.txtEmpLastName)
         txtEmpEmail = findViewById(R.id.txtEmpEmail)
         txtEmpPassword = findViewById(R.id.txtEmpPassword)
@@ -58,6 +63,8 @@ class EmpEnterInfo : AppCompatActivity() {
         opIn = findViewById(R.id.opIn)
         progressBar = findViewById(R.id.progressBar)
 
+        txtBusinessName.setText(businessName) //making the name of the company carry on from previous page
+
         // ImageView click listener to open gallery
         ivEmpProfPicture.setOnClickListener {
             pickImage()
@@ -67,6 +74,9 @@ class EmpEnterInfo : AppCompatActivity() {
         btnRegisterEmp.setOnClickListener {
             if (validateFields()) {
                 registerEmployee()
+            }
+            else if (!validateFields()){
+                return@setOnClickListener
             }
         }
     }

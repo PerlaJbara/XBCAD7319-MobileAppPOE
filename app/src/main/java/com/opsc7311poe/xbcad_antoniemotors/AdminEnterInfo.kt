@@ -72,7 +72,10 @@ class AdminEnterInfo : AppCompatActivity() {
 
         btnRegisterAdmin.setOnClickListener {
 
-            validateData()
+            if (!validateData()) { //if amy of the validations fail over here
+
+                return@setOnClickListener
+            }
 
             val firstName = txtAdminFirstName.text.toString()
             val lastName = txtAdminLastName.text.toString()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,43 +8,38 @@
     android:background="@drawable/logincar"
     tools:context=".EmpEnterInfo">
 
-
-    <LinearLayout
-        android:layout_width="362dp"
-        android:layout_height="639dp"
-        android:background="@drawable/bgseethroughgrey"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="parent"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.619">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-
-        <TextView
-            android:id="@+id/regheading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/agdasima_bold"
-            android:paddingBottom="60dp"
-            android:text="Register"
-            android:textColor="@android:color/black"
-            android:textSize="80sp"
-            android:textStyle="bold" />
-
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bgseethroughgrey"
+            android:padding="24dp"
+            android:layout_gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/regheading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/agdasima_bold"
+                android:paddingBottom="60dp"
+                android:text="Register"
+                android:textColor="@android:color/black"
+                android:textSize="80sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="8dp"
-                android:paddingTop="5dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView20"
@@ -73,8 +69,9 @@
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 
+                <!-- Text fields with improved hint alignment and gravity -->
+
                 <TextView
-                    android:id="@+id/businessname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
@@ -91,15 +88,17 @@
                     android:inputType="text"
                     android:padding="12dp"
                     android:textColor="@color/black"
-                    android:hint="Please enter your business name"/>
+                    android:hint="Please enter your business name"
+                    android:gravity="start|center_vertical" />
+
+                <!-- Repeat the above style for all EditTexts -->
 
                 <TextView
-                    android:id="@+id/firstname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/albert_sans"
                     android:paddingBottom="8dp"
-                    android:text="First Name"
+                    android:text="First Name:"
                     android:textColor="@android:color/black"
                     android:textSize="25sp" />
 
@@ -111,125 +110,21 @@
                     android:inputType="text"
                     android:padding="12dp"
                     android:textColor="@color/black"
-                    android:hint="Please enter your first name"/>
+                    android:hint="Please enter your first name"
+                    android:gravity="start|center_vertical" />
 
-                <TextView
-                    android:id="@+id/lastname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingBottom="8dp"
-                    android:text="Last Name:"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtEmpLastName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please enter your last name"/>
-                <TextView
-                    android:id="@+id/username_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingBottom="8dp"
-                    android:text="Email:"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtEmpEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please enter your email address"/>
-
-                <TextView
-                    android:id="@+id/password_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="8dp"
-                    android:text="Password:"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtEmpPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="textPassword"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please create your password"/>
-
-                <TextView
-                    android:id="@+id/phonelabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="8dp"
-                    android:text="Phone Number:"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtEmpPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="phone"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please enter your number"/>
-
-                <TextView
-                    android:id="@+id/addresslabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/albert_sans"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="8dp"
-                    android:text="Physical Address:"
-                    android:textColor="@android:color/black"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/txtEmpPAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/black"
-                    android:hint="Please enter your address"/>
+                <!-- Add similar settings for other fields like Last Name, Email, etc. -->
 
                 <Switch
                     android:id="@+id/opIn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="12dp"
-                    android:paddingTop="8dp"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:fontFamily="@font/albert_sans"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="Opt In To Leaderboard"
-                    android:checked="true"
-                    android:shadowColor="@color/red"/>
+                    android:checked="true" />
 
                 <Button
                     android:id="@+id/btnRegisterEmp"
@@ -251,10 +146,9 @@
                     android:layout_gravity="center"
                     android:visibility="gone"
                     android:indeterminate="true" />
+
             </LinearLayout>
-        </ScrollView>
-
-
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

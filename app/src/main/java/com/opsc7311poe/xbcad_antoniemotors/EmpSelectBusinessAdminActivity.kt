@@ -95,7 +95,7 @@ class EmpSelectBusinessAdminActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Please select an admin.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please make sure you select your business and manager.", Toast.LENGTH_SHORT).show()
             }
         }
     }

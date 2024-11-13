@@ -79,6 +79,10 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                     ownersAddress.text.toString().trim()
                 )
             }
+
+            else if (!validateInputs()){
+                return@setOnClickListener
+            }
         }
 
     }
@@ -224,6 +228,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                     } else {
                         // Hide progress bar and show error message
                         progressBar.visibility = ProgressBar.GONE
+                        btnRegisterOwnerAccount.visibility = Button.VISIBLE
                         Toast.makeText(this@OwnerEnterInfoActivity, "Business not found!", Toast.LENGTH_SHORT).show()
                     }
                 }

@@ -95,6 +95,7 @@
                     android:background="@drawable/txtgradientgtor"
                     android:fontFamily="@font/poppins"
                     android:layout_marginStart="20dp"
+                    android:paddingStart="15dp"
                     android:paddingTop="7dp"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
