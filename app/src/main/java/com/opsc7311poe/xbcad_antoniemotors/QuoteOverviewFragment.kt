@@ -32,6 +32,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
+import android.widget.ImageView
 import androidx.core.app.NotificationCompat
 
 class QuoteOverviewFragment : Fragment() {
@@ -43,6 +44,7 @@ class QuoteOverviewFragment : Fragment() {
     private lateinit var llHoursLabour: LinearLayout
     private lateinit var tvTotal: TextView
     private lateinit var quoteId: String
+    private lateinit var btnBack: ImageView
 
     companion object {
         private const val REQUEST_CODE_WRITE_STORAGE = 1
@@ -67,6 +69,7 @@ class QuoteOverviewFragment : Fragment() {
         addParts = invoiceView.findViewById(R.id.addparts)
         llHoursLabour = invoiceView.findViewById(R.id.llHoursLabour)
         tvTotal = invoiceView.findViewById(R.id.tvTotal)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Find the LinearLayout inside the ScrollView and add the inflated invoice view
         val linearLayout = scrollView.getChildAt(0) as LinearLayout
@@ -90,6 +93,11 @@ class QuoteOverviewFragment : Fragment() {
         view.findViewById<View>(R.id.btnMakePDF).setOnClickListener {
             createPDF()
         }
+
+        btnBack.setOnClickListener {
+            replaceFragment(DocumentationFragment())
+        }
+
 
         // Request permission to write to external storage if not granted
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)

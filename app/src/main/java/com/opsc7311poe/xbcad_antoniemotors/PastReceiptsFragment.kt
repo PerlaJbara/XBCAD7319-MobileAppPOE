@@ -1,6 +1,9 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import QuoteData
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
@@ -24,6 +27,7 @@ class PastReceiptsFragment : Fragment() {
     private lateinit var searchInput: EditText
     private lateinit var linLay: LinearLayout
     private lateinit var btnBack: ImageView
+    private val receiptsList = mutableListOf<ReceiptData>()  // Updated to hold receipts
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +40,20 @@ class PastReceiptsFragment : Fragment() {
 
         // Initialize the LinearLayout to display the cards
         linLay = view.findViewById(R.id.linlayServiceCards)
+
+        // Load receipts initially
         loadReceipts()
+
+        // Set a listener to filter receipts as the user types
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                searchReceipts(s.toString()) // Perform search when text changes
+            }
+        })
 
         btnBack.setOnClickListener {
             replaceFragment(DocumentationFragment())
@@ -53,39 +70,70 @@ class PastReceiptsFragment : Fragment() {
 
             receiptsRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    linLay.removeAllViews()
+                    linLay.removeAllViews()  // Clear previous views
+                    receiptsList.clear()  // Clear list before adding new data
 
                     for (receiptSnapshot in snapshot.children) {
                         val receipt = receiptSnapshot.getValue(ReceiptData::class.java)
 
                         if (receipt != null) {
-                            val cardView = LayoutInflater.from(requireContext()).inflate(R.layout.documentationlayout, linLay, false) as CardView
+                            receiptsList.add(receipt)  // Add each receipt to the list
 
-                            // Populate the card with quote data
+                            // Create and populate the card view
+                            val cardView = LayoutInflater.from(requireContext())
+                                .inflate(R.layout.documentationlayout, linLay, false) as CardView
+
                             cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
                             cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
 
-                            // Set OnClickListener for card view to navigate to quote details
+                            // Set OnClickListener for card view to navigate to receipt details
                             cardView.setOnClickListener {
                                 val receiptOverviewFragment = ReceiptOverviewFragment()
                                 val bundle = Bundle()
-                                // Pass the quoteID to QuoteOverviewFragment
                                 bundle.putString("receiptId", receiptSnapshot.key)
                                 receiptOverviewFragment.arguments = bundle
-
-                                // Navigate to the QuoteOverviewFragment
                                 replaceFragment(receiptOverviewFragment)
                             }
 
-                            // Add the card to the container
-                            linLay.addView(cardView)
+                            linLay.addView(cardView)  // Add the card to the container
                         }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    // Handle any database errors
                 }
             })
+        }
+    }
+
+    private fun searchReceipts(query: String) {
+        val filteredReceipts = receiptsList.filter {
+            it.customerName?.contains(query, ignoreCase = true) == true
+        }
+        displayReceipts(filteredReceipts)
+    }
+
+    private fun displayReceipts(receipts: List<ReceiptData>) {
+        linLay.removeAllViews()  // Clear previous views
+
+        for (receipt in receipts) {
+            val cardView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.documentationlayout, linLay, false) as CardView
+
+            cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
+            cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
+
+            // Set OnClickListener for card view to navigate to receipt details
+            cardView.setOnClickListener {
+                val receiptOverviewFragment = ReceiptOverviewFragment()
+                val bundle = Bundle()
+                bundle.putString("receiptId", receipt.id)  // Pass the receipt ID
+                receiptOverviewFragment.arguments = bundle
+                replaceFragment(receiptOverviewFragment)
+            }
+
+            linLay.addView(cardView)  // Add the card to the container
         }
     }
 

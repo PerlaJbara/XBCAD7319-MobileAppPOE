@@ -32,6 +32,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Build
+import android.widget.ImageView
 import androidx.core.app.NotificationCompat
 
 class ReceiptOverviewFragment : Fragment() {
@@ -43,6 +44,7 @@ class ReceiptOverviewFragment : Fragment() {
     private lateinit var llHoursLabour: LinearLayout
     private lateinit var tvTotal: TextView
     private lateinit var receiptId: String
+    private lateinit var btnBack: ImageView
 
     companion object {
         private const val REQUEST_CODE_WRITE_STORAGE = 1
@@ -67,6 +69,7 @@ class ReceiptOverviewFragment : Fragment() {
         addParts = invoiceView.findViewById(R.id.addparts)
         llHoursLabour = invoiceView.findViewById(R.id.llHoursLabour)
         tvTotal = invoiceView.findViewById(R.id.tvTotal)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Find the LinearLayout inside the ScrollView and add the inflated invoice view
         val linearLayout = scrollView.getChildAt(0) as LinearLayout
@@ -77,6 +80,9 @@ class ReceiptOverviewFragment : Fragment() {
         if (receiptId.isEmpty()) {
             Toast.makeText(context, "Quote ID not provided", Toast.LENGTH_SHORT).show()
             return view
+        }
+        btnBack.setOnClickListener {
+            replaceFragment(DocumentationFragment())
         }
 
         // Load data from Firebase
