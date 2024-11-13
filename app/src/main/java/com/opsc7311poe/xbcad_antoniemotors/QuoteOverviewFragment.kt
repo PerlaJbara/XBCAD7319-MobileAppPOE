@@ -29,11 +29,14 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.net.Uri
 import android.os.Build
 import android.widget.ImageView
 import androidx.core.app.NotificationCompat
+import androidx.core.content.FileProvider
 
 class QuoteOverviewFragment : Fragment() {
 
@@ -267,22 +270,23 @@ class QuoteOverviewFragment : Fragment() {
 
         // Create the PDF document
         val pdfDocument = PdfDocument()
-
         val pageInfo = PdfDocument.PageInfo.Builder(bitmap.width, bitmap.height, 1).create()
         val page = pdfDocument.startPage(pageInfo)
-
         val canvas = page.canvas
         canvas.drawBitmap(bitmap, 0f, 0f, null)
-
         pdfDocument.finishPage(page)
 
         // Save the PDF to external storage
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "quote_$quoteId.pdf")
+        val pdfFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "quote_${quoteId}.pdf")
 
         try {
-            pdfDocument.writeTo(FileOutputStream(file))
-            Toast.makeText(context, "PDF saved to Downloads", Toast.LENGTH_SHORT).show()
+            pdfDocument.writeTo(FileOutputStream(pdfFile))
+            Toast.makeText(context, "PDF saved", Toast.LENGTH_SHORT).show()
             showSaveNotification(false) // Show the success notification
+
+            // Share the PDF file
+            sharePDF(pdfFile)
+
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(context, "Error saving PDF", Toast.LENGTH_SHORT).show()
@@ -297,6 +301,27 @@ class QuoteOverviewFragment : Fragment() {
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         return bitmap
+    }
+
+    private fun sharePDF(pdfFile: File) {
+        // Get the URI of the PDF file
+        val pdfUri: Uri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            pdfFile
+        )
+
+        // Create a share intent
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_STREAM, pdfUri)
+            putExtra(Intent.EXTRA_SUBJECT, "Here is your receipt PDF")
+            putExtra(Intent.EXTRA_TEXT, "Please find attached your receipt.")
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+
+        // Show the share options
+        startActivity(Intent.createChooser(shareIntent, "Share PDF via"))
     }
 
     private fun replaceFragment(fragment: Fragment) {
