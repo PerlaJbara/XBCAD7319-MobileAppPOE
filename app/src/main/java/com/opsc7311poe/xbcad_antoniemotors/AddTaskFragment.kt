@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -171,7 +170,6 @@ class AddTaskFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val vehicleNumbers = mutableListOf("No Vehicle") // To store vehicle number plates for the spinner
 
-                    Log.d("VehicleData", "Snapshot data: ${snapshot.value}")
 
                     if (!snapshot.exists()) {
                         Toast.makeText(requireContext(), "No vehicles found for this user", Toast.LENGTH_SHORT).show()
@@ -180,7 +178,6 @@ class AddTaskFragment : Fragment() {
 
                     for (vehicleSnapshot in snapshot.children) {
                         val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
-                        Log.d("VehicleData", "Number Plate: $numberPlate")
                         if (numberPlate != null) {
                             vehicleNumbers.add(numberPlate)
                         }

@@ -1,13 +1,23 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,11 +37,15 @@ class ViewInventoryFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private val auth = FirebaseAuth.getInstance()
 
+    private val REQUEST_CODE_NOTIFICATION_PERMISSION = 1001
+
+    private lateinit var searchEditText: EditText
+    private var allPartsList = listOf<PartsData>() // To store the full list of parts
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_view_inventory, container, false)
     }
 
@@ -40,18 +54,23 @@ class ViewInventoryFragment : Fragment() {
 
         addImage = view.findViewById(R.id.imgPlus)
         recyclerView = view.findViewById(R.id.recyclerViewInventory)
+        searchEditText = view.findViewById(R.id.txtSearch)
 
-        // Set up RecyclerView with click listener
+        // Set up RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = PartAdapter { selectedPart ->
-            // Navigate to AddPartFragment with the selected part data in edit mode
-            val fragment = AddPartFragment().apply {
+            if (selectedPart.id == null) {
+                Toast.makeText(context, "Part ID is missing", Toast.LENGTH_SHORT).show()
+                return@PartAdapter
+            }
+            // Continue with creating the fragment if ID is not null
+            val fragment = EditPartFragment().apply {
                 arguments = Bundle().apply {
-                    putString("partId", selectedPart.id) // Pass the part ID
+                    putString("partId", selectedPart.id)
                     putString("partName", selectedPart.partName)
                     putString("partDescription", selectedPart.partDescription)
-                    putInt("stockCount", selectedPart.stockCount)
-                    putInt("minStock", selectedPart.minStock)
+                    putInt("stockCount", selectedPart.stockCount ?: 0)
+                    putInt("minStock", selectedPart.minStock ?: 0)
                     putDouble("costPrice", selectedPart.costPrice ?: 0.0)
                 }
             }
@@ -70,11 +89,21 @@ class ViewInventoryFragment : Fragment() {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             val fragment = AddPartFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean("isEditMode", false) // Set add mode flag
+                    putBoolean("isEditMode", false)
                 }
             }
             replaceFragment(fragment)
         }
+
+        // Set up search functionality
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                filterParts(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     private fun fetchParts() {
@@ -85,30 +114,67 @@ class ViewInventoryFragment : Fragment() {
         }
         val userId = currentUser.uid
 
-        // Listen for parts data changes in Firebase
         database.child("Users").child(userId).child("parts")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val partsList = mutableListOf<PartsData>()
                     snapshot.children.forEach { partSnapshot ->
                         val part = partSnapshot.getValue(PartsData::class.java)
-                        part?.let { partsList.add(it) }
+                        part?.let {
+                            it.id = partSnapshot.key
+                            partsList.add(it)
+
+                            // Check if stock is less than or equal to minimum stock
+                            if (it.stockCount != null && it.minStock != null && it.stockCount <= it.minStock) {
+                                showStockWarningNotification(it)
+                            }
+                        }
                     }
 
-                    // Sort the partsList alphabetically by partName
-                    val sortedPartsList = partsList.sortedBy { it.partName?.toLowerCase() ?: "" }
-
-                    // Log the fetched sorted partsList to check the data
-                    Log.d("ViewInventoryFragment", "Fetched sorted parts: $sortedPartsList")
-
-                    // Update the adapter with the sorted data
-                    adapter.submitList(sortedPartsList)
+                    // Sort and display the parts list
+                    allPartsList = partsList.sortedBy { it.partName?.toLowerCase() ?: "" }
+                    adapter.submitList(allPartsList) // Display full list initially
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(context, "Failed to fetch parts data", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+
+    private fun filterParts(query: String) {
+        val filteredList = allPartsList.filter { part ->
+            part.partName?.contains(query, ignoreCase = true) == true
+        }
+        adapter.submitList(filteredList)
+    }
+    private fun showStockWarningNotification(part: PartsData) {
+        val notificationManager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Create a notification channel (required for Android 8.0 and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = "stock_warning_channel"
+            val channelName = "Stock Warning"
+            val channelDescription = "Notifications for parts with low stock"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = channelDescription
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Create the notification
+        val notification = NotificationCompat.Builder(requireContext(), "stock_warning_channel")
+            .setContentTitle("Low Stock Warning")
+            .setContentText("The stock for ${part.partName} is low. Current stock: ${part.stockCount}, Minimum stock: ${part.minStock}")
+            .setSmallIcon(R.drawable.vector_deny)  // Use an appropriate icon here
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .build()
+
+        // Show the notification
+        notificationManager.notify(1, notification)
     }
 
     private fun replaceFragment(fragment: Fragment) {

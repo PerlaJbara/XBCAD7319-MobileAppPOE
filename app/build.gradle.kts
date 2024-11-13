@@ -66,7 +66,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-bom:32.2.0")
     implementation ("com.google.firebase:firebase-appcheck-playintegrity:16.0.0")
     implementation ("com.google.android.gms:play-services-auth:20.1.0") // or the latest version
-    implementation ("com.google.android.gms:play-services-tasks:17.2.1") // or the latest version
+    implementation ("com.google.android.gms:play-services-tasks:17.2.1")
+    implementation(libs.androidx.junit.ktx) // or the latest version
     //implementation ("com.google.firebase:firebase-functions:21.1.0")
 
     testImplementation(libs.junit)
@@ -75,6 +76,20 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     //annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     kapt("com.github.bumptech.glide:compiler:4.12.0")
+
+//testing
+    testImplementation(libs.junit)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:4.3.1")
+    testImplementation("androidx.test.ext:junit:1.1.3")
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("org.mockito:mockito-inline:4.3.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5") // For AndroidJUnit4
+    androidTestImplementation("androidx.test:core-ktx:1.5.0") // Core KTX
+    androidTestImplementation("androidx.test:rules:1.5.0") // For UI rules
+    androidTestImplementation("androidx.test.ext:truth:1.4.0")
+    androidTestImplementation("androidx.test:runner:1.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
     //for graphs
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

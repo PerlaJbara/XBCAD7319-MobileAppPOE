@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -107,8 +108,9 @@ class ServicesFragment : Fragment() {
                     for (pulledOrder in snapshot.children) {
 
                         val service = pulledOrder.getValue(ServiceData::class.java)
+                        service!!.serviceID = pulledOrder.key
                         //adding service to list to filter later
-                        listOfAllServices.add(service!!);
+                        listOfAllServices.add(service);
 
                         val cardView = LayoutInflater.from(requireContext()).inflate(R.layout.card_service, linLay, false) as CardView
                         // Populate the card with service data
@@ -124,7 +126,10 @@ class ServicesFragment : Fragment() {
                         val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
                         cardView.findViewById<TextView>(R.id.txtDateTakenIn).text = formatter.format(service?.dateReceived)
-                        cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
+                        if (service.dateReturned != null){
+                            cardView.findViewById<TextView>(R.id.txtDateGivenBack).text =
+                                formatter.format(service.dateReturned)
+                        }
                         // Set the status ImageView based on status
                         val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
                         when (service.status) {
@@ -139,6 +144,9 @@ class ServicesFragment : Fragment() {
                             payStatusImageView.setImageResource(R.drawable.vectorpaid)
                         }
 
+                        //loading progress
+                        loadProgressBar(service.serviceID,cardView)
+
                         //functionality to go details page when card is tapped
                         cardView.setOnClickListener {
 
@@ -151,6 +159,8 @@ class ServicesFragment : Fragment() {
                             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
                             replaceFragment(serviceInfoFragment)
                         }
+
+
 
 
                         // Add the card to the container
@@ -186,7 +196,10 @@ class ServicesFragment : Fragment() {
             val formatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
 
             cardView.findViewById<TextView>(R.id.txtDateTakenIn).text = formatter.format(service?.dateReceived)
-            cardView.findViewById<TextView>(R.id.txtDateGivenBack).text = formatter.format(service?.dateReturned)
+            if (service.dateReturned != null){
+                cardView.findViewById<TextView>(R.id.txtDateGivenBack).text =
+                    formatter.format(service.dateReturned)
+            }
             // Set the status ImageView based on status
             val statusImageView = cardView.findViewById<ImageView>(R.id.imgStatus)
             when (service.status) {
@@ -199,6 +212,9 @@ class ServicesFragment : Fragment() {
             if(service.paid!!) {
                 payStatusImageView.setImageResource(R.drawable.vectorpaid)
             }
+
+            //loading progress
+            loadProgressBar(service.serviceID,cardView)
 
             //functionality to go details page when card is tapped
             /*cardView.setOnClickListener {
@@ -220,6 +236,58 @@ class ServicesFragment : Fragment() {
         }
 
     }
+
+    private fun loadProgressBar(serviceID: String?, cardView: CardView) {
+        if (serviceID == null) {
+            Log.e("loadProgressBar", "Service ID is null")
+            return
+        }
+
+        val progressBar = cardView.findViewById<ProgressBar>(R.id.progBarService)
+
+        // Reference to the Firebase database for EmployeeTasks
+        val taskRef = Firebase.database.reference.child("Users/$businessId/EmployeeTasks")
+
+        taskRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!snapshot.exists()) {
+                    Log.d("loadProgressBar", "No tasks found for the business")
+                    progressBar.progress = 0 // Set progress to 0 if no tasks
+                    return
+                }
+
+                var totalTasks = 0
+                var completedTasks = 0
+
+                // Iterate through tasks and check if they belong to the service
+                for (taskSnapshot in snapshot.children) {
+                    val taskServiceID = taskSnapshot.child("serviceID").getValue(String::class.java)
+                    val taskStatus = taskSnapshot.child("status").getValue(String::class.java)
+
+                    if (taskServiceID == serviceID) {
+                        totalTasks++ // Increment total tasks for the service
+                        if (taskStatus == "Completed") {
+                            completedTasks++ // Increment completed tasks
+                        }
+                    }
+
+                    Log.d("loadProgressBar", "totalTasks: $totalTasks    completedTasks: $completedTasks")
+                }
+
+                if (totalTasks > 0) {
+                    val progress = (completedTasks.toFloat() / totalTasks.toFloat() * 100).toInt()
+                    progressBar.progress = progress // Set the progress bar value
+                } else {
+                    progressBar.progress = 0 // No tasks, set progress to 0
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("loadProgressBar", "Error loading tasks: ${error.message}")
+            }
+        })
+    }
+
     private fun searchList(query: String?) {
         var tempList = mutableListOf<ServiceData>()
 
@@ -253,8 +321,6 @@ class ServicesFragment : Fragment() {
 
         loadServicesFromList(tempList)
     }
-
-
 
     private fun fetchCustNameAndSurname(custID: String, cv: CardView )
     {

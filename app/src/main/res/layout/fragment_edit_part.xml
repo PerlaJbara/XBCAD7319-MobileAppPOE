@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddPartFragment">
+    tools:context=".EditPartFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -279,16 +279,30 @@
                             android:layout_height="match_parent">
 
                             <Button
-                                android:id="@+id/btnAddPart"
+                                android:id="@+id/btnEditPart"
                                 android:layout_width="140dp"
                                 android:layout_height="50dp"
                                 android:backgroundTint="#038A39"
                                 android:text="Save"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.498"
+                                app:layout_constraintHorizontal_bias="0.808"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintVertical_bias="0.32" />
+
+                            <Button
+                                android:id="@+id/btnDeletePart"
+                                android:layout_width="140dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="40dp"
+                                android:layout_marginTop="16dp"
+                                android:backgroundTint="#038A39"
+                                android:text="Delete Part"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
+
+
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </LinearLayout>

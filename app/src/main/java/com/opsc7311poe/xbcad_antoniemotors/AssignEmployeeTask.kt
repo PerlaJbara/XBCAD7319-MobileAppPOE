@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -25,10 +24,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.type.DateTime
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 
@@ -47,7 +44,8 @@ class AssignEmployeeTask : Fragment() {
     private lateinit var businessId: String
 
     private var selectedEmployeeID: String = ""
-    private var selectedVehicleId: String = ""
+    private var selectedServiceID: String = ""
+    private var fetchedVehicleID: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +73,7 @@ class AssignEmployeeTask : Fragment() {
 
         //loading spinners
         loadEmployees()
-        loadVehicles()
+        loadServices()
 
 
         ivBackButton = view.findViewById(R.id.ivBackButton)
@@ -106,16 +104,72 @@ class AssignEmployeeTask : Fragment() {
         return view
     }
 
-    private fun loadVehicles() {
-        // Create a list with a single blank option
-        val vehicleOptions = listOf("")
+    private fun loadServices() {
+        // Get the current logged-in user ID
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        // Set up the adapter with the blank option
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, vehicleOptions)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        // Query the database for employees under the current user's business ID
+        val empRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("Services")
 
-        // Apply the adapter to the spinner
-        spVehicleChoice.adapter = adapter
+        empRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val serviceMap = mutableMapOf<String, String>()
+                val serviceNames = mutableListOf<String>()
+
+                // Add a default blank selection at the start
+                serviceNames.add("")
+
+                // Check if there are employees associated with the user
+                if (!snapshot.exists()) {
+                    Toast.makeText(requireContext(), "No services found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Loop through all employees associated with this user
+                for (empSnapshot in snapshot.children) {
+                    val serviceId = empSnapshot.key // Get service ID
+                    val name = empSnapshot.child("name").getValue(String::class.java)
+
+                    // Only add employees with the role "employee" and valid name details
+                    if ( !name.isNullOrEmpty() && serviceId != null) {
+                        serviceMap[serviceId] = name
+                        serviceNames.add(name) // Add full name to spinner options
+                    }
+                }
+
+                // Check if the list is empty (after filtering by role)
+                if (serviceNames.size == 1) { // Only the blank option exists
+                    Toast.makeText(requireContext(), "No services found", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Set up the spinner with the list of employee names
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, serviceNames)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spVehicleChoice.adapter = adapter
+
+                // Handle employee selection from the spinner
+                spVehicleChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                        val selectedServiceName = parent.getItemAtPosition(position).toString()
+                        selectedServiceID = serviceMap.filterValues { it == selectedServiceName }.keys.firstOrNull().orEmpty()
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>) {
+                        // Handle case where nothing is selected if necessary
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseError", "Error loading employee data: ${error.message}")
+                Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
 
@@ -220,7 +274,6 @@ class AssignEmployeeTask : Fragment() {
         val dueDate: Long? = try {
             dateTimeFormatter.parse(dateTimeString)?.time
         } catch (e: Exception) {
-            Log.e("submitTask", "Invalid date format: $dateTimeString", e)
             null
         }
 
@@ -237,9 +290,11 @@ class AssignEmployeeTask : Fragment() {
             //status by default "Not started"
             status = "Not Started"
 
-            // If a vehicle is selected, assign vehicle to object
+            // If a vehicle/service is selected, assign vehicle to object
             if (spVehicleChoice.selectedItem.toString().isNotBlank()) {
-                vehicleNumberPlate = selectedVehicleId
+                serviceID = selectedServiceID
+                fetchVehicleID(serviceID!!)
+                vehicleID = fetchedVehicleID
             }}
 
 
@@ -258,6 +313,25 @@ class AssignEmployeeTask : Fragment() {
 
 
 
+    }
+
+    private fun fetchVehicleID(serviceId: String) {
+        val serviceRef = Firebase.database.reference.child("Users/$businessId/Services").child(serviceId).child("vehicleId")
+        serviceRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(serviceSnapshot: DataSnapshot) {
+                fetchedVehicleID = serviceSnapshot.getValue(String::class.java)
+                if (fetchedVehicleID.isNullOrEmpty()) {
+                    Log.e("fetchVehicleID", "No vehicleID found for service: $serviceId")
+                } else {
+                    Log.d("fetchVehicleID", "Fetched vehicleID: $fetchedVehicleID")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("fetchVehicleID", "Error fetching vehicleID: ${error.message}")
+                fetchedVehicleID = null
+            }
+        })
     }
 
 

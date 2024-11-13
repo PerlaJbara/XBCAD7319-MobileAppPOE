@@ -6,19 +6,22 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-
 class VehicleCustomerAdapter(
-    private var customers: List<CustomerData>,  // Use CustomerData instead of String
-    private val onCustomerSelected: (CustomerData) -> Unit  // Pass CustomerData
+    private var customers: List<CustomerData>,
+    private val onCustomerSelected: (CustomerData) -> Unit
 ) : RecyclerView.Adapter<VehicleCustomerAdapter.CustomerViewHolder>() {
 
+    private var selectedCustomer: CustomerData? = null
+
     inner class CustomerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val customerName: TextView = itemView.findViewById(R.id.txtCustomerName)
+        private val customerName: TextView = itemView.findViewById(R.id.txtCustomerName)
 
         fun bind(customer: CustomerData) {
-            customerName.text = "${customer.CustomerName} ${customer.CustomerSurname}" // Show full name
+            customerName.text = "${customer.CustomerName} ${customer.CustomerSurname}"
             itemView.setOnClickListener {
-                onCustomerSelected(customer)  // Pass the entire CustomerData object
+                selectedCustomer = customer
+                onCustomerSelected(customer)
+                notifyDataSetChanged() // Refresh to visually update selected item if needed
             }
         }
     }
@@ -31,12 +34,14 @@ class VehicleCustomerAdapter(
 
     override fun onBindViewHolder(holder: CustomerViewHolder, position: Int) {
         holder.bind(customers[position])
+
     }
 
     override fun getItemCount(): Int = customers.size
 
     fun updateCustomers(newCustomers: List<CustomerData>) {
         customers = newCustomers
+        selectedCustomer = null // Reset selected customer if the list changes
         notifyDataSetChanged()
     }
 }

@@ -192,7 +192,6 @@ class RegisterVehicleFragment : Fragment() {
         }
 
 
-
         return view
     }
 
@@ -323,7 +322,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    private fun fetchVehiclePORData() {
+    /*private fun fetchVehiclePORData() {
         val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
 
         vehiclePORRef.addValueEventListener(object : ValueEventListener {
@@ -340,6 +339,38 @@ class RegisterVehicleFragment : Fragment() {
                 }
 
                 // Sort province codes alphabetically
+                vehiclePORList.sort()
+
+                // Notify adapter about the data change
+                vehiclePORAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }*/
+
+    private fun fetchVehiclePORData() {
+        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+
+        vehiclePORRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                vehiclePORList.clear()
+
+                // Loop through each province under VehiclePOR
+                for (provinceSnapshot in snapshot.children) {
+                    // Loop through each area under the province
+                    for (areaSnapshot in provinceSnapshot.children) {
+                        val areaCode = areaSnapshot.child("areaCode").getValue(String::class.java)
+                        if (areaCode != null) {
+                            // Add each area code to the list
+                            vehiclePORList.add(areaCode)
+                        }
+                    }
+                }
+
+                // Sort area codes alphabetically
                 vehiclePORList.sort()
 
                 // Notify adapter about the data change
@@ -532,14 +563,13 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-
     private fun registerVehicle() {
         // Retrieve and format inputs
         val vehicleNoPlate = edtVehicleNoPlate.text.toString().trim().uppercase()
         val vehicleModel = edtVehicleModel.text.toString().trim()
         val vinNumber = edtVinNumber.text.toString().trim().uppercase()
         val vehicleKms = edtVehicleKms.text.toString().trim()
-        val vehiclePOR = spnVehiclePOR.selectedItem.toString()
+        val vehiclePOR = spnVehiclePOR.selectedItem.toString()  // This represents the selected area code (e.g., "GP")
         val vehicleOwner = edtCustomer.text.toString()
 
         // Validate inputs
@@ -570,12 +600,33 @@ class RegisterVehicleFragment : Fragment() {
             return
         }
 
-        // Reference to the selected POR in Firebase
-        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR/$vehiclePOR")
-        vehiclePORRef.child("layout").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(layoutSnapshot: DataSnapshot) {
-                val layout = layoutSnapshot.getValue(Int::class.java) ?: 1
-                val fullVehicleNumPlate = if (layout == 1) "$vehiclePOR $vehicleNoPlate" else "$vehicleNoPlate $vehiclePOR"
+        // Reference to the VehiclePOR node in Firebase to find the layout for the selected area code
+        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
+        vehiclePORRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var layout: Int? = null
+                var fullVehicleNumPlate: String? = null
+
+                // Iterate through each province to find the area with the matching area code
+                for (provinceSnapshot in snapshot.children) {
+                    for (areaSnapshot in provinceSnapshot.children) {
+                        val areaCode = areaSnapshot.child("areaCode").getValue(String::class.java)
+                        if (areaCode == vehiclePOR) {
+                            layout = areaSnapshot.child("layout").getValue(Int::class.java) ?: 1
+                            Log.d("Get POR layout", "layout found for POR: $layout")
+                            fullVehicleNumPlate = if (layout == 1) "$vehiclePOR $vehicleNoPlate" else "$vehicleNoPlate $vehiclePOR"
+                            break
+                        }
+                    }
+                    if (layout != null) break
+                }
+
+                if (layout == null || fullVehicleNumPlate == null) {
+                    Toast.makeText(context, "Error: Layout not found for selected area code.", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                // Proceed with the rest of the registration
                 val currentDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
                 val selectedYear = ynpYearPicker.value.toString()
                 val currentUser = FirebaseAuth.getInstance().currentUser
@@ -606,34 +657,65 @@ class RegisterVehicleFragment : Fragment() {
                         }
 
                         if (businessId != null && adminFullName != null) {
-                            val vehicle = VehicleData(
-                                VehicleOwner = vehicleOwner,
-                                customerID = selectedCustomerId,
-                                VehicleNumPlate = fullVehicleNumPlate,
-                                VehiclePOR = vehiclePOR,
-                                VehicleModel = vehicleModel,
-                                VehicleMake = edtVehicleMake.text.toString(),
-                                VehicleYear = selectedYear,
-                                VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
-                                VehicleKms = vehicleKms,
-                                registrationDate = currentDate,
-                                AdminID = adminId,
-                                AdminFullName = adminFullName
-                            )
+                            // Check for duplicates
+                            val vehicleReference = usersReference.child(businessId).child("Vehicles")
+                            vehicleReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(vehicleSnapshot: DataSnapshot) {
+                                    var isDuplicate = false
+                                    for (vehicleSnap in vehicleSnapshot.children) {
+                                        val existingPlate = vehicleSnap.child("vehicleNumPlate").getValue(String::class.java)
+                                        val existingVin = vehicleSnap.child("vinNumber").getValue(String::class.java)
 
-                            val vehicleRef = usersReference.child(businessId).child("Vehicles").push()
-                            vehicle.vehicleId = vehicleRef.key ?: ""
+                                        if (existingPlate == fullVehicleNumPlate) {
+                                            Toast.makeText(context, "A vehicle with this number plate already exists.", Toast.LENGTH_SHORT).show()
+                                            isDuplicate = true
+                                            break
+                                        }
+                                        if (vinNumber.isNotEmpty() && existingVin == vinNumber) {
+                                            Toast.makeText(context, "A vehicle with this VIN number already exists.", Toast.LENGTH_SHORT).show()
+                                            isDuplicate = true
+                                            break
+                                        }
+                                    }
 
-                            vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    uploadVehicleImages(businessId, vehicleRef.key!!)
-                                    Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
-                                    clearInputFields()
-                                    clearAllImages()
-                                } else {
-                                    Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                    if (!isDuplicate) {
+                                        // No duplicates found, proceed with registration
+                                        val vehicle = VehicleData(
+                                            VehicleOwner = vehicleOwner,
+                                            customerID = selectedCustomerId,
+                                            VehicleNumPlate = fullVehicleNumPlate,
+                                            VehiclePOR = vehiclePOR,
+                                            VehicleModel = vehicleModel,
+                                            VehicleMake = edtVehicleMake.text.toString(),
+                                            VehicleYear = selectedYear,
+                                            VinNumber = if (vinNumber.isEmpty()) "N/A" else vinNumber,
+                                            VehicleKms = vehicleKms,
+                                            registrationDate = currentDate,
+                                            AdminID = adminId,
+                                            AdminFullName = adminFullName
+                                        )
+
+                                        val vehicleRef = vehicleReference.push()
+                                        vehicle.vehicleId = vehicleRef.key ?: ""
+
+                                        vehicleRef.setValue(vehicle).addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                uploadVehicleImages(businessId, vehicleRef.key!!)
+                                                Toast.makeText(context, "Vehicle registered successfully", Toast.LENGTH_SHORT).show()
+                                                clearInputFields()
+                                                clearAllImages()
+                                            } else {
+                                                Toast.makeText(context, "Failed to register vehicle", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
                                 }
-                            }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("registerVehicle", "Database error: ${error.message}")
+                                    Toast.makeText(context, "Error checking for duplicates.", Toast.LENGTH_SHORT).show()
+                                }
+                            })
                         } else {
                             Log.e("registerVehicle", "Business ID not found for the current admin.")
                             Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
@@ -652,8 +734,6 @@ class RegisterVehicleFragment : Fragment() {
             }
         })
     }
-
-
 
 
 

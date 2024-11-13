@@ -1,5 +1,8 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
@@ -61,7 +64,11 @@ class SettingsFragment : Fragment() {
 
         return view
     }
-
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetwork?.isConnected == true
+    }
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
