@@ -3,6 +3,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 import BusinessAdapter
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -28,6 +29,7 @@ class AdminSelectBusinessActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_admin_select_business)
 
         //spBusinessNames = findViewById(R.id.spAllBusinessNames)
