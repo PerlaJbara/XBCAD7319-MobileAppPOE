@@ -66,112 +66,128 @@
                 android:id="@+id/textViewContactInfoHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:paddingRight="70dp"
-                android:text="Details:"
-                android:textStyle="bold"
-                android:textSize="30sp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginBottom="8dp"
-                android:textColor="@android:color/black"/>
+                android:paddingRight="50dp"
+                android:text="Details:"
+                android:textColor="@android:color/black"
+                android:textSize="30sp"
+                android:textStyle="normal"
+                android:fontFamily="@font/poppins"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:paddingRight="165dp"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textViewCellNumberLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cell number:"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Phone Number:"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/txtempcell_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/txtgradientgtor"
                     android:text="074 352 1145"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"
+                    android:paddingTop="4dp"/>
 
                 <EditText
                     android:id="@+id/txtupdatecell"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="35dp"
                     android:layout_weight="1"
-                    android:background="@drawable/roundcorneredt"
+                    android:background="@drawable/txtgradientgtor"
+                    android:hint="Enter new phone number"
                     android:visibility="gone"
-                    android:hint="Enter new phone number" />
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"/>
 
                 <TextView
                     android:id="@+id/textViewEmailLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Email:"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/txtempEmail_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="35dp"
                     android:text="cviljoen3@gmail.com"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"
+                    android:paddingTop="4dp"
+                    />
 
                 <EditText
                     android:id="@+id/txtupdateEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="35dp"
                     android:layout_weight="1"
-                    android:background="@drawable/roundcorneredt"
+                    android:hint="Enter new Email"
                     android:visibility="gone"
-                    android:hint="Enter new Email" />
+                    android:background="@drawable/txtgradientgtor"
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"/>
 
                 <TextView
                     android:id="@+id/textViewAddressLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Physical Address:"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:paddingBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/txtempAddress_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="100dp"
                     android:text="33 Civil Avenue\nBedfordview\nGermiston\n2008"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"
+                    android:paddingTop="4dp"/>
 
 
                 <EditText
                     android:id="@+id/txtupdateAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="100dp"
                     android:layout_weight="1"
-                    android:background="@drawable/roundcorneredt"
+                    android:hint="Enter new Address"
                     android:visibility="gone"
-                    android:hint="Enter new Address" />
-
-                <TextView
-                    android:id="@+id/txtmonsal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Monthly Salary:"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtmonthly_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="R16 000"
-                    android:textSize="18sp" />
+                    android:background="@drawable/txtgradientgtor"
+                    android:layout_marginStart="20dp"
+                    android:paddingStart="14dp"
+                    />
 
 
                 <EditText
@@ -180,8 +196,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/roundcorneredt"
-                    android:visibility="gone"
-                    android:hint="Enter new Salary" />
+                    android:hint="Enter new Salary"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -194,22 +210,15 @@
                 android:backgroundTint="#CA2F2E"
                 android:text="Save"
                 android:textSize="18sp"
-                android:visibility="gone" /> <!-- Initially hidden -->
-
-
-
+                android:visibility="gone" />
 
         </LinearLayout>
-
-
-
-
     </ScrollView>
 
     <Button
         android:id="@+id/btnDeleteEmp"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="#CA2F2E"
         android:text="Delete"
@@ -222,11 +231,12 @@
         app:layout_constraintVertical_bias="0.904"
         tools:ignore="TouchTargetSizeCheck" />
 
+
     <Button
         android:id="@+id/btnEditEmployeeInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="56dp"
         android:backgroundTint="#038A39"
         android:text="Edit Employee Info"
         android:textColor="#FFFFFF"

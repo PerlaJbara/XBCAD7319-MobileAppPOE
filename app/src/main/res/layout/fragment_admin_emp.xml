@@ -18,27 +18,27 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="164dp"
+        android:layout_gravity="top|center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="30dp"
-        android:layout_gravity="top|center_horizontal">
+        android:paddingTop="6dp">
 
         <TextView
-            android:id="@+id/txtAdminEmpOverView"
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/fontheader"
-            android:gravity="center_horizontal"
-            android:text="Manage \nEmployees"
+            android:layout_marginBottom="15dp"
+            android:text="Employee\nMenu"
             android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="45dp" />
+            android:textColor="#D3CDCD"
+            android:textSize="58sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Scrollable Content Area -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="606dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         android:layout_marginTop="150dp"
 
