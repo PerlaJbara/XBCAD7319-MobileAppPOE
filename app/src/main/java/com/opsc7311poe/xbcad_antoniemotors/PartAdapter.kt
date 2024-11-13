@@ -19,9 +19,9 @@ class PartAdapter(private val onItemClick: (PartsData) -> Unit) : ListAdapter<Pa
     override fun onBindViewHolder(holder: PartViewHolder, position: Int) {
         val part = getItem(position)
         holder.bind(part)
-        // Set click listener on the item view
+        // Pass the clicked item to the listener to open EditPartFragment
         holder.itemView.setOnClickListener {
-            onItemClick(part) // Pass the clicked item to the listener
+            onItemClick(part)
         }
     }
 
@@ -29,17 +29,19 @@ class PartAdapter(private val onItemClick: (PartsData) -> Unit) : ListAdapter<Pa
         private val partNameTextView: TextView = itemView.findViewById(R.id.tvPartName)
         private val partDescriptionTextView: TextView = itemView.findViewById(R.id.tvPartDescription)
         private val partCostTextView: TextView = itemView.findViewById(R.id.tvPartCost)
+        private val partStockTextView: TextView = itemView.findViewById(R.id.txtStock)
 
         fun bind(part: PartsData) {
             partNameTextView.text = part.partName
             partDescriptionTextView.text = part.partDescription
-            partCostTextView.text = "R ${part.costPrice}"
+            partCostTextView.text = "R ${String.format("%.2f", part.costPrice ?: 0.0)}"
+            partStockTextView.text = "Stock: ${part.stockCount}"
         }
     }
 
     class PartDiffCallback : DiffUtil.ItemCallback<PartsData>() {
         override fun areItemsTheSame(oldItem: PartsData, newItem: PartsData): Boolean {
-            return oldItem.partName == newItem.partName
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: PartsData, newItem: PartsData): Boolean {
@@ -47,4 +49,3 @@ class PartAdapter(private val onItemClick: (PartsData) -> Unit) : ListAdapter<Pa
         }
     }
 }
-
