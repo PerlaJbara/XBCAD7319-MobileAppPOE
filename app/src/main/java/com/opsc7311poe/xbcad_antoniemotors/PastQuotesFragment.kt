@@ -4,7 +4,6 @@ import QuoteData
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +71,6 @@ class PastQuotesFragment : Fragment() {
                         val quote = receiptSnapshot.getValue(QuoteData::class.java)
                         if (quote != null) {
                             quotesList.add(quote) // Add each quote to the list
-                        } else {
-                            Log.e("PastQuotesFragment", "Quote data is null for snapshot: ${receiptSnapshot.key}")
                         }
                     }
 
@@ -82,7 +79,7 @@ class PastQuotesFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("PastQuotesFragment", "Failed to load quotes.", error.toException())
+                    // Error handling (removed log statements)
                 }
             })
         }

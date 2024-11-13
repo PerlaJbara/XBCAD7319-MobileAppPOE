@@ -121,7 +121,6 @@ class QuoteOverviewFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val quote = snapshot.getValue(QuoteData::class.java)
                     if (quote != null) {
-                        Log.d("QuoteOverviewFragment", "Quote Data: $quote") // Debug log
 
                         // Set the data into the views
                         txtDate.text = quote.dateCreated ?: "N/A"
@@ -183,17 +182,11 @@ class QuoteOverviewFragment : Fragment() {
                             }
                             addParts.addView(noPartsText)
                         }
-                    } else {
-                        Log.e("QuoteOverviewFragment", "Quote not found.")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e(
-                        "QuoteOverviewFragment",
-                        "Failed to load quote details.",
-                        error.toException()
-                    )
+
                 }
             })
         }

@@ -279,13 +279,11 @@ class QuoteGenFragment : Fragment() {
     private fun generateReceipt(): String {
         val userID = FirebaseAuth.getInstance().currentUser?.uid
         if (userID == null) {
-            Log.e("QuoteGenFragment", "User ID is null. Cannot save quote.")
             Toast.makeText(requireContext(), "User not authenticated. Cannot save quote.", Toast.LENGTH_SHORT).show()
             return ""
         }
 
         val quoteId = UUID.randomUUID().toString()
-        Log.d("QuoteGenFragment", "Generated Quote ID: $quoteId")
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
         val quoteData = QuoteData(
@@ -301,7 +299,6 @@ class QuoteGenFragment : Fragment() {
         val quoteRef = database.getReference("Users").child(userID).child("Quotes").child(quoteId)
         quoteRef.setValue(quoteData)
             .addOnSuccessListener {
-                Log.d("QuoteGenFragment", "Quote data saved successfully under User ID: $userID")
                 Toast.makeText(requireContext(), "Quote saved!", Toast.LENGTH_SHORT).show()
 
                 val bundle = Bundle().apply {
@@ -313,7 +310,6 @@ class QuoteGenFragment : Fragment() {
                 replaceFragment(quoteOverviewFragment)
             }
             .addOnFailureListener { error ->
-                Log.e("QuoteGenFragment", "Error saving quote data: ${error.message}")
                 Toast.makeText(requireContext(), "Failed to save quote data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
 
