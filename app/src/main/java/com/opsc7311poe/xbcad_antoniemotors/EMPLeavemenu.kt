@@ -9,43 +9,35 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 
-class AdminLeaveMenuFragment : Fragment() {
+class EMPLeavemenu : Fragment() {
 
-    private lateinit var imgLeavess: ImageView
-    private lateinit var imgleaveaps: ImageView
-    private lateinit var imglhis : ImageView
+
+    private lateinit var imgReq: ImageView
+    private lateinit var imghis: ImageView
     private lateinit var btnBackButton: ImageView
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_admin_leave_menu, container, false)
+        val view = inflater.inflate(R.layout.fragment_e_m_p_leavemenu, container, false)
 
         // Initialize ImageViews
-        imgLeavess = view.findViewById(R.id.imgleaves)
-        imgleaveaps = view.findViewById(R.id.imgleaveap)
-        imglhis = view.findViewById(R.id.imgleavehis)
+        imgReq = view.findViewById(R.id.imgRequests)
+        imghis = view.findViewById(R.id.imghistory)
+
         btnBackButton = view.findViewById(R.id.ivBackButton)
 
         // Set click listeners for the image views
-        imgLeavess.setOnClickListener {
-            replaceFragment(EMPLeaveListFragment()) // Replace with your actual fragment class
+        imgReq.setOnClickListener {
+            replaceFragment(EmpLeaveFragment()) // Replace with your actual fragment class
         }
 
-        imgleaveaps.setOnClickListener {
+        imghis.setOnClickListener {
 
-           replaceFragment(AdminApprovesLeaves()) // Replace with your actual fragment class
+            replaceFragment(Employeeleavehis()) // Replace with your actual fragment class
 
 
         }
-
-
-        imglhis.setOnClickListener{
-            replaceFragment(AdminLeavehistory())
-        }
-
-
 
         btnBackButton.setOnClickListener {
             replaceFragment(AdminEmpFragment()) // Replace with your actual fragment class

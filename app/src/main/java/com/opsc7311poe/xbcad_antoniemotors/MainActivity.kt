@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+
         // Set up the bottom navigation listener
         bottomNavView.setOnItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -91,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navLeave -> {
-                    replaceFragment(EmpLeaveFragment()) // For employee role
+                    replaceFragment(EMPLeavemenu()) // For employee role
                     true
                 }
                 R.id.navMessages -> {
@@ -105,6 +107,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
     }
 
     private fun showBadge(count: Int) {

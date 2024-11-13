@@ -1,11 +1,13 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,9 +25,10 @@ class EMPLeaveListFragment : Fragment() {
     private lateinit var btnBackButton: ImageView
     private lateinit var leaveListContainer: LinearLayout
     private val database = FirebaseDatabase.getInstance().reference
-
-    // Get businessID from shared preferences
     private lateinit var businessID: String
+    private lateinit var datepicks: TextView
+    private lateinit var datepicke: TextView
+    private lateinit var btnsubmit: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -33,16 +36,34 @@ class EMPLeaveListFragment : Fragment() {
         btnBackButton = view.findViewById(R.id.ivBackButton)
         leaveListContainer = view.findViewById(R.id.leaveListContainer)
 
-        // Retrieve the business ID from shared preferences
+        datepicks = view.findViewById(R.id.txtstartofleave)
+        datepicke = view.findViewById(R.id.txtend)
+        btnsubmit = view.findViewById(R.id.btnSubmit)
+
         businessID = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-            .getString("business_id", null)!!
+            .getString("business_id", null) ?: return
 
         btnBackButton.setOnClickListener {
             replaceFragment(AdminLeaveMenuFragment()) // Replace with your actual fragment class
         }
 
-        // Fetch and display active leave requests for the same business
-        fetchActiveLeaveRequests()
+        // Set up date pickers
+        setupDatePicker(datepicks)
+        setupDatePicker(datepicke)
+
+        // Display all leaves initially
+        displayAllLeaves()
+
+        // Display leaves within the selected date range when the submit button is clicked
+        btnsubmit.setOnClickListener {
+            val startDate = datepicks.text.toString()
+            val endDate = datepicke.text.toString()
+            if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+                fetchLeavesWithinRange(startDate, endDate)
+            } else {
+                Toast.makeText(requireContext(), "Please select both start and end dates.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -59,39 +80,52 @@ class EMPLeaveListFragment : Fragment() {
         transaction.commit()
     }
 
-    // Fetch active leave requests from the database
-    private fun fetchActiveLeaveRequests() {
-        val leaveRef = database.child("Users").child(businessID).child("Leave") // Fetch the "Leave" node for the businessID
-        val todayDate = getCurrentDate() // Current date in dd/MM/yyyy format
+    // Set up a DatePickerDialog for the specified TextView
+    private fun setupDatePicker(textView: TextView) {
+        textView.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        Log.d("EMPLeaveListFragment", "Current Date: $todayDate")  // Debugging log
+            val datePicker = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
+                textView.text = selectedDate
+            }, year, month, day)
+            datePicker.show()
+        }
+    }
 
-        leaveRef.addListenerForSingleValueEvent(object : ValueEventListener {
+    // Fetch leaves within the specified date range
+    private fun fetchLeavesWithinRange(startDate: String, endDate: String) {
+        leaveListContainer.removeAllViews()  // Clear the view
+
+        val employeesRef = database.child("Users").child(businessID).child("Employees")
+
+        employeesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                leaveListContainer.removeAllViews()  // Clear the view
-
                 var activeLeaveFound = false  // Flag to check if any leave is displayed
 
-                for (leaveSnapshot in snapshot.children) {
-                    val employeeId = leaveSnapshot.key  // Employee ID in the Leave node
-                    val status = leaveSnapshot.child("Status").getValue(String::class.java) ?: continue
-                    val startDate = leaveSnapshot.child("startDate").getValue(String::class.java) ?: continue
-                    val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: continue
+                for (employeeSnapshot in snapshot.children) {
+                    val employeeId = employeeSnapshot.key ?: continue
+                    val approvedLeaves = employeeSnapshot.child("ApprovedLeave")
 
-                    // Only proceed if the leave status is approved
-                    if (status == "approved" && employeeId != null) {
-                        // Fetch the employee name and display the leave details
-                        fetchEmployeeNameAndDisplayLeave(employeeId, startDate, endDate, todayDate)
-                        activeLeaveFound = true
-                    } else if (todayDate > endDate) {
-                        // Optionally, remove leave if it has ended
-                        leaveSnapshot.ref.removeValue()
+                    for (leaveSnapshot in approvedLeaves.children) {
+                        val leaveStart = leaveSnapshot.child("startDate").getValue(String::class.java) ?: continue
+                        val leaveEnd = leaveSnapshot.child("endDate").getValue(String::class.java) ?: continue
+
+                        // Only display leaves within the selected date range
+                        if (isWithinRange(startDate, endDate, leaveStart, leaveEnd)) {
+                            val employeeName = employeeSnapshot.child("firstName").getValue(String::class.java) + " " +
+                                    employeeSnapshot.child("lastName").getValue(String::class.java)
+                            addLeaveToList(employeeName ?: "Unknown", leaveStart, leaveEnd)
+                            activeLeaveFound = true
+                        }
                     }
                 }
 
-                // Show message if no active leave found
                 if (!activeLeaveFound) {
-                    Toast.makeText(requireContext(), "No active leave requests found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "No leave requests found within the selected range", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -101,24 +135,31 @@ class EMPLeaveListFragment : Fragment() {
         })
     }
 
-    // Fetch employee name using the employee ID and then display the leave details
-    private fun fetchEmployeeNameAndDisplayLeave(employeeId: String, startDate: String, endDate: String, todayDate: String) {
-        val employeeRef = database.child("Users").child(businessID).child("Employees").child(employeeId)
+    // Display all approved leaves initially
+    private fun displayAllLeaves() {
+        leaveListContainer.removeAllViews()  // Clear the view
 
-        employeeRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(employeeSnapshot: DataSnapshot) {
-                val employeeName = employeeSnapshot.child("firstName").getValue(String::class.java) + " " +
-                        employeeSnapshot.child("lastName").getValue(String::class.java)
-                Log.d("EMPLeaveListFragment", "Employee Name: $employeeName, Start Date: $startDate, End Date: $endDate")
+        val employeesRef = database.child("Users").child(businessID).child("Employees")
 
-                // Only display the leave if it's currently active
-                if (isLeaveActive(todayDate, startDate, endDate)) {
-                    addLeaveToList(employeeName ?: "Unknown", startDate, endDate)
+        employeesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (employeeSnapshot in snapshot.children) {
+                    val employeeId = employeeSnapshot.key ?: continue
+                    val approvedLeaves = employeeSnapshot.child("ApprovedLeave")
+
+                    for (leaveSnapshot in approvedLeaves.children) {
+                        val leaveStart = leaveSnapshot.child("startDate").getValue(String::class.java) ?: continue
+                        val leaveEnd = leaveSnapshot.child("endDate").getValue(String::class.java) ?: continue
+
+                        val employeeName = employeeSnapshot.child("firstName").getValue(String::class.java) + " " +
+                                employeeSnapshot.child("lastName").getValue(String::class.java)
+                        addLeaveToList(employeeName ?: "Unknown", leaveStart, leaveEnd)
+                    }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load employee details", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load leave requests", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -146,14 +187,20 @@ class EMPLeaveListFragment : Fragment() {
         leaveListContainer.addView(leaveItem)
     }
 
-    // Get the current date in "dd/MM/yyyy" format
-    private fun getCurrentDate(): String {
+    // Check if a leave period is within the selected range
+    private fun isWithinRange(startRange: String, endRange: String, leaveStart: String, leaveEnd: String): Boolean {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        return dateFormat.format(Date())
-    }
+        return try {
+            val startRangeDate = dateFormat.parse(startRange)
+            val endRangeDate = dateFormat.parse(endRange)
+            val leaveStartDate = dateFormat.parse(leaveStart)
+            val leaveEndDate = dateFormat.parse(leaveEnd)
 
-    // Check if today's date is within the leave's start and end date range
-    private fun isLeaveActive(today: String, startDate: String, endDate: String): Boolean {
-        return today >= startDate && today <= endDate
+            startRangeDate != null && endRangeDate != null && leaveStartDate != null && leaveEndDate != null &&
+                    !leaveEndDate.before(startRangeDate) && !leaveStartDate.after(endRangeDate)
+        } catch (e: Exception) {
+            Log.e("EMPLeaveListFragment", "Error parsing dates", e)
+            false
+        }
     }
 }
