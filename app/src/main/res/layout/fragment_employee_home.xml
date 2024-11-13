@@ -95,7 +95,7 @@
         <ScrollView
             android:id="@+id/svHomeReminders"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="409dp"
             android:layout_weight="0"
             android:fillViewport="true">
 
@@ -118,91 +118,11 @@
                         android:paddingLeft="18dp"
                         android:text="No tasks due this week."
                         android:textColor="@color/white"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="18dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:text="Analytics"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
-        <ScrollView
-            android:id="@+id/svAnalytics"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="95dp"
-                    android:layout_height="95dp"
-                    android:src="@drawable/vectorsportscar" />
-
-                <TextView
-                    android:id="@+id/txtCarsCompleted"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    android:paddingLeft="18dp"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:paddingStart="120dp"/>
-
-                <ImageView
-                    android:id="@+id/imageView6"
-                    android:layout_width="95dp"
-                    android:layout_height="95dp"
-                    android:src="@drawable/vectorcarwrench" />
-
-                <TextView
-                    android:id="@+id/txtCarsInProgress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    android:paddingLeft="18dp"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:paddingStart="120dp"/>
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="95dp"
-                    android:layout_height="95dp"
-                    android:src="@drawable/vectorbentcar" />
-
-                <TextView
-                    android:id="@+id/txtCarsToBeDone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:text=" "
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:paddingStart="120dp"/>
-            </LinearLayout>
-        </ScrollView>
 
         <!-- Non-scrollable Footer Section -->
         <LinearLayout

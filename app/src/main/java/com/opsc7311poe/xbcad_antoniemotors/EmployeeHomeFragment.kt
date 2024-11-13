@@ -101,7 +101,6 @@ class EmployeeHomeFragment : Fragment() {
 
 
         loadTasks()
-        loadServiceStatuses()
 
         return view
     }
@@ -319,46 +318,6 @@ class EmployeeHomeFragment : Fragment() {
             }
     }
 
-    private fun loadServiceStatuses() {
-        val database = Firebase.database.reference.child(userId).child("Services")
-
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var busyCount = 0
-                var completedCount = 0
-                var notStartedCount = 0
-
-                if (!snapshot.exists()) {
-                    if (isAdded) {
-                        txtToStart.text = "Nothing To Be Started"
-                        txtBusy.text = "Nothing Is In Progress"
-                        txtCompleted.text = "Nothing Is Completed"
-                    }
-                    return
-                }
-
-                for (serviceSnapshot in snapshot.children) {
-                    val status = serviceSnapshot.child("status").getValue(String::class.java)
-
-                    when (status) {
-                        "Busy" -> busyCount++
-                        "Completed" -> completedCount++
-                        "Not Started" -> notStartedCount++
-                    }
-                }
-
-                if (isAdded) {
-                    txtToStart.text = if (notStartedCount == 0) "Nothing To Be Started" else "$notStartedCount Cars To Start"
-                    txtBusy.text = if (busyCount == 0) "Nothing Is In Progress" else "$busyCount Cars In Progress"
-                    txtCompleted.text = if (completedCount == 0) "Nothing Is Completed" else "$completedCount Cars Completed"
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
-            }
-        })
-    }
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()

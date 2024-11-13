@@ -406,7 +406,7 @@ class HomeFragment : Fragment() {
 
 
     private fun loadServiceStatuses() {
-        val database = Firebase.database.reference.child(userId).child("Services")
+        val database = Firebase.database.reference.child("Users").child(businessId).child("Services")
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
