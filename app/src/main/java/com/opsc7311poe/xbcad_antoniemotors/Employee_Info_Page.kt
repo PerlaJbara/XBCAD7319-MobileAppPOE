@@ -84,7 +84,7 @@ class Employee_Info_Page : Fragment() {
         // Delete employee
         btnDeleteEmployee.setOnClickListener {
             employeeName?.let { empId ->
-                deleteEmployee(empId)
+                deleteEmployeeData(empId)
             }
         }
 
@@ -214,28 +214,19 @@ class Employee_Info_Page : Fragment() {
         activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.frame_container, fragment)?.commit()
     }
 
-    private fun deleteEmployee(employeeId: String) {
-        val auth = FirebaseAuth.getInstance()
+    private fun deleteEmployeeData(employeeId: String) {
         val database = Firebase.database
 
-        val user = auth.currentUser
+        val employeeRef = database.getReference("Users").child(businessID).child("Employees").child(employeeId)
 
-        // Ensure the employeeId matches the currently authenticated user
-        if (user != null && user.uid == employeeId) {
-            user.delete().addOnCompleteListener { deleteAuthTask ->
-                if (deleteAuthTask.isSuccessful) {
-                    val employeeRef = database.getReference("Users").child(businessID).child("Employees").child(employeeId)
+        // Delete employee data from the database
+        employeeRef.removeValue().addOnSuccessListener {
+            Toast.makeText(requireContext(), "Employee deleted successfully.", Toast.LENGTH_SHORT).show()
 
-                    employeeRef.removeValue().addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Employee and authentication deleted successfully.", Toast.LENGTH_SHORT).show()
-                        replaceFragment(EmployeeFragment())
-                    }.addOnFailureListener { dbError ->
-                        Toast.makeText(requireContext(), "Failed to delete employee data: ${dbError.message}", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Failed to delete employee authentication: ${deleteAuthTask.exception?.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
+            // Go back to the previous fragment in the back stack
+            parentFragmentManager.popBackStack()
+        }.addOnFailureListener { dbError ->
+            Toast.makeText(requireContext(), "Failed to delete employee data: ${dbError.message}", Toast.LENGTH_SHORT).show()
         }
     }
 }
