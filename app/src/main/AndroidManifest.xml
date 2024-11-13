@@ -31,66 +31,66 @@
         <activity
             android:name=".WaitingSettings"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".SuccessOwnerActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".DeniedActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".WaitingActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".EmpEnterInfo"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".EmpSelectBusinessAdminActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".AdminSelectBusinessActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".SuccessActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".OwnerEnterInfoActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".RegisterBusinessActivity"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity
             android:name=".EmployeeregCompletion"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
 
         <activity
             android:name=".AdminEnterInfo"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".SelectRoleReg"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".Login"
             android:exported="false"
-            android:screenOrientation="sensorPortrait"/>
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.XBCADAntonieMotors.MySplash"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
