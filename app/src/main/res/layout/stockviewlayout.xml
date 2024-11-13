@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/customernamecorners"
         android:text="Part Name"
+        android:fontFamily="@font/fontpoppinssemibold"
         android:textColor="#FFFFFF"
         android:padding="12dp"
         android:textSize="18sp"
@@ -29,74 +30,63 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imgPart"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvPartDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Wide bumper frame fits all"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tvPartCost"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="R 2000"
-                android:textColor="#000000"
-                android:textSize="16sp" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/ivPlusButton"
-                    android:layout_width="55dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="top"
-                    android:layout_margin="16dp"
-                    android:src="@drawable/plusbutton" />
-
-                <TextView
-                    android:id="@+id/textView26"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:text="10" />
-
-                <ImageView
-                    android:id="@+id/ivMinusButton"
-                    android:layout_width="55dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="top"
-                    android:layout_margin="16dp"
-                    android:src="@drawable/plusbutton" />
-
-
-            </LinearLayout>
-        </LinearLayout>
     </LinearLayout>
 
-    <!-- Address -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tvPartDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="Wide bumper frame fits all"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvPartCost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="8dp"
+            android:text="2000"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/txtCurrentStock"
+            android:paddingLeft="8dp"
+            android:fontFamily="@font/fontpoppinssemibold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Stock:" />
+
+        <TextView
+            android:id="@+id/txtStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="TextView" />
+
+    </LinearLayout>
 </LinearLayout>
