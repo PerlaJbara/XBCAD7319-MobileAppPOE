@@ -53,26 +53,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- First Button (Start Date) -->
+        <!-- First Button (Approved History) -->
         <Button
             android:id="@+id/btnApproved"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
-            android:text="Approved History"
+            android:text="Approved"
             android:textColor="@color/black" />
 
-        <!-- Spacer between the Buttons -->
-
-        <!-- Second Button (End Date) -->
+        <!-- Second Button (Denied History) -->
         <Button
             android:id="@+id/btnDenied"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@color/white"
-            android:text="Denied History"
+            android:text="Denied"
+            android:textColor="@color/black" />
+
+        <!-- Third Button (Pending) -->
+        <Button
+            android:id="@+id/btnPending"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:text="Pending"
             android:textColor="@color/black" />
     </LinearLayout>
 

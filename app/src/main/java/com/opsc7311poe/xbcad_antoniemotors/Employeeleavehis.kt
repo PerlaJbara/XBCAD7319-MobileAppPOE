@@ -24,6 +24,8 @@ class Employeeleavehis : Fragment() {
     private lateinit var leaveHistoryContainer: LinearLayout
     private lateinit var btnApproved: Button
     private lateinit var btnDenied: Button
+    private lateinit var btnPend: Button
+    private lateinit var btnBack: Button
     private val database = FirebaseDatabase.getInstance().reference
     private lateinit var employeeId: String
     private lateinit var businessId: String
@@ -36,7 +38,8 @@ class Employeeleavehis : Fragment() {
         leaveHistoryContainer = view.findViewById(R.id.leaveHistoryContainer)
         btnApproved = view.findViewById(R.id.btnApproved)
         btnDenied = view.findViewById(R.id.btnDenied)
-
+        btnPend = view.findViewById(R.id.btnPending) // Initialize the new Pending button
+        btnBack  = view.findViewById(R.id.ivBackButton)
         // Retrieve the business ID from shared preferences
         val sharedPref = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         businessId = sharedPref.getString("business_id", null) ?: return
@@ -45,9 +48,15 @@ class Employeeleavehis : Fragment() {
         // Fetch and store the employee's name once
         fetchEmployeeName()
 
-        // Set button listeners to toggle between approved and denied leave requests
+        // Set button listeners to toggle between approved, denied, and pending leave requests
         btnApproved.setOnClickListener { fetchEmployeeLeaveHistory("ApprovedLeave") }
         btnDenied.setOnClickListener { fetchEmployeeLeaveHistory("DeniedLeave") }
+        btnPend.setOnClickListener { fetchEmployeeLeaveHistory("PendingLeave") } // Set up the Pending button
+
+        btnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
 
         // Load approved leave by default
         fetchEmployeeLeaveHistory("ApprovedLeave")
@@ -92,7 +101,11 @@ class Employeeleavehis : Fragment() {
                     val leaveStart = leaveSnapshot.child("startDate").getValue(String::class.java) ?: continue
                     val leaveEnd = leaveSnapshot.child("endDate").getValue(String::class.java) ?: continue
                     val specificLeaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
-                    val leaveStatus = if (leaveType == "ApprovedLeave") "Approved" else "Denied"
+                    val leaveStatus = when (leaveType) {
+                        "ApprovedLeave" -> "Approved"
+                        "DeniedLeave" -> "Denied"
+                        else -> "Pending" // Set status as Pending for pending requests
+                    }
 
                     // Add leave information to the UI
                     addLeaveCard(specificLeaveType, leaveStart, leaveEnd, leaveStatus)
@@ -112,7 +125,14 @@ class Employeeleavehis : Fragment() {
 
     // Add a card for each leave entry to the layout
     private fun addLeaveCard(leaveType: String, startDate: String, endDate: String, status: String) {
-        val layoutRes = if (status == "Approved") R.layout.card_approved_leave else R.layout.card_dennied_leave
+        // Use different card layouts based on the leave status
+        val layoutRes = when (status) {
+            "Approved" -> R.layout.card_approved_leave
+            "Denied" -> R.layout.card_dennied_leave
+            "Pending" -> R.layout.card_pending_leave
+            else -> R.layout.card_pending_leave // Default to pending if not specified
+        }
+
         val leaveCard = layoutInflater.inflate(layoutRes, leaveHistoryContainer, false) as CardView
 
         // Find and set values for each TextView in the card
