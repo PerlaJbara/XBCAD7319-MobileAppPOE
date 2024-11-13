@@ -21,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 
 class CustomerFragment : Fragment() {
 
-    private lateinit var vectorPlusButton: ImageView
+
     private lateinit var btnBack: ImageView
     private lateinit var recyclerView: RecyclerView
     private lateinit var database: DatabaseReference
@@ -39,7 +39,7 @@ class CustomerFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_customer, container, false)
 
-        vectorPlusButton = view.findViewById(R.id.btnPlus)
+
         btnBack = view.findViewById(R.id.ivBackButton)
         searchCustomers = view.findViewById(R.id.customerSearch)
         recyclerView = view.findViewById(R.id.recyclerViewCustomers)
