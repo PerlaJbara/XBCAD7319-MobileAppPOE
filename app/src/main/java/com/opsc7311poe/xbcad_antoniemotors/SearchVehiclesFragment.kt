@@ -56,13 +56,6 @@ class SearchVehiclesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = vehicleAdapter
 
-        /*searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                vehicleAdapter.filterList(newText)
-                return false
-            }
-        })*/
 
         searchVehicle.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
@@ -92,8 +85,6 @@ class SearchVehiclesFragment : Fragment() {
                         if (employeeSnapshot.exists()) {
                             businessId = employeeSnapshot.child("businessID").getValue(String::class.java)
                                 ?: employeeSnapshot.child("businessId").getValue(String::class.java)
-
-                            Log.d("fetchVehicles", "BusinessID found for admin: $businessId")
                             break
                         }
                     }
@@ -127,17 +118,16 @@ class SearchVehiclesFragment : Fragment() {
 
                             override fun onCancelled(error: DatabaseError) {
                                 Toast.makeText(requireContext(), "Error fetching vehicles.", Toast.LENGTH_SHORT).show()
-                                Log.e("SearchVehiclesFragment", "Database error: ${error.message}")
                             }
                         })
                     } else {
-                        Log.e("fetchVehicles", "BusinessID not found for the current admin.")
+
                         Toast.makeText(requireContext(), "Unable to find associated business.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("fetchVehicles", "Error fetching business information: ${error.message}")
+
                     Toast.makeText(requireContext(), "Error fetching business information.", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -177,7 +167,7 @@ class SearchVehiclesFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("SearchVehiclesFragment", "Database error: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error searching vehicles.", Toast.LENGTH_SHORT).show()
             }
         })

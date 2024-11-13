@@ -291,7 +291,7 @@ class RegisterVehicleFragment : Fragment() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Handle possible errors.
-                Log.e("FirebaseError", "Database error: ${databaseError.message}")
+                Toast.makeText(requireContext(), "Database error: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -366,7 +366,6 @@ class RegisterVehicleFragment : Fragment() {
 
         // Optional: Listener to handle year selection
         ynpYearPicker?.setOnValueChangedListener { picker, oldVal, newVal ->
-            Log.d("SelectedYear", "Year: $newVal")
             if (newVal > currentYear) {
                 Toast.makeText(requireContext(), "A car model year cannot be greater than the current year", Toast.LENGTH_SHORT).show()
                 ynpYearPicker.value = currentYear
@@ -464,7 +463,7 @@ class RegisterVehicleFragment : Fragment() {
     private fun populateCustomerList(onCustomersFetched: (List<CustomerData>) -> Unit) {
         val adminId = FirebaseAuth.getInstance().currentUser?.uid
         if (adminId == null) {
-            Log.e("populateCustomerList", "User is not logged in or adminId is null.")
+            Toast.makeText(requireContext(), "User is not logged in or adminId is null.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -485,7 +484,6 @@ class RegisterVehicleFragment : Fragment() {
                         businessID = employeeSnapshot.child("businessID").getValue(String::class.java)
                             ?: employeeSnapshot.child("businessId").getValue(String::class.java)
 
-                        Log.d("populateCustomerList", "BusinessID found for admin: $businessID")
                         break
                     }
                 }
@@ -499,7 +497,6 @@ class RegisterVehicleFragment : Fragment() {
                             val customerList = mutableListOf<CustomerData>()
 
                             if (!snapshot.exists()) {
-                                Log.e("populateCustomerList", "No customers found under this business.")
                                 onCustomersFetched(customerList) // Return an empty list if no customers found
                                 return
                             }
@@ -517,16 +514,19 @@ class RegisterVehicleFragment : Fragment() {
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            Log.e("populateCustomerList", "Error fetching customers: ${error.message}")
+                            Toast.makeText(requireContext(), "Error fetching customers : ${error.message}", Toast.LENGTH_SHORT).show()
+
                         }
                     })
                 } else {
-                    Log.e("populateCustomerList", "BusinessID not found for the current admin.")
+                    Toast.makeText(requireContext(), "BusinessID not found for the current admin.", Toast.LENGTH_SHORT).show()
+
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("populateCustomerList", "Error fetching business information: ${error.message}")
+                Toast.makeText(requireContext(), "Error fetching business information: ${error.message}", Toast.LENGTH_SHORT).show()
+
             }
         })
     }
@@ -582,7 +582,6 @@ class RegisterVehicleFragment : Fragment() {
                         val areaCode = areaSnapshot.child("areaCode").getValue(String::class.java)
                         if (areaCode == vehiclePOR) {
                             layout = areaSnapshot.child("layout").getValue(Int::class.java) ?: 1
-                            Log.d("Get POR layout", "layout found for POR: $layout")
                             fullVehicleNumPlate = if (layout == 1) "$vehiclePOR $vehicleNoPlate" else "$vehicleNoPlate $vehiclePOR"
                             break
                         }
@@ -681,18 +680,16 @@ class RegisterVehicleFragment : Fragment() {
                                 }
 
                                 override fun onCancelled(error: DatabaseError) {
-                                    Log.e("registerVehicle", "Database error: ${error.message}")
+                                    Toast.makeText(requireContext(), "Database error ${error.message}", Toast.LENGTH_SHORT).show()
                                     Toast.makeText(context, "Error checking for duplicates.", Toast.LENGTH_SHORT).show()
                                 }
                             })
                         } else {
-                            Log.e("registerVehicle", "Business ID not found for the current admin.")
                             Toast.makeText(context, "Unable to register vehicle. Business not found.", Toast.LENGTH_SHORT).show()
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.e("registerVehicle", "Error fetching business information: ${error.message}")
                         Toast.makeText(context, "Error fetching business information.", Toast.LENGTH_SHORT).show()
                     }
                 })

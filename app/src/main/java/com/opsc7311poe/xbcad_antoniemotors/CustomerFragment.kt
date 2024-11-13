@@ -45,16 +45,10 @@ class CustomerFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerViewCustomers)
 
 
-        // Set click listener for the "Add Customer" button
-        //this button will be linked to the customer registration page for the web application
-       /* vectorPlusButton.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(AddCustomerFragment())
-        }*/
 
         // Set click listener for the "Back" button
         btnBack.setOnClickListener {
-            replaceFragment(HomeFragment())
+            replaceFragment(CustomerMenuFragment())
         }
 
         customerList = ArrayList()

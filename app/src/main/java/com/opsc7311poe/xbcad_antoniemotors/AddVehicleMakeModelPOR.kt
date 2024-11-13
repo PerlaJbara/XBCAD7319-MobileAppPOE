@@ -67,23 +67,14 @@ class AddVehicleMakeModelPOR : Fragment() {
         rbENumPlate = view.findViewById(R.id.rbEnd)
         provinceSpinner = view.findViewById(R.id.spnProvince)
         txtHelp = view.findViewById(R.id.txtPORHelp)
+        txtHelp.text = "Click here for more information\n about POR codes and areas"
 
-        val text = SpannableString("Click here for more information\n about POR codes and areas")
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_South_Africa")
-
-                context?.startActivity(intent)
-            }
+        txtHelp.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_South_Africa")
+            context?.startActivity(intent)
         }
 
-        val startIndex = 11 // Starting index of "Click here" (adjust based on your string)
-        val endIndex = startIndex + "Click here".length
-
-        text.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        txtHelp.text = text
 
         databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
 
@@ -169,7 +160,7 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error: ${error.message}")
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -189,7 +180,7 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error: ${error.message}")
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -234,7 +225,7 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error: ${error.message}")
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -252,7 +243,7 @@ class AddVehicleMakeModelPOR : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error fetching vehicle makes: ${error.message}")
+                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

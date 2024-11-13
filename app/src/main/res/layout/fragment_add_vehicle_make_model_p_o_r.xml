@@ -263,6 +263,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:paddingBottom="20dp"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:text=""
                             android:textAlignment="center"
                             android:textSize="15sp"
