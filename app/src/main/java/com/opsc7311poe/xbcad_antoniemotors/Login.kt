@@ -130,16 +130,18 @@ class Login : AppCompatActivity() {
             }
         })
 
-        // Use BIOMETRIC_STRONG (which includes fingerprint and face) and DEVICE_CREDENTIAL for fallback to password
+        // Build the prompt info without the NegativeButtonText when DEVICE_CREDENTIAL is allowed
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric Login")
             .setSubtitle("Log in using your fingerprint or face ID")
-            .setNegativeButtonText("Use account password")
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            .setAllowedAuthenticators(
+                BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            )
             .build()
 
         biometricPrompt.authenticate(promptInfo)
     }
+
 
     private fun signIn(email: String, password: String) {
         auth.signInWithEmailAndPassword(email, password)
