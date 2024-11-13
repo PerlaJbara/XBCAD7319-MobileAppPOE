@@ -258,11 +258,12 @@
                         android:paddingBottom="20dp">
 
                         <TextView
+                            android:id="@+id/txtPORHelp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:paddingBottom="20dp"
-                            android:text="Click here for more infromation\n about POR codes and areas"
+                            android:text=""
                             android:textAlignment="center"
                             android:textSize="15sp"
                             android:textStyle="bold" />

@@ -123,7 +123,6 @@ class RegisterVehicleFragment : Fragment() {
 
 
         edtCustomer.setOnClickListener {
-            Log.d("CustomerDialog", "Customer EditText clicked")
             showCustomerSelectionDialog()
         }
 
@@ -320,36 +319,6 @@ class RegisterVehicleFragment : Fragment() {
         })
     }
 
-
-
-    /*private fun fetchVehiclePORData() {
-        val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")
-
-        vehiclePORRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                vehiclePORList.clear()
-
-                // Loop through each area under VehiclePOR
-                for (areaSnapshot in snapshot.children) {
-                    val provinceCode = areaSnapshot.child("provinceCode").getValue(String::class.java)
-                    if (provinceCode != null) {
-                        // Add each province code to the list
-                        vehiclePORList.add(provinceCode)
-                    }
-                }
-
-                // Sort province codes alphabetically
-                vehiclePORList.sort()
-
-                // Notify adapter about the data change
-                vehiclePORAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Error: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }*/
 
     private fun fetchVehiclePORData() {
         val vehiclePORRef = FirebaseDatabase.getInstance().getReference("VehiclePOR")

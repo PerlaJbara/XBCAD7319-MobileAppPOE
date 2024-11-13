@@ -1,6 +1,11 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ClickableSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +18,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.SearchView
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +37,7 @@ class AddVehicleMakeModelPOR : Fragment() {
     private lateinit var edtNewAreaName: EditText
     private lateinit var provinceSpinner: Spinner
     private lateinit var edtNewPOR: EditText
+    private lateinit var txtHelp: TextView
     private lateinit var btnAddNewVMake: Button
     private lateinit var btnAddNewVModel: Button
     private lateinit var btnAddNewPOR: Button
@@ -38,6 +45,7 @@ class AddVehicleMakeModelPOR : Fragment() {
     private lateinit var rbENumPlate: RadioButton
     private val vehicleMakesList = mutableListOf<String>()
     private lateinit var databaseVRef: DatabaseReference
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +66,24 @@ class AddVehicleMakeModelPOR : Fragment() {
         rbBNumPlate = view.findViewById(R.id.rbBeginning)
         rbENumPlate = view.findViewById(R.id.rbEnd)
         provinceSpinner = view.findViewById(R.id.spnProvince)
+        txtHelp = view.findViewById(R.id.txtPORHelp)
+
+        val text = SpannableString("Click here for more information\n about POR codes and areas")
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse("https://en.wikipedia.org/wiki/Vehicle_registration_plates_of_South_Africa")
+
+                context?.startActivity(intent)
+            }
+        }
+
+        val startIndex = 11 // Starting index of "Click here" (adjust based on your string)
+        val endIndex = startIndex + "Click here".length
+
+        text.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        txtHelp.text = text
 
         databaseVRef = FirebaseDatabase.getInstance().getReference("VehicleMake")
 
