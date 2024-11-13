@@ -18,6 +18,8 @@ import com.google.firebase.ktx.Firebase
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.appcompat.app.AlertDialog
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -450,7 +452,11 @@ class HomeFragment : Fragment() {
             }
         })
     }
-
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetwork?.isConnected == true
+    }
 
 
     private fun replaceFragment(fragment: Fragment) {

@@ -3,6 +3,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -15,6 +16,13 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import android.widget.*
+import com.google.firebase.auth.*
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.common.api.CommonStatusCodes
+import com.google.firebase.database.FirebaseDatabase
 
 class Login : AppCompatActivity() {
 
@@ -210,6 +218,18 @@ class Login : AppCompatActivity() {
                 Log.e("Login", "Database error: ${error.message}")
             }
         })
+    }
+    fun validateLogin(email: String, password: String): Boolean {
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this@Login, "Please enter an email", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(this@Login, "Please enter a password", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 
 
