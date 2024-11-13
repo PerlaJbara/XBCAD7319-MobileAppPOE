@@ -26,6 +26,7 @@ class EmpLeaveFragment : Fragment() {
     private lateinit var txtleaveend: TextView
     private lateinit var btnrequestleave: Button
     private lateinit var txtRules: TextView
+    private lateinit var btnback : Button
 
     private val database = Firebase.database
     private val auth = FirebaseAuth.getInstance()
@@ -48,6 +49,7 @@ class EmpLeaveFragment : Fragment() {
         txtleaveend = view.findViewById(R.id.txtselleaveend)
         btnrequestleave = view.findViewById(R.id.btnRequest)
         txtRules = view.findViewById(R.id.txtLeaveRules)
+        btnback = view.findViewById(R.id.ivBackButton)
         txtRules.visibility = View.GONE // Initially hidden
 
         // Set up spinner adapter with leave types
@@ -77,6 +79,10 @@ class EmpLeaveFragment : Fragment() {
         // Handle button press for saving leave data
         btnrequestleave.setOnClickListener {
             submitLeaveRequest()
+        }
+
+        btnback.setOnClickListener {
+            parentFragmentManager.popBackStack()
         }
 
         return view

@@ -27,12 +27,12 @@
             android:id="@+id/txtEmpOverView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/fontheader"
+            android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
             android:text="Leave"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="45dp" />
+            android:textSize="60sp" />
     </LinearLayout>
 
     <!-- ScrollView for content -->

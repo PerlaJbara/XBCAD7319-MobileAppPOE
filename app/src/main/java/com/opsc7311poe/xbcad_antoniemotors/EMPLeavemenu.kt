@@ -14,7 +14,7 @@ class EMPLeavemenu : Fragment() {
 
     private lateinit var imgReq: ImageView
     private lateinit var imghis: ImageView
-    private lateinit var btnBackButton: ImageView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,7 +25,7 @@ class EMPLeavemenu : Fragment() {
         imgReq = view.findViewById(R.id.imgRequests)
         imghis = view.findViewById(R.id.imghistory)
 
-        btnBackButton = view.findViewById(R.id.ivBackButton)
+
 
         // Set click listeners for the image views
         imgReq.setOnClickListener {
@@ -39,9 +39,7 @@ class EMPLeavemenu : Fragment() {
 
         }
 
-        btnBackButton.setOnClickListener {
-            replaceFragment(AdminEmpFragment()) // Replace with your actual fragment class
-        }
+
 
         return view
     }
