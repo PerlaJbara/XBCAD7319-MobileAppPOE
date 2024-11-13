@@ -36,6 +36,7 @@ class ViewInventoryFragment : Fragment() {
     private lateinit var adapter: PartAdapter
     private lateinit var database: DatabaseReference
     private val auth = FirebaseAuth.getInstance()
+    private lateinit var btnBack: ImageView
 
     private val REQUEST_CODE_NOTIFICATION_PERMISSION = 1001
 
@@ -55,6 +56,7 @@ class ViewInventoryFragment : Fragment() {
         addImage = view.findViewById(R.id.imgPlus)
         recyclerView = view.findViewById(R.id.recyclerViewInventory)
         searchEditText = view.findViewById(R.id.txtSearch)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Set up RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -76,6 +78,11 @@ class ViewInventoryFragment : Fragment() {
             }
             replaceFragment(fragment)
         }
+
+        btnBack.setOnClickListener {
+            replaceFragment(VehicleMenuFragment())
+        }
+
         recyclerView.adapter = adapter
 
         // Set up Firebase database reference

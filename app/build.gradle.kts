@@ -67,7 +67,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-appcheck-playintegrity:16.0.0")
     implementation ("com.google.android.gms:play-services-auth:20.1.0") // or the latest version
     implementation ("com.google.android.gms:play-services-tasks:17.2.1")
-    implementation(libs.androidx.junit.ktx) // or the latest version
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx) // or the latest version
     //implementation ("com.google.firebase:firebase-functions:21.1.0")
 
     testImplementation(libs.junit)

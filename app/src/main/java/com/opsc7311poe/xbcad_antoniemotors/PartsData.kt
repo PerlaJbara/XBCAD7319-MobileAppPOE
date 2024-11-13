@@ -8,6 +8,7 @@ data class PartsData(
     val minStock: Int? = null,
     val costPrice: Double? = null
 )
+
 {
     constructor() : this(null,null, null, 0, 0, null)
 }

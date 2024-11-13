@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
+    <!-- Header Layout -->
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="191dp"
+        android:layout_height="150dp"
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
@@ -30,15 +30,14 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/fontpoppinssemibold"
             android:gravity="center_horizontal"
-            android:paddingTop="73dp"
-            android:text="Receipt Overview"
+            android:text="Invoice Overview"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />
-
     </LinearLayout>
 
+    <!-- Main content Layout (quote details) -->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="540dp"
         android:layout_below="@id/layoutHeader"
         android:orientation="vertical"
@@ -47,255 +46,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
 
-        <LinearLayout
-            android:id="@+id/linearLayoutContent"
-            android:layout_width="419dp"
-            android:layout_height="443dp"
-            android:layout_marginTop="32dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <!-- Scrollable content layout -->
+        <ScrollView
+            android:id="@+id/svQuoteOverview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <!-- ScrollView containing content -->
-            <ScrollView
-                android:id="@+id/svQuoteOverview"
-                android:layout_width="325dp"
-                android:layout_height="397dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp">
+            <!-- This LinearLayout will hold the dynamic content, such as the invoice layout -->
+            <LinearLayout
+                android:id="@+id/linearLayoutContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/layoutOverview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                <!-- Dynamic content will be added here -->
+            </LinearLayout>
+        </ScrollView>
 
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white"
-                        android:divider="?android:dividerVertical"
-                        android:dividerPadding="4dp"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <!-- Header -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="3">
-
-                            <!-- Business Info (Left) -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Antonie Motors cc"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Repairs, Services\nAnd Car Sales"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="263 Main Reef Road\nBenoni, Johannesburg\n2014"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                            <!-- Job Info (Right) -->
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="right"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Date: 16 09 2024"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Vehicle and Owner Info -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingTop="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="OWNER:"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:weightSum="2">
-
-                                <TextView
-                                    android:id="@+id/tvOwnerName"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Owner Name"
-                                    android:textSize="14sp" />
-
-                                <TextView
-                                    android:id="@+id/serviceTypeName"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Service Type"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-
-                            <!-- Address and Registration -->
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:paddingTop="8dp"
-                                android:weightSum="2"/>
-                        </LinearLayout>
-
-
-                        <!-- Hours Labour Section -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="HOURS LABOUR"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:id="@+id/llHoursLabour"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-
-                        <!-- Spares & Materials Section -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="10dp"
-                            android:text="Parts, SPARES and MATERIALS"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <LinearLayout
-                            android:id="@+id/addparts"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
-
-                    </LinearLayout>
-
-
-                    <!-- Totals Section -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:text="Total"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvTotal"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end"
-                                android:text="0.00"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="3">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:text="VAT Amount"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvVatAmount"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end"
-                                android:text="0.00"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="3" />
-
-                        <!-- Disclaimer -->
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="20dp"
-                            android:text="We are not responsible for any loss or damage beyond our control."
-                            android:textAlignment="center"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-            </ScrollView>
-
-            <!-- TextViews -->
-
-            <!-- Buttons -->
-        </LinearLayout>
-
+        <!-- Action buttons -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="413dp"
+            android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_marginBottom="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -319,7 +89,7 @@
                 android:layout_width="125dp"
                 android:layout_height="53dp"
                 android:fontFamily="@font/fontpoppinsregular"
-                android:text="Edit Quote"
+                android:text="Delete"
                 android:backgroundTint="#038A39"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -329,4 +99,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

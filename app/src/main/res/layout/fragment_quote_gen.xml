@@ -74,44 +74,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/txtSelectCustomer"
                 app:layout_constraintWidth_default="wrap" />
 
-            <TextView
-                android:id="@+id/txtServiceType"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:text="Select Service Type"
-                android:fontFamily="@font/fontpoppinsmedium"
-                android:textSize="25sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinCustomer" />
 
-            <Spinner
-                android:id="@+id/spinQuote"
-                android:paddingHorizontal="5dp"
-                android:layout_width="310dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/spingradientgtor"
-                android:fontFamily="@font/fontpoppinsregular"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtServiceType"
-                app:layout_constraintWidth_default="wrap" />
 
-            <Button
-                android:id="@+id/btnServiceTypes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Manage Service Types"
-                android:fontFamily="@font/fontpoppinsmedium"
-                android:backgroundTint="@color/red"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinQuote" />
 
             <TextView
                 android:id="@+id/txtParts"
@@ -124,49 +88,78 @@
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnServiceTypes" />
+                app:layout_constraintTop_toBottomOf="@+id/spinCustomer" />
 
 
-            <EditText
-                android:id="@+id/edtPartName"
-                android:paddingHorizontal="7dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="52dp"
-                android:layout_marginTop="4dp"
+            <Spinner
+                android:id="@+id/spinPartName"
+                android:layout_width="204dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/spingradientgtor"
                 android:hint="Part Name"
                 android:padding="8dp"
+                android:paddingHorizontal="7dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtParts" />
 
             <EditText
                 android:id="@+id/edtPartCost"
-                android:paddingHorizontal="5dp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="256dp"
-                android:layout_marginTop="4dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="280dp"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/spingradientgtor"
-                android:hint="Part Cost"
+                android:hint="Part Price"
                 android:inputType="numberDecimal"
                 android:padding="8dp"
+                android:paddingHorizontal="5dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtParts" />
+
+            <NumberPicker
+                android:id="@+id/npStockCounter"
+                android:layout_width="63dp"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.856"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.331" />
+
+            <TextView
+                android:id="@+id/txtPartsQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:paddingTop="50dp"
+                android:text="Select quantity"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/btnAddPart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.235"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinPartName" />
 
             <Button
                 android:id="@+id/btnAddPart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Part"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:layout_marginTop="68dp"
                 android:backgroundTint="@color/red"
-                app:layout_constraintTop_toBottomOf="@+id/edtPartName"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:padding="10dp"
+                android:text="Add Part"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:padding="10dp" />
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtPartsQuantity" />
 
             <TextView
                 android:id="@+id/txtPartsList"
@@ -199,6 +192,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@drawable/spingradientgtor"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:inputType="numberDecimal"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"

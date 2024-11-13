@@ -6,10 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 
 class DocumentationFragment : Fragment() {
+
+    private lateinit var invoice: ImageView
+    private lateinit var viewInvoces : ImageView
+    private lateinit var receipts: ImageView
+    private lateinit var viewReceipts: ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -19,25 +26,25 @@ class DocumentationFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_documentation, container, false)
 
         // Find the buttons in the layout
-        val btnGenQuote = view.findViewById<Button>(R.id.btnGenQuote)
-        val viewCustomersBtn = view.findViewById<Button>(R.id.btnPastQuotes)
-        val btnRec = view.findViewById<Button>(R.id.btnGenReciept)
-        val btnReview = view.findViewById<Button>(R.id.btnReviewReceipt)
+        invoice = view.findViewById(R.id.btnQuotes)
+        viewInvoces = view.findViewById(R.id.btnpastQuotes)
+        receipts = view.findViewById(R.id.btnInvoiceGen)
+        viewReceipts = view.findViewById(R.id.btnViewInvoices)
 
         // Set click listeners and replace fragments
-        btnGenQuote.setOnClickListener {
+        invoice.setOnClickListener {
             replaceFragment(QuoteGenFragment())
         }
 
-        viewCustomersBtn.setOnClickListener {
+        viewInvoces.setOnClickListener {
             replaceFragment(PastQuotesFragment())
         }
 
-        btnRec.setOnClickListener {
+        receipts.setOnClickListener {
             replaceFragment(ReceiptGeneratorFragment())
         }
 
-        btnReview.setOnClickListener {
+        viewReceipts.setOnClickListener {
              replaceFragment(PastReceiptsFragment())
          }
 
