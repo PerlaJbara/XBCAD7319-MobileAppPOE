@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -18,6 +19,7 @@ class AdminApproveRegistrationFragment : Fragment() {
 
     private lateinit var linlayEmployees: LinearLayout
     private var adminId: String? = null // ID of the current logged-in admin
+    private lateinit var btnBack: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +30,12 @@ class AdminApproveRegistrationFragment : Fragment() {
 
         // Get the current admin's ID from Firebase Auth
         adminId = FirebaseAuth.getInstance().currentUser?.uid
+
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener {
+            replaceFragment(AdminApprovesLeaves()) // Going back to menu
+        }
 
         // Fetch pending users from Firebase if adminId is available
         if (adminId != null) {
@@ -73,6 +81,11 @@ class AdminApproveRegistrationFragment : Fragment() {
             }
         })
     }
+
+    private fun replaceFragment(fragment: Fragment) {
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.frame_container, fragment)?.commit()
+    }
+
 
     private fun addEmployeeToLayout(
         name: String,

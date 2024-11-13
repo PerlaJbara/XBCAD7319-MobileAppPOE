@@ -107,12 +107,12 @@ class Login : AppCompatActivity() {
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                Toast.makeText(this@Login, "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@Login, "Use your account details to login.", Toast.LENGTH_SHORT).show()
             }
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                Toast.makeText(this@Login, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                      Toast.makeText(this@Login, "Authentication failed.", Toast.LENGTH_SHORT).show()
             }
         })
 

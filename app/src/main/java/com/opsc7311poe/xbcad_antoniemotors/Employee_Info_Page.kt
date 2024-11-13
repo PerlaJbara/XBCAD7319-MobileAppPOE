@@ -72,10 +72,6 @@ class Employee_Info_Page : Fragment() {
 
         displayDetails()
 
-        // Setup listeners
-        btnBack.setOnClickListener {
-            replaceFragment(EmployeeFragment())
-        }
 
         btnEditEmp.setOnClickListener {
             toggleEditing(true)
@@ -215,7 +211,7 @@ class Employee_Info_Page : Fragment() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, fragment)?.commit()
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.frame_container, fragment)?.commit()
     }
 
     private fun deleteEmployee(employeeId: String) {

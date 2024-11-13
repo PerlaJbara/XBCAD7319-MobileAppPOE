@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,7 @@ import java.util.Locale
 class AdminApprovesLeaves : Fragment() {
     private lateinit var leaveRequestContainer: LinearLayout
     private lateinit var businessID: String
+    private lateinit var btnBack: ImageView
     private val database = Firebase.database
     private val auth = FirebaseAuth.getInstance()
 
@@ -36,7 +38,13 @@ class AdminApprovesLeaves : Fragment() {
         val view = inflater.inflate(R.layout.fragment_admin_approves_leaves, container, false)
         leaveRequestContainer = view.findViewById(R.id.leaveRequestContainer)
 
-        // Fetch the current logged-in admin's business ID
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener {
+            replaceFragment(AdminEmpFragment()) // Going back to menu
+        }
+
+
         fetchAdminBusinessID()
 
         return view
@@ -66,6 +74,11 @@ class AdminApprovesLeaves : Fragment() {
             }
         })
     }
+
+    private fun replaceFragment(fragment: Fragment) {
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.frame_container, fragment)?.commit()
+    }
+
 
     // Fetch leave requests for the business where managerID matches the logged-in admin
     private fun fetchLeaveRequestsForBusiness(businessId: String, managerId: String) {
