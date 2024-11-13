@@ -93,7 +93,7 @@ tools:context=".CustomerAnalyticsFragment">
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/custLineChart"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="350dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +116,7 @@ tools:context=".CustomerAnalyticsFragment">
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/custTypeBarChart"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="350dp"
             android:layout_margin="20dp"
             android:layout_marginBottom="50dp"/>
 

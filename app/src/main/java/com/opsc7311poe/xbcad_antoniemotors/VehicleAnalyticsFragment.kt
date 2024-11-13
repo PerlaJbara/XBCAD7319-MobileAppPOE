@@ -149,24 +149,21 @@ class VehicleAnalyticsFragment : Fragment() {
                 val lineData = LineData(lineDataSet)
                 vehicleLineChart.data = lineData
 
-                // Add this after setting up the chart data in the BarChart configuration
-                vehicleDemoBarChart.setExtraOffsets(0f, 0f, 0f, 40f)
 
                 val xAxis = vehicleLineChart.xAxis
+                vehicleLineChart.setExtraBottomOffset(20f)
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.valueFormatter = IndexAxisValueFormatter(past10Days)
                 xAxis.labelRotationAngle = -45f
                 xAxis.granularity = 1f
 
-                // Optional: Set a minimum height for the axis to ensure enough space is reserved for the labels
-                vehicleDemoBarChart.setViewPortOffsets(50f, 10f, 50f, 200f)
 
                 vehicleLineChart.axisRight.isEnabled = false
                 vehicleLineChart.invalidate()  // Refresh the chart
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("VehicleAnalytics", "Error fetching vehicle data: ${error.message}")
+                Toast.makeText(requireContext(), "Error fetching vehicle data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -205,24 +202,21 @@ class VehicleAnalyticsFragment : Fragment() {
                 val barData = BarData(barDataSet)
                 vehicleModelBarChart.data = barData
 
-                // Add this after setting up the chart data in the BarChart configuration
-                vehicleDemoBarChart.setExtraOffsets(0f, 0f, 0f, 40f)
 
                 val xAxis = vehicleModelBarChart.xAxis
+                vehicleModelBarChart.setExtraBottomOffset(40f)
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.valueFormatter = IndexAxisValueFormatter(modelNames)
                 xAxis.granularity = 1f
                 xAxis.labelRotationAngle = -45f
 
-                // Optional: Set a minimum height for the axis to ensure enough space is reserved for the labels
-                vehicleDemoBarChart.setViewPortOffsets(50f, 10f, 50f, 180f)
 
                 vehicleModelBarChart.axisRight.isEnabled = false
                 vehicleModelBarChart.invalidate()  // Refresh the chart
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("VehicleAnalytics", "Error fetching vehicle model data: ${error.message}")
+                Toast.makeText(requireContext(), "Error fetching vehicle data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -279,30 +273,28 @@ class VehicleAnalyticsFragment : Fragment() {
                         val barData = BarData(barDataSet)
                         vehicleDemoBarChart.data = barData
 
-                        // Add this after setting up the chart data in the BarChart configuration
-                        vehicleDemoBarChart.setExtraOffsets(0f, 0f, 0f, 40f)
+
 
                         val xAxis = vehicleDemoBarChart.xAxis
+                        vehicleDemoBarChart.setExtraBottomOffset(40f)
                         xAxis.position = XAxis.XAxisPosition.BOTTOM
                         xAxis.valueFormatter = IndexAxisValueFormatter(areaNames)
                         xAxis.granularity = 1f
                         xAxis.labelRotationAngle = -45f
 
-                        // Optional: Set a minimum height for the axis to ensure enough space is reserved for the labels
-                        vehicleDemoBarChart.setViewPortOffsets(50f, 10f, 50f, 150f)
 
                         vehicleDemoBarChart.axisRight.isEnabled = false
                         vehicleDemoBarChart.invalidate()  // Refresh the chart
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.e("VehicleAnalytics", "Error fetching vehicles data: ${error.message}")
+                        Toast.makeText(requireContext(), "Error fetching vehicle data: ${error.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("VehicleAnalytics", "Error fetching VehiclePOR data: ${error.message}")
+                Toast.makeText(requireContext(), "Error fetching VehiclePOR data data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

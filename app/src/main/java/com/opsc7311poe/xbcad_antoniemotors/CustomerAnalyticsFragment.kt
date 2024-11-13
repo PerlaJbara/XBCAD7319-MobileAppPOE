@@ -145,10 +145,12 @@ class CustomerAnalyticsFragment : Fragment() {
 
                 // Customize the X-axis to show date labels
                 val xAxis = customerLineGraph.xAxis
+                customerLineGraph.setExtraBottomOffset(20f)
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.valueFormatter = IndexAxisValueFormatter(past10Days)
                 xAxis.labelRotationAngle = -45f // Optional: rotate labels for readability
                 xAxis.granularity = 1f
+
 
                 // Disable the right Y-axis and refresh the chart
                 customerLineGraph.axisRight.isEnabled = false
@@ -197,6 +199,7 @@ class CustomerAnalyticsFragment : Fragment() {
 
                 // Configure x-axis to show "business" and "private" labels
                 val xAxis = customerTypeBarChart.xAxis
+                customerTypeBarChart.setExtraBottomOffset(20f)
                 xAxis.position = XAxis.XAxisPosition.BOTTOM
                 xAxis.valueFormatter = IndexAxisValueFormatter(listOf("business", "private"))
                 xAxis.granularity = 1f

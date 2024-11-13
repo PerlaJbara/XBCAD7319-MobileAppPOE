@@ -170,17 +170,14 @@ class CustomerDetailsFragment : Fragment() {
 
                             override fun onCancelled(error: DatabaseError) {
                                 Toast.makeText(requireContext(), "Error fetching vehicles.", Toast.LENGTH_SHORT).show()
-                                Log.e("CustomerDetailsFragment", "Database error: ${error.message}")
                             }
                         })
                     } else {
-                        Log.e("fetchCustomerVehicles", "BusinessID not found for current admin.")
                         Toast.makeText(requireContext(), "Unable to find associated business.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("fetchCustomerVehicles", "Error fetching business information: ${error.message}")
                     Toast.makeText(requireContext(), "Error fetching business information.", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -294,7 +291,7 @@ class CustomerDetailsFragment : Fragment() {
             businessId = retrievedBusinessId
 
             if (businessId == null) {
-                Log.e("CustomerDetailsFragment", "Business ID is null, skipping role check.")
+                Toast.makeText(requireContext(), "Business ID is null", Toast.LENGTH_SHORT).show()
                 return@fetchBusinessId
             }
 
@@ -311,7 +308,7 @@ class CustomerDetailsFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("CustomerDetailsFragment", "Error fetching user role: ${error.message}")
+                    Toast.makeText(requireContext(), "Error fetching user role: ${error.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         }
@@ -334,7 +331,7 @@ class CustomerDetailsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("CustomerDetailsFragment", "Error fetching business ID: ${error.message}")
+                Toast.makeText(requireContext(), "Error fetching business ID: ${error.message}", Toast.LENGTH_SHORT).show()
                 onResult(null)
             }
         })

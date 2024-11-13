@@ -117,7 +117,6 @@ class CustomerFragment : Fragment() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.e("fetchCustomers", "Error fetching customers: ${error.message}")
                                 Toast.makeText(requireContext(), "Error fetching customers.", Toast.LENGTH_SHORT).show()
                             }
                         })
@@ -127,7 +126,6 @@ class CustomerFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("fetchCustomers", "Error fetching business information: ${error.message}")
                     Toast.makeText(requireContext(), "Error fetching business information.", Toast.LENGTH_SHORT).show()
                 }
             })
