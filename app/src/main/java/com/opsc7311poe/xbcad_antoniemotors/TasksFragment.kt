@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -196,7 +195,6 @@ class TasksFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("TaskLoadError", "Failed to load tasks: ${error.message}")
                 Toast.makeText(requireContext(), "Failed to load tasks", Toast.LENGTH_SHORT).show()
             }
         })
@@ -300,7 +298,6 @@ class TasksFragment : Fragment() {
     }
 
     private fun saveStatus(taskID: String?, tempStatus: String?) {
-        Log.d("saveStatus Method", "TaskID received: $taskID, Temp status: $tempStatus")
 
         if (taskID == null || tempStatus == null) return
 
@@ -311,7 +308,6 @@ class TasksFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val employeeID = snapshot.getValue(String::class.java)
                 if (employeeID == null) {
-                    Log.e("saveStatus Method", "No employeeID found for TaskID: $taskID")
                     return
                 }
 
@@ -321,7 +317,6 @@ class TasksFragment : Fragment() {
                     // Save the current time as completedDate
                     taskRef.child("completedDate").setValue(System.currentTimeMillis())
                         .addOnSuccessListener {
-                            Log.d("saveStatus Method", "Completion date saved for TaskID: $taskID")
 
                             // Increment completedTasks count
                             empRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
@@ -333,21 +328,17 @@ class TasksFragment : Fragment() {
 
                                 override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
                                     if (committed) {
-                                        Log.d("saveStatus Method", "Incremented completedTasks for EmployeeID: $employeeID")
                                     } else {
-                                        Log.e("saveStatus Method", "Error incrementing completedTasks: ${error?.message}")
                                     }
                                 }
                             })
                         }
                         .addOnFailureListener {
-                            Log.e("saveStatus Method", "Error saving completion date: ${it.message}")
                         }
                 } else {
                     // Remove the completedDate value if the status is not "Completed"
                     taskRef.child("completedDate").removeValue()
                         .addOnSuccessListener {
-                            Log.d("saveStatus Method", "Completion date removed for TaskID: $taskID")
 
                             // Decrement completedTasks count
                             empRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {
@@ -359,21 +350,17 @@ class TasksFragment : Fragment() {
 
                                 override fun onComplete(error: DatabaseError?, committed: Boolean, snapshot: DataSnapshot?) {
                                     if (committed) {
-                                        Log.d("saveStatus Method", "Decremented completedTasks for EmployeeID: $employeeID")
                                     } else {
-                                        Log.e("saveStatus Method", "Error decrementing completedTasks: ${error?.message}")
                                     }
                                 }
                             })
                         }
                         .addOnFailureListener {
-                            Log.e("saveStatus Method", "Error removing completion date: ${it.message}")
                         }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("saveStatus Method", "Error fetching employeeID: ${error.message}")
             }
         })
 
@@ -406,7 +393,6 @@ class TasksFragment : Fragment() {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading employee data: ${error.message}")
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -443,7 +429,6 @@ class TasksFragment : Fragment() {
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            Log.e("FirebaseError", "Error loading vehicle data: ${error.message}")
                             Toast.makeText(
                                 requireContext(),
                                 "Error loading vehicle data",
@@ -457,7 +442,6 @@ class TasksFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading service data: ${error.message}")
                 Toast.makeText(
                     requireContext(),
                     "Error loading service data",

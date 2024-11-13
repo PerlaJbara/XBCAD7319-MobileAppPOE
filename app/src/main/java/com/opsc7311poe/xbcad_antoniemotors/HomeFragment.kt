@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -163,7 +162,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load completed tasks: ${error.message}")
             }
         })
     }
@@ -192,7 +190,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load vehicle tasks: ${error.message}")
             }
         })
     }
@@ -214,7 +211,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load general tasks: ${error.message}")
             }
         })
     }
@@ -284,7 +280,6 @@ class HomeFragment : Fragment() {
     private fun markTaskAsCompleted(taskId: String, taskView: View, creationDate: Long) {
 
         if (taskId.isBlank()) {
-            Log.e("markTaskAsCompleted", "Invalid taskId.")
             return
         }
 
@@ -309,7 +304,6 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Task completed!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->
-                Log.e("markTaskAsCompleted", "Failed to mark task as completed: ${e.message}")
                 Toast.makeText(requireContext(), "Failed to mark task as completed", Toast.LENGTH_SHORT).show()
             }
     }
@@ -405,7 +399,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
             }
         })
     }
@@ -448,7 +441,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
             }
         })
     }

@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -57,7 +56,6 @@ class HistoricalTasks : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("HistoricalTasks", "onCreateView called")  // Add this line
         val view = inflater.inflate(R.layout.fragment_historical_tasks, container, false)
 
         val sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
@@ -132,7 +130,6 @@ class HistoricalTasks : Fragment() {
                     }
                     ?.addOnFailureListener { error ->
                         Toast.makeText(context, "Failed to restore task: ${error.message}", Toast.LENGTH_SHORT).show()
-                        Log.e("HistoricalTasks", "Error restoring task: ${error.message}")
                     }
             }
 
@@ -151,7 +148,6 @@ class HistoricalTasks : Fragment() {
             isWithinRange
         }
 
-        Log.d("HistoricalTasks", "Filtered tasks: ${filteredTasks?.size ?: 0}")
 
         taskContainer.removeAllViews() // Clear current views
 
@@ -220,11 +216,9 @@ class HistoricalTasks : Fragment() {
                 if (isStartDate) {
                     startDate = selectedDate.time
                     dpStartDate.text = dateFormat.format(selectedDate)
-                    Log.d("HistoricalTasks", "Start date selected: ${dpStartDate.text}")
                 } else {
                     endDate = selectedDate.time
                     dpEndDate.text = dateFormat.format(selectedDate)
-                    Log.d("HistoricalTasks", "End date selected: ${dpEndDate.text}")
                 }
                 filterTasksByDate() // Apply filtering after selecting dates
             },
@@ -254,18 +248,15 @@ class HistoricalTasks : Fragment() {
                         // Only add tasks that have a non-null `completedDate`
                         if (it.completedDate != null) {
                             tasks.add(it)
-                            Log.d("HistoricalTasks", "Fetched task: ${it.taskName}, ID: ${it.taskID}, completed date: ${it.completedDate}")
                         }
                     }
                 }
                 completedTasks = tasks
-                Log.d("HistoricalTasks", "Total completed tasks fetched: ${tasks.size}")
                 displayCompletedTasks()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, "Failed to load tasks", Toast.LENGTH_SHORT).show()
-                Log.e("HistoricalTasks", "Database error: ${error.message}")
             }
         })
     }

@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -58,15 +57,12 @@ class LeaderboardFragment : Fragment() {
         score2 = view.findViewById(R.id.player2_score)
         score3 = view.findViewById(R.id.player3_score)
 
-        Log.d("LeaderboardFragment", "onCreateView: UI elements initialized")
-
         fetchOrder()
 
         return view
     }
 
     private fun fetchOrder() {
-        Log.d("LeaderboardFragment", "fetchOrder: Fetching data from Firebase")
 
         // Firebase database reference
         val dbRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId).child("Employees")
@@ -74,7 +70,6 @@ class LeaderboardFragment : Fragment() {
         // Query employees where leaderboard is true
         dbRef.orderByChild("leaderboard").equalTo(true).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d("LeaderboardFragment", "onDataChange: Data snapshot retrieved")
 
                 val employeesList = mutableListOf<EmployeeLeaderboard>()
 
@@ -89,7 +84,6 @@ class LeaderboardFragment : Fragment() {
                     val fullName = "$name $surname"
 
 
-                    Log.d("LeaderboardFragment", "Employee: $fullName, Tasks: $completedTasks, ImageURL: $profileImageURL")
 
                     // Create an EmployeeLeaderboard object
                     val empLeading = EmployeeLeaderboard(name = fullName, completedTasks = completedTasks, profileImageURL = profileImageURL)
@@ -97,7 +91,6 @@ class LeaderboardFragment : Fragment() {
                 }
 
                 if (employeesList.isEmpty()) {
-                    Log.d("LeaderboardFragment", "No employees found with leaderboard=true")
                 }
 
                 // Sort employees by completedTasks in descending order
@@ -107,14 +100,11 @@ class LeaderboardFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("LeaderboardFragment", "onCancelled: Error fetching data", error.toException())
             }
         })
     }
 
     private fun displayLeaderboard(employeesList: List<EmployeeLeaderboard>) {
-        Log.d("LeaderboardFragment", "displayLeaderboard: Updating UI with sorted employees list")
-
         // Clear container if dynamically adding additional employees
         leaderboardContainer.removeAllViews()
 

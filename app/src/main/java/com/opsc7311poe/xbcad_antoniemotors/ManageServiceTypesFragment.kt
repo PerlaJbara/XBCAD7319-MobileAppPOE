@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -133,7 +132,6 @@ class ManageServiceTypesFragment : Fragment() {
             val database = com.google.firebase.Firebase.database
             val userId = FirebaseAuth.getInstance().currentUser?.uid
 
-            Log.d("ManageServiceTypesFragment", "BusinessId fetched: ${businessId}")
 
             val serRef = database.getReference("Users/$businessId").child("ServiceTypes")
 

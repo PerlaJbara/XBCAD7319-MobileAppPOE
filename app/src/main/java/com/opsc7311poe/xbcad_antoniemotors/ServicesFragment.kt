@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -248,7 +247,6 @@ class ServicesFragment : Fragment() {
 
     private fun loadProgressBar(serviceID: String?, cardView: CardView) {
         if (serviceID == null) {
-            Log.e("loadProgressBar", "Service ID is null")
             return
         }
 
@@ -260,7 +258,6 @@ class ServicesFragment : Fragment() {
         taskRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!snapshot.exists()) {
-                    Log.d("loadProgressBar", "No tasks found for the business")
                     progressBar.progress = 0 // Set progress to 0 if no tasks
                     return
                 }
@@ -280,7 +277,6 @@ class ServicesFragment : Fragment() {
                         }
                     }
 
-                    Log.d("loadProgressBar", "totalTasks: $totalTasks    completedTasks: $completedTasks")
                 }
 
                 if (totalTasks > 0) {
@@ -292,7 +288,6 @@ class ServicesFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("loadProgressBar", "Error loading tasks: ${error.message}")
             }
         })
     }
@@ -344,7 +339,6 @@ class ServicesFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (customerSnapshot in snapshot.children) {
                         if(customerSnapshot.key == custID){
-                            Log.d("CustomerIDForServiceCard", "CustIDInput: $custID CustIDFound: ${customerSnapshot.key}")
                             val custName = customerSnapshot.child("CustomerName").getValue(String::class.java)
                             val custSurname = customerSnapshot.child("CustomerSurname").getValue(String::class.java)
                             cv.findViewById<TextView>(R.id.txtCustName).text = "$custName $custSurname"
@@ -371,7 +365,6 @@ class ServicesFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (vehSnapshot in snapshot.children) {
                         if(vehSnapshot.key == vehID){
-                            Log.d("VehicleIDForServiceCard", "VehIDInput: $vehID VehIDFound: ${vehSnapshot.key}")
                             val vehNumPlate = vehSnapshot.child("vehicleNumPlate").getValue(String::class.java)
                             val vehicleModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
                             val vehicleMake = vehSnapshot.child("vehicleMake").getValue(String::class.java)
@@ -388,7 +381,6 @@ class ServicesFragment : Fragment() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        Log.d("ServicesFragment", "Replacing fragment: ${fragment::class.java.simpleName}")
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
             .addToBackStack(null)

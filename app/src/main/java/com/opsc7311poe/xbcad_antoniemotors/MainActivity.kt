@@ -4,7 +4,6 @@ import Leave
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         businessId = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
-        Log.d("MainActivity", "BusinessID fecthed: $businessId")
 
         bottomNavView = findViewById(R.id.bottom_navigation)
         auth = FirebaseAuth.getInstance()
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
             checkPendingRequests() //this is for the notification thingie
 
         } else {
-            Log.e("MainActivity", "User is not logged in")
             Toast.makeText(this,"You're not logged in!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@MainActivity, Login ::class.java)
             startActivity(intent)
@@ -62,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.navHome -> {
                     replaceFragment(HomeFragment())
-                    Log.d("Navbar", "Going to HomeFragment")
                     true
                 }
                 R.id.navDocument -> {
@@ -89,7 +85,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navEmpHome -> {
                     replaceFragment(EmployeeHomeFragment()) // For employee role
-                    Log.d("Navbar", "Going to EmployeeHomeFragment")
                     true
                 }
                 R.id.navLeave -> {
@@ -138,7 +133,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("MainActivity", "Failed to fetch pending requests: ${error.message}")
             }
         })
     }
@@ -178,16 +172,13 @@ class MainActivity : AppCompatActivity() {
                             finish() // Close the MainActivity
                         }
                         else -> {
-                            Log.e("MainActivity", "Unknown approval status: $approvalStatus")
                         }
                     }
                 } else {
-                    Log.e("MainActivity", "Role or approval status not found for user")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("MainActivity", "Failed to fetch user details: ${error.message}")
             }
         })
     }
@@ -206,7 +197,6 @@ class MainActivity : AppCompatActivity() {
                 assignAndCheckLeave()
             }
             else -> {
-                Log.w("MainActivity", "Unknown user role: $userRole")
                 bottomNavView.menu.clear()
                 bottomNavView.inflateMenu(R.menu.empmenu) // Load a default menu for unknown roles
             }
@@ -218,10 +208,8 @@ class MainActivity : AppCompatActivity() {
         val leaveRef = FirebaseDatabase.getInstance().reference.child("Users").child(businessId).child("Employees").child(userId).child("Leave")
 
         leaveRef.setValue(defaultLeaveTypes()).addOnSuccessListener {
-            Log.d("Firebase", "Leave assigned successfully")
             checkAndRenewLeave(userId, businessId)
         }.addOnFailureListener { e ->
-            Log.e("Firebase", "Error assigning leave", e)
         }
     }
 
@@ -255,16 +243,13 @@ class MainActivity : AppCompatActivity() {
                                     }.format(Date())
                                 )
                             ).addOnSuccessListener {
-                                Log.d("Firebase", "${leaveType.key} renewed successfully")
                             }.addOnFailureListener { e ->
-                                Log.e("Firebase", "Error renewing ${leaveType.key}", e)
                             }
                         }
                     }
                 }
             }
         }.addOnFailureListener { e ->
-            Log.e("Firebase", "Error retrieving leave data", e)
         }
     }
 
@@ -292,7 +277,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }.addOnFailureListener {
                 // Handle any errors here
-                Log.e("Firebase", "Error updating completedTasks", it)
             }
         }
     }
