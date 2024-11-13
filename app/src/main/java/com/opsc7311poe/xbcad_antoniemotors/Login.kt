@@ -69,15 +69,29 @@ class Login : AppCompatActivity() {
         checkForBiometricSupport()
     }
 
+//    private fun checkForBiometricSupport() {
+//        val biometricManager = BiometricManager.from(this)
+//        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+//            BiometricManager.BIOMETRIC_SUCCESS -> {
+//                showBiometricPromptIfNotFirstLogin()
+//            }
+//            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+//            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+//            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+//            }
+//        }
+//    }
+
     private fun checkForBiometricSupport() {
         val biometricManager = BiometricManager.from(this)
-        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
             BiometricManager.BIOMETRIC_SUCCESS -> {
                 showBiometricPromptIfNotFirstLogin()
             }
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                // Biometric is not supported or available
             }
         }
     }
@@ -112,15 +126,16 @@ class Login : AppCompatActivity() {
 
             override fun onAuthenticationFailed() {
                 super.onAuthenticationFailed()
-                      Toast.makeText(this@Login, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@Login, "Authentication failed.", Toast.LENGTH_SHORT).show()
             }
         })
 
+        // Use BIOMETRIC_STRONG (which includes fingerprint and face) and DEVICE_CREDENTIAL for fallback to password
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric Login")
             .setSubtitle("Log in using your fingerprint or face ID")
             .setNegativeButtonText("Use account password")
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
             .build()
 
         biometricPrompt.authenticate(promptInfo)
