@@ -1,10 +1,12 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,22 +18,21 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 import com.bumptech.glide.request.RequestOptions
 
-
 class EmpProfileFragment : Fragment() {
-
 
     private lateinit var txtAppName: TextView
     private lateinit var txtAppSurname: TextView
     private lateinit var txtAppEmail: TextView
     private lateinit var txtAppPhone: TextView
     private lateinit var txtAppAddress: TextView
-    private lateinit var txtAppRole: TextView
     private lateinit var txtUpdatePic: TextView
+    private lateinit var txtAppRole: TextView
     private lateinit var ivEmpPic: ImageView
-
+    private lateinit var businessId: String
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
@@ -49,15 +50,19 @@ class EmpProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Ensure each findViewById call explicitly defines the type
-        txtAppName = view.findViewById<TextView>(R.id.txtAppName)
-        txtAppSurname = view.findViewById<TextView>(R.id.txtAppSurname)
-        txtAppEmail = view.findViewById<TextView>(R.id.txtAppEmail)
-        txtAppPhone = view.findViewById<TextView>(R.id.txtAppPhone)
-        txtAppAddress = view.findViewById<TextView>(R.id.txtAppAddress)
-        txtAppRole = view.findViewById<TextView>(R.id.txtAppRole)
-        txtUpdatePic = view.findViewById<TextView>(R.id.txtUpdatePic)
-        ivEmpPic = view.findViewById<ImageView>(R.id.ivEmpPic)
+        // Retrieve business ID from SharedPreferences
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null) ?: ""
+
+        // Initialize views
+        txtAppName = view.findViewById(R.id.txtAppName)
+        txtAppSurname = view.findViewById(R.id.txtAppSurname)
+        txtAppEmail = view.findViewById(R.id.txtAppEmail)
+        txtAppPhone = view.findViewById(R.id.txtAppPhone)
+        txtAppAddress = view.findViewById(R.id.txtAppAddress)
+        txtAppRole = view.findViewById(R.id.txtAppRole)
+        ivEmpPic = view.findViewById(R.id.ivEmpPic)
+        txtUpdatePic = view.findViewById(R.id.txtUpdatePic)
 
         // Initialize Firebase instances
         auth = FirebaseAuth.getInstance()
@@ -67,36 +72,31 @@ class EmpProfileFragment : Fragment() {
         // Load Employee Data
         loadEmployeeData()
 
-        // Profile picture upload button
+        // Profile picture upload button (removed listener)
         ivEmpPic.setOnClickListener {
             openImageChooser()
         }
 
-        // Update profile picture text click
-        txtUpdatePic.setOnClickListener {
-            uploadProfilePicture()
+        txtUpdatePic.setOnClickListener(){
+             openImageChooser()
         }
     }
 
     private fun loadEmployeeData() {
         val userId = auth.currentUser?.uid ?: return
 
-        database.child("Users").addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var employeeFound = false
-
-                for (businessSnapshot in snapshot.children) {
-                    val employeesSnapshot = businessSnapshot.child("Employees")
-                    if (employeesSnapshot.hasChild(userId)) {
-                        // Employee found
-                        val employeeSnapshot = employeesSnapshot.child(userId)
-                        val firstName = employeeSnapshot.child("firstName").value.toString()
-                        val lastName = employeeSnapshot.child("lastName").value.toString()
-                        val email = employeeSnapshot.child("email").value.toString()
-                        val phone = employeeSnapshot.child("phone").value.toString()
-                        val address = employeeSnapshot.child("address").value.toString()
-                        val role = employeeSnapshot.child("role").value.toString()
-                        val profilePicUrl = employeeSnapshot.child("profileImageUrl").value.toString()
+        database.child("Users").child(businessId).child("Employees").child(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Retrieve employee details
+                        val firstName = snapshot.child("firstName").value.toString()
+                        val lastName = snapshot.child("lastName").value.toString()
+                        val email = snapshot.child("email").value.toString()
+                        val phone = snapshot.child("phone").value.toString()
+                        val address = snapshot.child("address").value.toString()
+                        val role = snapshot.child("role").value.toString()
+                        val profilePicUrl = snapshot.child("profileImageUrl").value.toString()
 
                         // Set data to UI
                         txtAppName.text = firstName
@@ -106,78 +106,21 @@ class EmpProfileFragment : Fragment() {
                         txtAppAddress.text = address
                         txtAppRole.text = role
 
-                        // Load Profile Picture in a Circle
+                        // Load Profile Picture
                         if (profilePicUrl.isNotEmpty()) {
                             displayProfilePicture(profilePicUrl)
                         }
-
-                        employeeFound = true
-                        break
-                    }
-                }
-
-                if (!employeeFound) {
-                    Toast.makeText(context, "Employee data not found.", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load profile data.", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-
-
-    private fun uploadProfilePicture() {
-        val userId = auth.currentUser?.uid ?: return
-        imageUri?.let {
-            // Locate the employee node dynamically
-            database.child("Users").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var businessId: String? = null
-                    var employeeFound = false
-
-                    // Locate the business ID where the employee is stored
-                    for (businessSnapshot in snapshot.children) {
-                        val employeesSnapshot = businessSnapshot.child("Employees")
-                        if (employeesSnapshot.hasChild(userId)) {
-                            businessId = businessSnapshot.key
-                            employeeFound = true
-                            break
-                        }
-                    }
-
-                    if (employeeFound && businessId != null) {
-                        // Reference to upload profile picture
-                        val ref = storage.reference.child("employee_profile_images/$userId.jpg")
-                        ref.putFile(it)
-                            .addOnSuccessListener {
-                                ref.downloadUrl.addOnSuccessListener { uri ->
-
-                                    database.child("Users").child(businessId)
-                                        .child("Employees").child(userId)
-                                        .child("profileImageUrl").setValue(uri.toString())
-                                        .addOnCompleteListener { task ->
-                                            if (task.isSuccessful) {
-                                                Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
-                                            }
-                                        }
-                                }
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(context, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                            }
                     } else {
-                        Toast.makeText(context, "Employee data not found.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Employee data not found.", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(context, "Failed to load data.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Failed to load profile data.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             })
-        }
     }
 
     private fun openImageChooser() {
@@ -191,10 +134,92 @@ class EmpProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
+            Log.d("EmpProfileFragment", "Image URI set: $imageUri")
+
+            // Load and display the selected image as a preview
             val inputStream: InputStream? = context?.contentResolver?.openInputStream(imageUri!!)
             val bitmap = BitmapFactory.decodeStream(inputStream)
             ivEmpPic.setImageBitmap(bitmap) // Preview selected image
+
+            // Automatically upload the selected image
+            uploadProfilePicture()
+        } else {
+            Log.e("EmpProfileFragment", "Failed to get image URI from result.")
         }
+    }
+
+    private fun uploadProfilePicture() {
+        val userId = auth.currentUser?.uid ?: return
+        Log.d("EmpProfileFragment", "uploadProfilePicture called with userId: $userId")
+
+        imageUri?.let { newImageUri ->
+            val ref = storage.reference.child("employee_profile_images/$userId.jpg")
+            Log.d("EmpProfileFragment", "Storage reference created for: ${ref.path}")
+
+            // Step 1: Check for existing image URL
+            database.child("Users").child(businessId).child("Employees").child(userId)
+                .child("profileImageUrl")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val oldImageUrl = snapshot.value as? String
+                        if (oldImageUrl != null) {
+                            // Step 2: Delete the old image from Firebase Storage
+                            FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUrl).delete()
+                                .addOnSuccessListener {
+                                    Log.d("EmpProfileFragment", "Old image deleted successfully.")
+                                    // Proceed with uploading new image
+                                    uploadNewProfileImage(ref, newImageUri)
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("EmpProfileFragment", "Failed to delete old image: ${e.message}")
+                                    // Even if deletion fails, proceed with uploading new image
+                                    uploadNewProfileImage(ref, newImageUri)
+                                }
+                        } else {
+                            Log.d("EmpProfileFragment", "No old image URL found, uploading new image directly.")
+                            uploadNewProfileImage(ref, newImageUri)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("EmpProfileFragment", "DatabaseError: Failed to check old image URL - ${error.message}")
+                        Toast.makeText(context, "Failed to check old image URL.", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        } ?: run {
+            Log.e("EmpProfileFragment", "Image URI is null, cannot upload profile picture.")
+            Toast.makeText(context, "No image selected.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun uploadNewProfileImage(ref: StorageReference, newImageUri: Uri) {
+        Log.d("EmpProfileFragment", "Uploading new image to storage: ${ref.path}")
+        ref.putFile(newImageUri)
+            .addOnSuccessListener {
+                Log.d("EmpProfileFragment", "Image uploaded successfully to storage.")
+                ref.downloadUrl.addOnSuccessListener { uri ->
+                    Log.d("EmpProfileFragment", "Download URL received: $uri")
+
+                    // Step 3: Update the database with the new image URL
+                    val dbRef = database.child("Users").child(businessId)
+                        .child("Employees").child(auth.currentUser?.uid ?: "")
+                        .child("profileImageUrl")
+                    dbRef.setValue(uri.toString())
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Log.d("EmpProfileFragment", "Database updated with new profile image URL.")
+                                Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Log.e("EmpProfileFragment", "Database update failed: ${task.exception?.message}")
+                                Toast.makeText(context, "Failed to update profile picture in database", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("EmpProfileFragment", "Failed to upload image to storage: ${e.message}")
+                Toast.makeText(context, "Failed to upload new image.", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun displayProfilePicture(profilePicUrl: String) {
@@ -205,5 +230,4 @@ class EmpProfileFragment : Fragment() {
             .error(R.drawable.vector_myprofile)
             .into(ivEmpPic)
     }
-
 }
