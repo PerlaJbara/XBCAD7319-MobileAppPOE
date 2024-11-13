@@ -34,9 +34,6 @@ class EmployeeHomeFragment : Fragment() {
     private lateinit var taskContainer: LinearLayout
     private lateinit var noTasksMessage: TextView
 
-    private lateinit var txtBusy: TextView
-    private lateinit var txtToStart: TextView
-    private lateinit var txtCompleted: TextView
 
     private lateinit var lottieAnimationView: LottieAnimationView
 
@@ -67,9 +64,7 @@ class EmployeeHomeFragment : Fragment() {
 
 
 
-        txtBusy = view.findViewById(R.id.txtCarsInProgress)
-        txtToStart = view.findViewById(R.id.txtCarsToBeDone)
-        txtCompleted = view.findViewById(R.id.txtCarsCompleted)
+
 
         //val ivFilter = view.findViewById<ImageView>(R.id.ivFilter)
 
