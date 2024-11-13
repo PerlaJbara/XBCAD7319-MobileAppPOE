@@ -7,6 +7,7 @@ import android.content.ContentValues
 import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
@@ -784,8 +785,8 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-    // Capture image and add it to the respective list
-    private fun captureImageWithCamera(side: String) {
+   // Capture image and add it to the respective list
+       private fun captureImageWithCamera(side: String) {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         } else {
@@ -795,6 +796,7 @@ class RegisterVehicleFragment : Fragment() {
             startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
         }
     }
+
 
     private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
         val resolver = context.contentResolver
@@ -908,4 +910,5 @@ class RegisterVehicleFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
+
 }
