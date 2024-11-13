@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import QuoteData
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -39,6 +40,7 @@ class ReceiptGeneratorFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databases: DatabaseReference
+    private lateinit var businessId: String
 
     // Firebase database reference
     private val database = FirebaseDatabase.getInstance()
@@ -48,6 +50,8 @@ class ReceiptGeneratorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_receipt_generator, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         // Initialize views
         spinCustomer = view.findViewById(R.id.spinCustomer)
@@ -124,7 +128,7 @@ class ReceiptGeneratorFragment : Fragment() {
             return
         }
 
-        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Customers")
+        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId).child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
