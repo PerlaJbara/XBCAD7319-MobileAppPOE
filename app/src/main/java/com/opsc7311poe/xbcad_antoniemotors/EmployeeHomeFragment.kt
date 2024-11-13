@@ -1,5 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
@@ -40,6 +41,7 @@ class EmployeeHomeFragment : Fragment() {
     private lateinit var lottieAnimationView: LottieAnimationView
 
     private lateinit var userId: String
+    private lateinit var businessId: String
 
 
     override fun onCreateView(
@@ -47,6 +49,8 @@ class EmployeeHomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_employee_home, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         //changing colour of animation
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView)
@@ -61,11 +65,13 @@ class EmployeeHomeFragment : Fragment() {
         taskContainer = view.findViewById(R.id.taskContainer)
         noTasksMessage = view.findViewById(R.id.txtNotasksToDisplay)
 
+
+
         txtBusy = view.findViewById(R.id.txtCarsInProgress)
         txtToStart = view.findViewById(R.id.txtCarsToBeDone)
         txtCompleted = view.findViewById(R.id.txtCarsCompleted)
 
-        val ivFilter = view.findViewById<ImageView>(R.id.ivFilter)
+        //val ivFilter = view.findViewById<ImageView>(R.id.ivFilter)
 
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
@@ -75,7 +81,7 @@ class EmployeeHomeFragment : Fragment() {
             replaceFragment(EmpSettingsFragment())
         }
 
-        ivFilter.setOnClickListener {
+        /*ivFilter.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
 
             // Show a dialog with filter options
@@ -91,7 +97,7 @@ class EmployeeHomeFragment : Fragment() {
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
-        }
+        }*/
 
 
         loadTasks()
@@ -102,11 +108,12 @@ class EmployeeHomeFragment : Fragment() {
 
 
     private fun loadTasks() {
-        val database = Firebase.database.reference.child(userId).child("Vehicles")
+        val database = Firebase.database.reference.child("Users/$businessId/EmployeeTasks")
+        val currentUserID = FirebaseAuth.getInstance().currentUser?.uid
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded) return
+                if (!isAdded || currentUserID == null) return
 
                 taskContainer.removeAllViews()
 
@@ -120,51 +127,73 @@ class EmployeeHomeFragment : Fragment() {
 
                 val plateColorMap = mutableMapOf<String, Int>()
                 var colorIndex = 0
-                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
+                val colors = listOf(Color.GRAY)
 
-                for (vehicleSnapshot in snapshot.children) {
-                    val vehicleModel = vehicleSnapshot.child("vehicleModel").getValue(String::class.java)
-                    val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
-                    val vehicleID = vehicleSnapshot.key
+                for (taskSnapshot in snapshot.children) {
+                    val taskId = taskSnapshot.key
+                    val taskDescription = taskSnapshot.child("taskName").getValue(String::class.java)
+                    val serviceID = taskSnapshot.child("serviceID").getValue(String::class.java)
+                    val status = taskSnapshot.child("status").getValue(String::class.java)
+                    val employeeID = taskSnapshot.child("employeeID").getValue(String::class.java)
 
-                    if (vehicleID != null && vehicleModel != null && numberPlate != null) {
-                        val tasksSnapshot = vehicleSnapshot.child("Tasks")
-                        for (taskSnapshot in tasksSnapshot.children) {
-                            val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                            val taskId = taskSnapshot.key
-                            val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
-                            val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+                    // Only show tasks assigned to the current user and where the status is not "Completed"
+                    if (taskId != null && taskDescription != null && status != "Completed" && employeeID == currentUserID) {
+                        // Fetch the vehicle ID from the corresponding service
+                        val serviceRef = Firebase.database.reference.child("Users/$businessId/Services/$serviceID")
+                        serviceRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(serviceSnapshot: DataSnapshot) {
+                                val vehicleID = serviceSnapshot.child("vehicleID").getValue(String::class.java)
 
-                            // Only show tasks that do not have a completed date
-                            if (taskId != null && taskDescription != null && completedDate == null) {
-                                // Inflate the task item layout
-                                val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
-                                val taskCheckBox = taskView.findViewById<CheckBox>(R.id.taskCheckBox)
-                                val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-                                val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+                                // Fetch the vehicle number plate from the Vehicles node
+                                if (vehicleID != null) {
+                                    val vehicleRef = Firebase.database.reference.child("Users/$businessId/Vehicles/$vehicleID")
+                                    vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(vehicleSnapshot: DataSnapshot) {
+                                            val numberPlate = vehicleSnapshot.child("vehicleNumPlate").getValue(String::class.java)
+                                            val vehicleModel = vehicleSnapshot.child("vehicleModel").getValue(String::class.java)
 
-                                taskDescriptionText.text = taskDescription
+                                            // Inflate the task item layout
+                                            val taskView = layoutInflater.inflate(R.layout.emp_task_item, taskContainer, false)
+                                            val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+                                            val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
 
-                                // Assign colors to different vehicles based on number plate
-                                if (!plateColorMap.containsKey(numberPlate)) {
-                                    plateColorMap[numberPlate] = colors[colorIndex % colors.size]
-                                    colorIndex++
+                                            taskDescriptionText.text = taskDescription
+
+                                            // Assign colors to different vehicles based on number plate
+                                            if (!plateColorMap.containsKey(numberPlate)) {
+                                                plateColorMap[numberPlate ?: ""] = colors[colorIndex % colors.size]
+                                                colorIndex++
+                                            }
+
+                                            val displayNumberPlate = numberPlate ?: "No vehicle assigned"
+                                            val displayModel = vehicleModel ?: "Unknown model"
+                                            numberPlateText.text = "$displayNumberPlate ($displayModel)"
+                                            numberPlateText.setBackgroundColor(Color.GRAY)
+
+                                            // Add the task view to the container
+                                            taskContainer.addView(taskView)
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            Log.e("VehicleFetchError", "Failed to fetch vehicle data: ${error.message}")
+                                        }
+                                    })
+                                } else {
+                                    // If no vehicle is assigned, create a task view without vehicle info
+                                    val taskView = layoutInflater.inflate(R.layout.emp_task_item, taskContainer, false)
+                                    val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+                                    val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+
+                                    taskDescriptionText.text = taskDescription
+                                    numberPlateText.text = "No vehicle assigned"
+                                    taskContainer.addView(taskView)
                                 }
-
-                                numberPlateText.text = "$numberPlate ($vehicleModel)"
-                                numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
-
-                                // Handle task completion
-                                taskCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                                    if (isChecked) {
-                                        markTaskAsCompleted(vehicleID, taskId, taskView, creationDate ?: System.currentTimeMillis())
-                                    }
-                                }
-
-                                // Add the task view to the container
-                                taskContainer.addView(taskView)
                             }
-                        }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("ServiceFetchError", "Failed to fetch service data: ${error.message}")
+                            }
+                        })
                     }
                 }
             }
@@ -174,6 +203,8 @@ class EmployeeHomeFragment : Fragment() {
             }
         })
     }
+
+
 
     private fun applyTaskFilter(filterType: String) {
         val database = Firebase.database.reference.child(userId).child("Vehicles")
