@@ -37,7 +37,7 @@ class CheckTaskStatus : Fragment() {
     private lateinit var imgFilter: ImageView
     private lateinit var searchTasks: SearchView
     private var listOfAllTasks = mutableListOf<EmpTask>()
-
+    private lateinit var btnBack: ImageView
 
     private lateinit var businessId: String
     private lateinit var userId: String
@@ -55,6 +55,15 @@ class CheckTaskStatus : Fragment() {
         //connecting elements
         svlinlay = view.findViewById(R.id.svlinlay)
         svTasks = view.findViewById(R.id.svTasks)
+
+        //handling back button
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(AdminTasksMenuFragment())
+        }
+
 
         //filter functionality
         imgFilter = view.findViewById(R.id.imgFilter)
@@ -210,8 +219,6 @@ class CheckTaskStatus : Fragment() {
             }
         })
     }
-
-
 
     private fun loadTasksFromList(inputList: MutableList<EmpTask>) {
 

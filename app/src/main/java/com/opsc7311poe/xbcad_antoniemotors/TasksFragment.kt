@@ -31,6 +31,7 @@ class TasksFragment : Fragment() {
 
     private lateinit var svlinlay: LinearLayout
     private lateinit var svTasks: ScrollView
+    private lateinit var btnBack: ImageView
     private lateinit var imgFilter: ImageView
     private lateinit var searchTasks: SearchView
     private var listOfAllTasks = mutableListOf<EmpTask>()
@@ -87,6 +88,7 @@ class TasksFragment : Fragment() {
                 return true
             }
         })
+
 
         //populating scrollview with all employee tasks in DB
         populateTaskScrollView()

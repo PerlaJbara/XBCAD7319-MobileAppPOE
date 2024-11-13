@@ -79,7 +79,7 @@ class AssignEmployeeTask : Fragment() {
         ivBackButton = view.findViewById(R.id.ivBackButton)
         //handling back button
         ivBackButton.setOnClickListener {
-            replaceFragment(AdminEmpFragment())
+            replaceFragment(AdminTasksMenuFragment())
         }
 
         //handling assigning task

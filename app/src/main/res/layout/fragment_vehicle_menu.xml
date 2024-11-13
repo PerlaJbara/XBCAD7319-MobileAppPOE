@@ -199,12 +199,13 @@ tools:context=".VehicleMenuFragment">
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 app:cardBackgroundColor="#787771"
                 app:cardCornerRadius="75dp"
                 app:cardElevation="4dp"
                 app:cardPreventCornerOverlap="true"
                 app:cardUseCompatPadding="true">
+
 
                 <ImageView
                     android:id="@+id/btnServices"
@@ -216,7 +217,20 @@ tools:context=".VehicleMenuFragment">
                     android:paddingBottom="20dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/serviceicon" />
+
+
             </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/textView40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="View Services"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="30dp"/>
 
             <!--<Button
                 android:id="@+id/btnServices"

@@ -28,6 +28,7 @@ class ServicesFragment : Fragment() {
 
     private lateinit var imgPlus: ImageView
     private lateinit var imgFilter: ImageView
+    private lateinit var btnBack: ImageView
     private lateinit var linLay: LinearLayout
     private lateinit var svServices: SearchView
     private var listOfAllServices = mutableListOf<ServiceData>()
@@ -40,6 +41,14 @@ class ServicesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_services, container, false)
 
         businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
+
+        //handling back button
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            replaceFragment(VehicleMenuFragment())
+        }
 
         imgPlus = view.findViewById(R.id.imgPlus)
 
