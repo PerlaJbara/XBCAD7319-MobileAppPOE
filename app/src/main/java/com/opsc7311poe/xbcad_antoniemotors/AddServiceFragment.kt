@@ -173,6 +173,8 @@ class AddServiceFragment : Fragment() {
             }
             else
             {
+                serviceEntered = ServiceData()
+
                 //converting date texts to date values
                 val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val dateReceived: Date? = dateFormatter.parse(txtDateReceived.text.toString())
@@ -192,7 +194,7 @@ class AddServiceFragment : Fragment() {
                 totalCost += txtLabourCost.text.toString().toDouble()
 
                 //making service object
-                serviceEntered = ServiceData()
+
                 serviceEntered.name = txtName.text.toString()
                 serviceEntered.custID = selectedCustomerId
                 serviceEntered.vehicleID = selectedVehicleId
