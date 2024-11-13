@@ -223,7 +223,7 @@ class ServiceDetailsFragment : Fragment() {
                 //converting date texts to date values
                 val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val dateReceived: Date? = dateFormatter.parse(txtDateCarReceived.text.toString())
-                if(!txtDateCarReturned.text.toString().isBlank()){
+                if(txtDateCarReturned.text.toString() != "-"){
                     val dateReturned: Date? = dateFormatter.parse(txtDateCarReturned.text.toString())
                     serviceEntered.dateReturned = dateReturned
                 }
