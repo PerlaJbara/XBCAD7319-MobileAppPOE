@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -166,7 +165,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load completed tasks: ${error.message}")
             }
         })
     }
@@ -238,7 +236,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
             }
         })
     }
@@ -336,7 +333,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
             }
         })
     }
@@ -379,7 +375,6 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load service statuses: ${error.message}")
             }
         })
     }

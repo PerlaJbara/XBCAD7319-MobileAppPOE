@@ -159,7 +159,6 @@ class AddTaskFragment : Fragment() {
     }
 
 
-
     private fun loadVehicles() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
@@ -209,8 +208,6 @@ class AddTaskFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
-
-
 
 }
 
