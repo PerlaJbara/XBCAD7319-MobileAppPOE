@@ -786,7 +786,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
    // Capture image and add it to the respective list
-       private fun captureImageWithCamera(side: String) {
+   /*private fun captureImageWithCamera(side: String) {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
         } else {
@@ -795,7 +795,49 @@ class RegisterVehicleFragment : Fragment() {
             // Start the camera intent
             startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
         }
+   }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_IMAGE_CAPTURE -> {
+                    handleCameraImage(data)
+                }
+            }
+        }
+    }*/
+
+
+    // Capture image and add it to the respective list
+    private fun captureImageWithCamera(side: String) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
+        } else {
+            // Set the current side being captured
+            currentSide = side
+
+            // Start CameraCaptureActivity instead of the camera intent directly
+            val intent = Intent(requireContext(), CameraCaptureActivity::class.java)
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_IMAGE_CAPTURE -> {
+                    // Handle the captured image returned from CameraCaptureActivity
+                    handleCameraImage(data)
+                }
+            }
+        }
+    }
+
+
 
 
     private fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri? {
@@ -854,17 +896,7 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    handleCameraImage(data)
-                }
-            }
-        }
-    }
 
 
     private fun handleCameraImage(data: Intent?) {

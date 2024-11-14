@@ -20,8 +20,8 @@
     <!-- Button to remove the selected image -->
     <ImageView
         android:id="@+id/btnRemoveImage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_margin="8dp"
         android:src="@drawable/ic_remove"
         android:contentDescription="@string/remove_image_desc"
