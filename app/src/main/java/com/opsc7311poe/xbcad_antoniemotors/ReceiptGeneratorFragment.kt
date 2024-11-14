@@ -67,7 +67,7 @@ class ReceiptGeneratorFragment : Fragment() {
         partsList = mutableListOf()
 
         npStockCounter.minValue = 1
-        npStockCounter.maxValue = 10  // Adjust based on max stock value in Firebase
+        npStockCounter.maxValue = 1000  // Adjust based on max stock value in Firebase
         npStockCounter.wrapSelectorWheel = true
 
         SpinPartName.setSelection(0)
