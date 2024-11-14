@@ -40,21 +40,19 @@
             android:padding="10dp">
 
 
-
             <TextView
                 android:id="@+id/txtEmployee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
                 android:fontFamily="@font/aclonica"
                 android:gravity="center"
-                android:paddingTop="100dp"
                 android:lineSpacingMultiplier="0.8"
-                android:layout_marginHorizontal="20dp"
+                android:paddingTop="75dp"
                 android:text="Assigned Tasks"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="40sp"
-                />
+                android:textSize="40sp" />
 
         </LinearLayout>
 
@@ -74,8 +72,6 @@
         app:layout_constraintEnd_toStartOf="@+id/imgFilter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"></SearchView>
-
-
 
 
     <ImageView
@@ -105,6 +101,14 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <Space
+        android:id="@+id/space"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

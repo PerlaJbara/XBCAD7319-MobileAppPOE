@@ -22,7 +22,7 @@
             android:paddingBottom="16dp"
             android:text="LEADERBOARD"
             android:textColor="@color/red"
-            android:textSize="40sp"
+            android:textSize="35sp"
             android:textStyle="bold" />
 
         <com.airbnb.lottie.LottieAnimationView

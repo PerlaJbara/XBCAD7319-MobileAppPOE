@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="MY PROFILE"
             android:textAlignment="center"
-            android:textColor="@color/white"
+            android:textColor="#D3D3D3"
             android:textSize="45sp"
             android:textStyle="bold"
             android:paddingTop="45dp"
