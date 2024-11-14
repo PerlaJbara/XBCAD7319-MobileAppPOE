@@ -38,8 +38,9 @@
     </LinearLayout>
 
     <ScrollView
-        android:layout_width="411dp"
-        android:layout_height="537dp"
+        android:layout_width="match_parent"
+        android:layout_height="473dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
@@ -52,8 +53,8 @@
                 android:id="@+id/txtSelectCustomer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:fontFamily="@font/fontpoppinsmedium"
+                android:gravity="center"
                 android:text="Select Customer"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -62,12 +63,12 @@
 
             <Spinner
                 android:id="@+id/spinCustomer"
-                android:paddingHorizontal="5dp"
                 android:layout_width="310dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/spingradientgtor"
                 android:fontFamily="@font/fontpoppinsregular"
+                android:paddingHorizontal="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,16 +76,14 @@
                 app:layout_constraintWidth_default="wrap" />
 
 
-
-
             <TextView
                 android:id="@+id/txtParts"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:fontFamily="@font/fontpoppinsmedium"
                 android:gravity="center"
                 android:text="Parts"
-                android:fontFamily="@font/fontpoppinsmedium"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -168,8 +167,8 @@
                 android:layout_marginTop="16dp"
                 android:paddingLeft="20dp"
                 android:text="Parts List"
-                android:textSize="18sp"
                 android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintTop_toBottomOf="@+id/btnAddPart" />
 
             <TextView
@@ -177,10 +176,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:fontFamily="@font/fontpoppinsmedium"
                 android:gravity="center"
                 android:text="Labour Cost"
                 android:textSize="25sp"
-                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtPartsList" />
@@ -190,10 +189,10 @@
                 android:layout_width="310dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
-                android:paddingLeft="10dp"
                 android:background="@drawable/spingradientgtor"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:inputType="numberDecimal"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
@@ -204,9 +203,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
-                android:text="Review"
-                android:fontFamily="@font/fontpoppinsmedium"
                 android:backgroundTint="#038A39"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:text="Review"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edttxtLabour" />
@@ -216,9 +215,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:fontFamily="@font/fontpoppinsmedium"
                 android:gravity="center"
                 android:text="Final Quote"
-                android:fontFamily="@font/fontpoppinsmedium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnFinalReview" />
@@ -240,10 +239,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="44dp"
-                android:visibility="invisible"
-                android:text="Review"
-                android:fontFamily="@font/fontpoppinsmedium"
                 android:backgroundTint="#038A39"
+                android:fontFamily="@font/fontpoppinsmedium"
+                android:text="Review"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layoutQuote" />
@@ -252,9 +251,9 @@
                 android:id="@+id/txtRvalue"
                 android:layout_width="192dp"
                 android:layout_height="32dp"
+                android:background="@drawable/greenboderbackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/greenboderbackground"
                 app:layout_constraintTop_toTopOf="@+id/layoutQuote" />
 
             <TextView

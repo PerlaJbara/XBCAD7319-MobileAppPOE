@@ -38,7 +38,7 @@
     <!-- Main content Layout (quote details) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="540dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/layoutHeader"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

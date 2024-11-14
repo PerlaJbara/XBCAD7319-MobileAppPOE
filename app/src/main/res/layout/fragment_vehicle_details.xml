@@ -59,7 +59,7 @@
 
                 <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="466dp"
+                    android:layout_height="match_parent"
                     android:layout_marginVertical="5dp">
 
                     <LinearLayout
@@ -348,7 +348,7 @@
                             <Button
                                 android:id="@+id/btnDeleteVehicle"
                                 android:layout_width="143dp"
-                                android:layout_height="62dp"
+                                android:layout_height="70dp"
                                 android:textSize="18sp"
                                 android:backgroundTint="#CA2F2E"
                                 android:text="Delete Vehicle"
@@ -504,49 +504,7 @@
 
                         </LinearLayout>
 
-                        <!-- History Information Section -->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingBottom="20dp">
-
-
-                            <TextView
-                                android:layout_width="330dp"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:text="Vehicle Service History"
-                                android:paddingBottom="20dp"
-                                android:layout_gravity="center_horizontal"
-                                android:textSize="30sp"
-                                android:textStyle="bold" />
-
-                            <ScrollView
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_horizontal"
-                                    android:paddingLeft="45dp"
-                                    android:orientation="vertical"
-                                    android:paddingBottom="20dp">
-
-
-
-                                </LinearLayout>
-
-                            </ScrollView>
-
-
-                        </LinearLayout>
-
-
                     </LinearLayout>
-
-
 
                 </ScrollView>
 

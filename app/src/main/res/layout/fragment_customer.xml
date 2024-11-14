@@ -15,8 +15,7 @@
         <FrameLayout
             android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="181dp"
-            android:paddingBottom="10dp">
+            android:layout_height="210dp">
 
             <!-- Background Image with See-Through Black Layer -->
             <ImageView

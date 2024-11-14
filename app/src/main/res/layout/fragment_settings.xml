@@ -24,7 +24,7 @@
     <!-- Content layout with black overlay applied -->
     <LinearLayout
         android:id="@+id/layoutHeader"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="227dp"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
@@ -60,7 +60,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="490dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"

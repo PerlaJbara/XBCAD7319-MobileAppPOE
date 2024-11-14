@@ -29,7 +29,7 @@
     <!-- Header Layout -->
     <LinearLayout
         android:id="@+id/layoutHeader"
-        android:layout_width="434dp"
+        android:layout_width="match_parent"
         android:layout_height="241dp"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"

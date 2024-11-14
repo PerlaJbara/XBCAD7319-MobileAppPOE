@@ -23,7 +23,7 @@
 
     <!-- Content layout -->
     <FrameLayout
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="227dp"
         android:id="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="490dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -85,11 +85,12 @@
             android:id="@+id/switchSettingsOptIn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:minHeight="48dp"
             android:text="Opt In/Out"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
