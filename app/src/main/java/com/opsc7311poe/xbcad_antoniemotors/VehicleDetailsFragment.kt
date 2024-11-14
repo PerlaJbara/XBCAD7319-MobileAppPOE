@@ -77,7 +77,6 @@ class VehicleDetailsFragment : Fragment() {
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
 
 
-
         btnSave.visibility = View.INVISIBLE
         btnDeleteVehicle.visibility = View.INVISIBLE
         ynpYearPicker.visibility = View.GONE
