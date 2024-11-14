@@ -1,6 +1,5 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
@@ -30,11 +29,10 @@ class TasksFragment : Fragment() {
 
     private lateinit var svlinlay: LinearLayout
     private lateinit var svTasks: ScrollView
-    private lateinit var btnBack: ImageView
+    private lateinit var ivbtnBack: ImageView
     private lateinit var imgFilter: ImageView
     private lateinit var searchTasks: SearchView
     private var listOfAllTasks = mutableListOf<EmpTask>()
-
     private lateinit var businessId: String
     private lateinit var userId: String
 
@@ -52,6 +50,7 @@ class TasksFragment : Fragment() {
         //connecting elements
         svlinlay = view.findViewById(R.id.svlinlay)
         svTasks = view.findViewById(R.id.svTasks)
+
 
         //filter functionality
         imgFilter = view.findViewById(R.id.imgFilter)
