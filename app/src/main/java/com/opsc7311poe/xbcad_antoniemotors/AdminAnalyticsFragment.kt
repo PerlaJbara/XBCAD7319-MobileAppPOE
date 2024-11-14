@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -37,6 +38,7 @@ class AdminAnalyticsFragment : Fragment() {
     private lateinit var taskLineChart: LineChart
     private lateinit var txtMostProdDay: TextView
     private lateinit var txtAverageTasks: TextView
+    private lateinit var ivBackButton: ImageView
 
     private lateinit var businessId: String
 
@@ -63,10 +65,21 @@ class AdminAnalyticsFragment : Fragment() {
         txtAverageTasks = view.findViewById(R.id.txtAverageTasks)
         loadMostProdDay(txtMostProdDay, txtAverageTasks)
 
-
+        ivBackButton = view.findViewById(R.id.ivBackButton)
+        //handling back button
+        ivBackButton.setOnClickListener {
+            replaceFragment(AdminEmpFragment())
+        }
 
 
         return view
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun loadMostProdDay(txtMostProdDay: TextView, txtAverageTasks: TextView) {
