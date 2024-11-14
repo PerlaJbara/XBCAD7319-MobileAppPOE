@@ -17,6 +17,8 @@ import android.widget.ImageView
 import java.util.Date
 import java.util.Locale
 
+
+
 class AddCustomerFragment : Fragment() {
 
     private lateinit var database: DatabaseReference
@@ -38,7 +40,6 @@ class AddCustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_add_customer, container, false)
-
         // Initialize Firebase Database and Views
         database = FirebaseDatabase.getInstance().reference
         nameField = view.findViewById(R.id.edttxtRegName)

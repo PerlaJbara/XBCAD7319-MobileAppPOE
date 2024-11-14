@@ -33,12 +33,12 @@
             android:id="@+id/txtleavelistheader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
-            android:text="Your Leave History"
+            android:text="Leave \nHistory"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="45sp" />
     </LinearLayout>
 
     <!-- Content Layout: Buttons Below Header -->
@@ -59,9 +59,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#00FFFFFF"
             android:text="Approved"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
 
         <!-- Second Button (Denied History) -->
         <Button
@@ -69,9 +70,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#00FFFFFF"
             android:text="Denied"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
 
         <!-- Third Button (Pending) -->
         <Button
@@ -79,9 +81,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#00FFFFFF"
             android:text="Pending"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
     </LinearLayout>
 
     <!-- ScrollView with Leave History Container -->

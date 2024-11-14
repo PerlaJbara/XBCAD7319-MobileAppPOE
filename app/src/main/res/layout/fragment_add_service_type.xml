@@ -15,7 +15,7 @@
         <FrameLayout
             android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="190dp">
 
             <!-- Background Image -->
             <ImageView
@@ -40,12 +40,12 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:fontFamily="@font/aclonica"
                 android:text="Add a \nService Type"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="70dp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="38sp"
+                android:textSize="40sp"
                 android:elevation="4dp" />
 
         </FrameLayout>

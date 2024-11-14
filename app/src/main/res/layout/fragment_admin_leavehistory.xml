@@ -33,12 +33,13 @@
             android:id="@+id/txtleavelistheader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:text="Employee Leave History"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="40sp"
+            android:paddingTop="30dp"/>
     </LinearLayout>
 
     <!-- Content Layout: Buttons Below Header -->
@@ -59,22 +60,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#00FFFFFF"
             android:text="Approved History"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"/>
 
-        <!-- Spacer between the Buttons -->
 
-        <!-- Second Button (End Date) -->
         <Button
             android:id="@+id/btnDenied"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="#00FFFFFF"
             android:text="Denied History"
             android:textColor="@color/black"
-            android:textColorLink="@color/white" />
+            android:textColorLink="@color/white"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"/>
     </LinearLayout>
 
     <!-- ScrollView with Leave History Container -->

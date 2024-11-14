@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="0dp"
-        android:layout_height="206dp"
+        android:layout_height="190dp"
         android:background="@drawable/toolboxv4"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
@@ -33,12 +33,12 @@
             android:id="@+id/txtleavelistheader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:text="Leave Tracker"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="45sp" />
     </LinearLayout>
 
     <!-- Content Layout: Text Boxes and Button -->

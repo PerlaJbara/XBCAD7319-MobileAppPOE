@@ -73,13 +73,13 @@
             android:id="@+id/textView19"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Please note by opting in to the leaderboard you agree that your number of completed tasks will be publcily available to all employees."
-            android:textColor="#ffff"
-            android:textSize="20sp"
-            android:textAlignment="center"
             android:paddingLeft="8dp"
             android:paddingBottom="12dp"
-            android:textStyle="bold"/>
+            android:text="Please note by opting in to the leaderboard you agree that your number of completed tasks will be publicly available to all employees."
+            android:textAlignment="center"
+            android:textColor="#ffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Switch
             android:id="@+id/switchSettingsOptIn"

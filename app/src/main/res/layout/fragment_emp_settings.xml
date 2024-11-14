@@ -48,7 +48,7 @@
             android:id="@+id/txtSettingsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:paddingTop="40dp"
             android:text="Settings"
@@ -77,7 +77,8 @@
             android:paddingTop="12dp"
             android:text="Change Password"
             android:textColor="@color/white"
-            android:textSize="27sp" />
+            android:textSize="27sp"
+            android:layout_marginStart="12dp"/>
 
         <TextView
             android:id="@+id/txtDeleteAccount"
@@ -87,7 +88,8 @@
             android:paddingTop="20dp"
             android:textColor="@color/white"
             android:textSize="27sp"
-            android:text="Delete Account" />
+            android:text="Delete Account"
+            android:layout_marginStart="12dp"/>
 
         <TextView
             android:id="@+id/txtLeaderboardOption"
@@ -97,7 +99,8 @@
             android:paddingTop="20dp"
             android:textColor="@color/white"
             android:textSize="27sp"
-            android:text="Leaderboard"/>
+            android:text="Leaderboard"
+            android:layout_marginStart="12dp"/>
 
         <TextView
             android:id="@+id/txtLogout"
@@ -107,7 +110,8 @@
             android:paddingTop="20dp"
             android:textColor="@color/white"
             android:textSize="27sp"
-            android:text="Logout" />
+            android:text="Logout"
+            android:layout_marginStart="12dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="190dp"
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
@@ -28,8 +28,9 @@
             android:id="@+id/txtEmployeeReg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/fontpoppinssemibold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
+            android:paddingTop="50dp"
             android:text="Quote Overview"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />

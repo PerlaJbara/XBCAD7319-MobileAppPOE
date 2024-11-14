@@ -13,7 +13,7 @@
             <FrameLayout
                 android:id="@+id/frameLayoutHeader"
                 android:layout_width="match_parent"
-                android:layout_height="181dp"
+                android:layout_height="190dp"
                 android:orientation="vertical">
 
                 <!-- Background Image with See-Through Black Layer -->
@@ -33,9 +33,10 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:paddingTop="80dp"
-                    android:text=""
+                    android:text="Vehicle Details"
+                    android:fontFamily="@font/aclonica"
                     android:textColor="#ffffff"
-                    android:textSize="35sp"
+                    android:textSize="40sp"
                     android:elevation="4dp" />
 
                 <ImageView

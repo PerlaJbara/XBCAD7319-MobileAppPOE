@@ -14,7 +14,7 @@
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="181dp"
+            android:layout_height="190dp"
             android:orientation="vertical">
 
             <ImageView
@@ -38,8 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:fontFamily="@font/fontpoppinsmedium"
-                android:layout_marginTop="100dp"
+                android:fontFamily="@font/aclonica"
+                android:layout_marginTop="120dp"
                 android:text="Inventory"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -80,7 +80,9 @@
                             android:text="Part Details"
                             android:textAlignment="center"
                             android:textSize="30sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                     </LinearLayout>
 
@@ -101,14 +103,17 @@
                             android:textStyle="bold"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                         <EditText
                             android:id="@+id/edtPartName"
                             android:paddingHorizontal="5dp"
                             android:layout_width="310dp"
                             android:layout_height="43dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:textColor="@color/black"/>
 
 
                     </LinearLayout>
@@ -127,7 +132,9 @@
                             android:orientation="vertical"
                             android:text="Part Description:"
                             android:textSize="20sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                         <EditText
                             android:id="@+id/edtPartDescription"
@@ -135,7 +142,8 @@
                             android:layout_width="310dp"
                             android:layout_height="50dp"
                             android:layout_marginTop="8dp"
-                            android:background="@drawable/spingradientgtor" />
+                            android:background="@drawable/spingradientgtor"
+                            android:textColor="@color/black"/>
 
                     </LinearLayout>
 
@@ -154,9 +162,12 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:paddingBottom="20dp"
-                            android:text="Additional Details"                         android:textAlignment="center"
+                            android:text="Additional Details"
+                            android:textAlignment="center"
                             android:textSize="22sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                     </LinearLayout>
 
@@ -175,7 +186,10 @@
                             android:orientation="vertical"
                             android:text="Stock Count:"
                             android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
+
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -209,7 +223,10 @@
                             android:orientation="vertical"
                             android:text="Please select a minimum stock amount:"
                             android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
+
+
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
@@ -244,7 +261,8 @@
                             android:orientation="vertical"
                             android:text="Cost Price:"
                             android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                         <EditText
                             android:id="@+id/edtCostPrice"

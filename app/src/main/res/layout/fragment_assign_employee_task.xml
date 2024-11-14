@@ -48,13 +48,13 @@
                 android:id="@+id/txtEmployee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/albert_sans"
+                android:fontFamily="@font/aclonica"
                 android:gravity="center"
                 android:paddingTop="80dp"
                 android:text="Assign Task"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="40sp" />
+                android:textSize="45sp" />
 
         </LinearLayout>
 
@@ -83,7 +83,8 @@
                 android:fontFamily="@font/albert_sans"
                 android:text="Task Name:"
                 android:textAlignment="textStart"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             <EditText
                 android:id="@+id/txtTaskName"
@@ -106,7 +107,8 @@
                 android:fontFamily="@font/albert_sans"
                 android:text="Task Description:"
                 android:textAlignment="textStart"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             <EditText
                 android:id="@+id/txtEmpTaskDescription"
@@ -129,7 +131,8 @@
                 android:fontFamily="@font/albert_sans"
                 android:text="Select Service:"
                 android:textAlignment="textStart"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             <Spinner
                 android:id="@+id/spSelectVehicle"
@@ -147,14 +150,16 @@
                 android:fontFamily="@font/albert_sans"
                 android:text="Select Employee:"
                 android:textAlignment="textStart"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             <Spinner
                 android:id="@+id/spSelectEmp"
                 android:layout_width="332dp"
                 android:layout_height="46dp"
                 android:layout_marginStart="10dp"
-                android:background="@drawable/txtgradientgtor" />
+                android:background="@drawable/txtgradientgtor"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/textView25"
@@ -165,7 +170,8 @@
                 android:fontFamily="@font/albert_sans"
                 android:text="Select Due Date:"
                 android:textAlignment="textStart"
-                android:textSize="25sp" />
+                android:textSize="25sp"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/txtSelectTaskDueDate"
@@ -177,7 +183,8 @@
                 android:text="Choose Date"
                 android:textAlignment="textStart"
                 android:textSize="20sp"
-                android:layout_marginBottom="300dp"/>
+                android:layout_marginBottom="300dp"
+                android:textColor="@color/black"/>
 
             <!--<TextView
                 android:id="@+id/textView24"

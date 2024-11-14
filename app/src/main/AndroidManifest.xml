@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -7,9 +6,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -27,77 +24,72 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.XBCADAntonieMotors"
         tools:targetApi="31">
-
         <activity
             android:name=".WaitingSettings"
-            android:exported="false"
-            android:screenOrientation="fullSensor"/>
+            android:exported="false" />
         <activity
             android:name=".CameraCaptureActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+         />
         <activity
             android:name=".SuccessOwnerActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+             />
         <activity
             android:name=".DeniedActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+          />
         <activity
             android:name=".WaitingActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+             />
         <activity
             android:name=".EmpEnterInfo"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+             />
         <activity
             android:name=".EmpSelectBusinessAdminActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+          />
         <activity
             android:name=".AdminSelectBusinessActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+           />
         <activity
             android:name=".SuccessActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+          />
         <activity
             android:name=".OwnerEnterInfoActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+            />
         <activity
             android:name=".RegisterBusinessActivity"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
-
+           />
         <activity
             android:name=".EmployeeregCompletion"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
-
+           />
         <activity
             android:name=".AdminEnterInfo"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+           />
         <activity
             android:name=".SelectRoleReg"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+           />
         <activity
             android:name=".Login"
             android:exported="false"
-            android:screenOrientation="fullSensor"/>
+            />
         <activity
             android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.XBCADAntonieMotors.MySplash"
-            android:screenOrientation="fullSensor">
+          >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

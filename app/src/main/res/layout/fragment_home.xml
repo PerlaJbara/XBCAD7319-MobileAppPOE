@@ -79,7 +79,8 @@
                 android:text="To Do List:"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins"/>
 
             <ImageView
                 android:id="@+id/ivGoToAddTask"
@@ -135,7 +136,8 @@
                         android:paddingLeft="18dp"
                         android:text="No tasks to display here"
                         android:textColor="@color/white"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:fontFamily="@font/poppins"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
@@ -150,7 +152,8 @@
             android:text="Analytics"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins"/>
 
 
         <ScrollView
@@ -182,7 +185,8 @@
                     android:paddingBottom="12dp"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:paddingStart="120dp"/>
+                    android:paddingStart="120dp"
+                    android:fontFamily="@font/poppins"/>
 
                 <ImageView
                     android:id="@+id/imageView6"
@@ -200,7 +204,8 @@
                     android:paddingBottom="12dp"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:paddingStart="120dp"/>
+                    android:paddingStart="120dp"
+                    android:fontFamily="@font/poppins"/>
 
                 <ImageView
                     android:id="@+id/imageView7"
@@ -217,7 +222,8 @@
                     android:text=" "
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    android:paddingStart="120dp"/>
+                    android:paddingStart="120dp"
+                    android:fontFamily="@font/poppins"/>
             </LinearLayout>
         </ScrollView>
 

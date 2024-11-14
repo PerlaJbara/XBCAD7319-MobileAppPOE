@@ -36,13 +36,13 @@
             android:id="@+id/txtLeaveHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:paddingTop="40dp"
             android:text="Leave"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="50sp" />
     </LinearLayout>
 
     <!-- Main Container for Spinner and Form -->

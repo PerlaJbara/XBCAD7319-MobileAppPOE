@@ -19,15 +19,16 @@
             android:layout_height="181dp">
 
             <!-- Background Image -->
+
+            <!-- Back Button on top of the background image -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/addcustomerfragmentheader"
                 android:background="@drawable/rounded_image"
-                android:clipToOutline="true" />
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/addcustomerfragmentheader" />
 
-            <!-- Back Button on top of the background image -->
             <ImageView
                 android:id="@+id/ivBackButton"
                 android:layout_width="55dp"

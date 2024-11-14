@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="191dp"
+        android:layout_height="190dp"
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
@@ -28,9 +28,9 @@
             android:id="@+id/txtQuoteOverview"
             android:layout_width="match_parent"
             android:layout_height="117dp"
-            android:fontFamily="@font/fontpoppinssemibold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
-            android:paddingTop="72dp"
+            android:paddingTop="62dp"
             android:text="Quote Generator"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />

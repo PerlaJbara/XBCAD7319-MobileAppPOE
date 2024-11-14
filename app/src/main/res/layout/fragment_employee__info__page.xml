@@ -34,13 +34,13 @@
             android:id="@+id/txtheaderempname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:paddingTop="80dp"
             android:text="EmpName"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="45sp" />
 
     </LinearLayout>
 

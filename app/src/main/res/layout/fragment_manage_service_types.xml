@@ -14,7 +14,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="190dp"
             android:id="@+id/frameLayout">
 
             <!-- Background Image -->
@@ -33,12 +33,12 @@
                 android:layout_gravity="center"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="55dp"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:fontFamily="@font/aclonica"
                 android:lineSpacingMultiplier="0.90"
                 android:text="Manage Service Types"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="35sp" />
+                android:textSize="45sp" />
 
             <!-- Back Button on top of the background image -->
             <ImageView

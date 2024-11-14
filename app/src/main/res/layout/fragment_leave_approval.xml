@@ -37,13 +37,13 @@
             android:id="@+id/txtEmployee"
             android:layout_width="411dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/agdasima_bold"
+            android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
             android:paddingTop="10dp"
-            android:text="Approve Leave"
+            android:text="Approve \nLeave"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
-            android:textSize="60sp" />
+            android:textSize="50sp" />
 
     </LinearLayout>
 

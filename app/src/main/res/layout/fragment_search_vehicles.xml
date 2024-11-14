@@ -13,31 +13,48 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/frameLayout"
+            android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="181dp"
-            android:orientation="vertical">
+            android:layout_height="190dp">
 
             <!-- Background Image with See-Through Black Layer -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/searchvehicle"
+                android:src="@drawable/vehicledetails"
                 android:background="@drawable/rounded_image"
-                android:clipToOutline="true"/>
+                android:clipToOutline="true" />
 
-            <!-- Back Button on top of the background image -->
+            <!-- TextView on top of the background image -->
+            <TextView
+                android:id="@+id/txtTitleVehicleNumberPLate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="60dp"
+                android:text="Vehicles"
+                android:textColor="#ffffff"
+                android:fontFamily="@font/aclonica"
+                android:textSize="47sp"
+                android:elevation="4dp"
+
+                />
+
             <ImageView
                 android:id="@+id/ivBackButton"
                 android:layout_width="55dp"
                 android:layout_height="40dp"
                 android:src="@drawable/vectorback"
-                android:layout_gravity="start|top"
-                android:layout_margin="16dp" />
-
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:elevation="4dp" />
 
         </FrameLayout>
+
+
 
 
         <LinearLayout

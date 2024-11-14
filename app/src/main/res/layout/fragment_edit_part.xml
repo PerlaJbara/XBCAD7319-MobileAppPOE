@@ -38,12 +38,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:fontFamily="@font/aclonica"
                 android:layout_marginTop="100dp"
                 android:text="Inventory"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="38sp" />
+                android:textSize="45sp" />
 
 
         </FrameLayout>
@@ -80,7 +80,9 @@
                             android:text="Part Details"
                             android:textAlignment="center"
                             android:textSize="30sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"/>
 
                     </LinearLayout>
 
@@ -99,6 +101,8 @@
                             android:text="Part Name:"
                             android:textSize="20sp"
                             android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -126,6 +130,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:text="Part Description:"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
                             android:textSize="20sp"
                             android:textStyle="bold"/>
 
@@ -154,7 +160,10 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:paddingBottom="20dp"
-                            android:text="Additional Details"                         android:textAlignment="center"
+                            android:text="Additional Details"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
+                            android:textAlignment="center"
                             android:textSize="22sp"
                             android:textStyle="bold" />
 
@@ -174,6 +183,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:text="Stock Count:"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -208,6 +219,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:text="Please select a minimum stock amount:"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
                             android:textSize="20sp"
                             android:textStyle="bold" />
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -243,6 +256,8 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:text="Cost Price:"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/poppins"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 

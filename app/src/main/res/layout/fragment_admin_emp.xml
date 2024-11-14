@@ -35,6 +35,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+
     <!-- Scrollable Content Area -->
     <ScrollView
         android:layout_width="match_parent"

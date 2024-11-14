@@ -19,7 +19,7 @@
             <ImageView
                 android:id="@+id/ivHeaderImage"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="190dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/servicesheader" />
 
@@ -31,11 +31,11 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
                 android:clickable="false"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:fontFamily="@font/aclonica"
                 android:text="Service Details"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
-                android:textSize="38sp" />
+                android:textSize="42sp" />
 
             <!-- Back Button on top of the background image -->
             <ImageView

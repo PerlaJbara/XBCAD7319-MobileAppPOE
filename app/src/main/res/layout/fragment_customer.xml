@@ -15,18 +15,32 @@
         <FrameLayout
             android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="210dp">
+            android:layout_height="190dp"
+            android:orientation="vertical">
 
             <!-- Background Image with See-Through Black Layer -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/customerfragmentheader"
+                android:src="@drawable/customerdetailsfragmentheader"
                 android:background="@drawable/rounded_image"
                 android:clipToOutline="true" />
 
-            <!-- Back Button placed on top of the background image -->
+            <!-- TextView on top of the background image -->
+            <TextView
+                android:id="@+id/txtTitleVehicleNumberPLate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="80dp"
+                android:text="Customers"
+                android:fontFamily="@font/aclonica"
+                android:textColor="#ffffff"
+                android:textSize="40sp"
+                android:elevation="4dp" />
+
             <ImageView
                 android:id="@+id/ivBackButton"
                 android:layout_width="55dp"
@@ -38,6 +52,7 @@
                 android:elevation="4dp" />
 
         </FrameLayout>
+
 
         <LinearLayout
             android:id="@+id/linLayoutBody"

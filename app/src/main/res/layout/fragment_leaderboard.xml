@@ -12,18 +12,17 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Leaderboard Title -->
 
         <TextView
             android:id="@+id/leaderboardTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:fontFamily="@font/aboreto"
+            android:fontFamily="@font/aclonica"
             android:paddingBottom="16dp"
             android:text="LEADERBOARD"
             android:textColor="@color/red"
-            android:textSize="50sp"
+            android:textSize="40sp"
             android:textStyle="bold" />
 
         <com.airbnb.lottie.LottieAnimationView

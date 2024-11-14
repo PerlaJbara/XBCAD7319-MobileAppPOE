@@ -14,16 +14,17 @@
         <FrameLayout
             android:id="@+id/frameLayoutHeader"
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="190dp">
 
             <!-- Background Image -->
+
+            <!-- Back Button on top of the background image -->
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/servicesheader" />
 
-            <!-- Back Button on top of the background image -->
             <ImageView
                 android:id="@+id/ivBackButton"
                 android:layout_width="55dp"
@@ -39,13 +40,14 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/fontpoppinsmedium"
+                android:fontFamily="@font/aclonica"
                 android:text="Add a Service"
                 android:layout_marginTop="80dp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="38sp"
-                android:elevation="4dp" />
+                android:elevation="4dp"
+                android:paddingTop="30dp"/>
 
         </FrameLayout>
 
@@ -79,7 +81,8 @@
                             android:textSize="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -138,11 +141,12 @@
                             android:id="@+id/textView16"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
+                            android:fontFamily="@font/poppins"
                             android:text="Service Name:"
                             android:textSize="20dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtServiceName"
@@ -155,7 +159,8 @@
                             android:paddingVertical="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView16"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -168,11 +173,12 @@
                             android:id="@+id/textView1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
+                            android:fontFamily="@font/poppins"
                             android:text="Select Customer:"
                             android:textSize="17dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="0dp"
@@ -191,7 +197,8 @@
                                 android:paddingVertical="3dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:textColor="@color/black">
 
                             </Spinner>
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -207,11 +214,12 @@
                             android:id="@+id/txtSelVehHeading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
+                            android:fontFamily="@font/poppins"
                             android:text="Select Vehicle:"
                             android:textSize="17dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="0dp"
@@ -230,7 +238,8 @@
                                 android:paddingVertical="3dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:textColor="@color/black">
 
                             </Spinner>
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -246,11 +255,12 @@
                             android:id="@+id/textView12"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinssemibold"
+                            android:fontFamily="@font/poppins"
                             android:text="Status:"
                             android:textSize="17dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="0dp"
@@ -269,7 +279,8 @@
                                 android:paddingVertical="3dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:textColor="@color/black">
 
                             </Spinner>
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -287,11 +298,12 @@
                             android:id="@+id/textView6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/fontpoppinsregular"
+                            android:fontFamily="@font/poppins"
                             android:text="Date car received:"
                             android:textSize="16dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtDateCarReceived"
@@ -306,7 +318,8 @@
                             app:layout_constraintStart_toEndOf="@+id/textView6"
                             app:layout_constraintTop_toTopOf="parent"
                             android:hint="Select Date"
-                            android:focusable="false"/>
+                            android:focusable="false"
+                            android:textColor="@color/black"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -323,7 +336,8 @@
                             android:text="Date car returned:"
                             android:textSize="16dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtDateCarReturned"
@@ -338,7 +352,8 @@
                             app:layout_constraintStart_toEndOf="@+id/textView2"
                             app:layout_constraintTop_toTopOf="parent"
                             android:hint="Select Date"
-                            android:focusable="false"/>
+                            android:focusable="false"
+                            android:textColor="@color/black"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
@@ -349,7 +364,8 @@
                         android:layout_marginTop="25dp"
                         android:fontFamily="@font/fontpoppinssemibold"
                         android:text="Parts:"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/txtAllParts"
@@ -365,7 +381,8 @@
                         app:layout_constraintStart_toEndOf="@+id/textView4"
                         app:layout_constraintTop_toTopOf="parent"
                         android:text="No Parts Have Been Entered"
-                        android:textAlignment="center"/>
+                        android:textAlignment="center"
+                        android:textColor="@color/black"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -382,7 +399,8 @@
                             android:textSize="16dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtPartName"
@@ -395,7 +413,8 @@
                             android:paddingVertical="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView8"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -414,7 +433,8 @@
                             android:textSize="16dp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtPartCost"
@@ -428,7 +448,8 @@
                             android:paddingVertical="3dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView7"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -465,7 +486,8 @@
                         android:layout_marginTop="25dp"
                         android:fontFamily="@font/fontpoppinssemibold"
                         android:text="Additional Costs:"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:textColor="@color/black"/>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -483,7 +505,8 @@
                             android:textSize="18sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                         <EditText
                             android:id="@+id/txtLabourCost"
@@ -497,7 +520,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             android:inputType="number"
                             app:layout_constraintStart_toEndOf="@+id/textView5"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:textColor="@color/black"/>
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

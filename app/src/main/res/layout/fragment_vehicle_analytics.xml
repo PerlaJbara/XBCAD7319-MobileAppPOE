@@ -10,7 +10,7 @@ tools:context=".VehicleAnalyticsFragment">
 <LinearLayout
     android:id="@+id/layoutHeader"
     android:layout_width="0dp"
-    android:layout_height="206dp"
+    android:layout_height="190dp"
     android:background="@drawable/vehicledetails"
     android:clipToOutline="true"
     android:foregroundTint="#80000000"
@@ -33,13 +33,13 @@ tools:context=".VehicleAnalyticsFragment">
         android:id="@+id/txtVAnalytics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/agdasima_bold"
+        android:fontFamily="@font/aclonica"
         android:layout_marginHorizontal="10dp"
         android:gravity="center_horizontal"
         android:text="Vehicle Analytics"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="60sp" />
+        android:textSize="45sp" />
 </LinearLayout>
 
 <ScrollView
@@ -66,7 +66,8 @@ tools:context=".VehicleAnalyticsFragment">
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Total vehicles registered"
             android:textAlignment="textStart"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/txtTotalVehicles"
@@ -87,7 +88,8 @@ tools:context=".VehicleAnalyticsFragment">
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Vehicles registered over time"
             android:textAlignment="textStart"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/vhlLineChart"
@@ -108,7 +110,8 @@ tools:context=".VehicleAnalyticsFragment">
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Top 5 Registered vehicle models"
             android:textAlignment="center"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textColor="@color/black"/>
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/vhlModelBarChart"
@@ -125,7 +128,8 @@ tools:context=".VehicleAnalyticsFragment">
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Vehicle Demographics"
             android:textAlignment="center"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:textColor="@color/black"/>
 
 
         <com.github.mikephil.charting.charts.BarChart

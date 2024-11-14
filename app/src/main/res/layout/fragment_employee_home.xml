@@ -79,7 +79,8 @@
                 android:text="Due Soon:"
                 android:textColor="@color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins"/>
 
 
             <!--<ImageView
@@ -118,7 +119,8 @@
                         android:paddingLeft="18dp"
                         android:text="No tasks due this week."
                         android:textColor="@color/white"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:fontFamily="@font/poppins"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
