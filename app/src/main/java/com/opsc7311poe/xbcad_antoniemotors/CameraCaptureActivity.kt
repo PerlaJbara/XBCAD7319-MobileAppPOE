@@ -17,11 +17,24 @@ class CameraCaptureActivity : AppCompatActivity() {
         startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            setResult(RESULT_OK, data) // Send the result back to the calling activity
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                setResult(RESULT_OK, data) // Return captured image data
+            } else {
+                setResult(resultCode) // Return any error or cancellation code as is
+            }
+            finish() // Close CameraCaptureActivity immediately
         }
-        finish() // Close this temporary activity
+    }
+
+    override fun onBackPressed() {
+        // Ensure proper handling of back press to avoid camera re-invoking
+        setResult(RESULT_CANCELED)
+        super.onBackPressed()
+        finish()
     }
 }

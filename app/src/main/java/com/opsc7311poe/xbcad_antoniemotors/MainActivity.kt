@@ -391,4 +391,11 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frame_container, fragment)
             .commit()
     }
+
+    /*private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }*/
 }

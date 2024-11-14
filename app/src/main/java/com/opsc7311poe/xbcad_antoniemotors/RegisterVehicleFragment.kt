@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues
-import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.icu.text.SimpleDateFormat
@@ -20,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -30,11 +29,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.opsc7311poe.xbcad_antoniemotors.CustomerData
-import java.io.ByteArrayOutputStream
 import java.util.*
 
 class RegisterVehicleFragment : Fragment() {
@@ -783,31 +778,6 @@ class RegisterVehicleFragment : Fragment() {
             captureImageWithCamera(side)
         }
     }
-
-
-   // Capture image and add it to the respective list
-   /*private fun captureImageWithCamera(side: String) {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST_CODE)
-        } else {
-            // Set the current side being captured
-            currentSide = side
-            // Start the camera intent
-            startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE), REQUEST_IMAGE_CAPTURE)
-        }
-   }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    handleCameraImage(data)
-                }
-            }
-        }
-    }*/
 
 
     // Capture image and add it to the respective list
