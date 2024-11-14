@@ -306,6 +306,11 @@ class HomeFragment : Fragment() {
                     "plate" -> tasksList.sortBy { it.vehicleNumberPlate }
                 }
 
+                // Map to hold colors for each vehicle number plate
+                val plateColorMap = mutableMapOf<String, Int>()
+                val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
+                var colorIndex = 0
+
                 // Display the filtered/sorted tasks back in the taskContainer
                 tasksList.forEach { task ->
                     val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
@@ -315,17 +320,18 @@ class HomeFragment : Fragment() {
                     val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
 
                     // Set data from the task
-                    numberPlateText.text = task.vehicleNumberPlate ?: "No vehicle assigned"
-                    taskDescriptionText.text = task.taskDescription ?: "No Description"
+                    taskDescriptionText.text = task.taskDescription
 
-                    // Assign colors to number plates if needed (optional)
-                    val plateColorMap = mutableMapOf<String, Int>()
-                    val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
-                    if (!plateColorMap.containsKey(task.vehicleNumberPlate)) {
-                        plateColorMap[task.vehicleNumberPlate ?: ""] =
-                            colors[plateColorMap.size % colors.size]
+                    // Set vehicle details or "No vehicle assigned"
+                    val numberPlate = task.vehicleNumberPlate ?: "No vehicle assigned"
+                    numberPlateText.text = numberPlate
+
+                    // Assign colors to different vehicles based on number plate
+                    if (!plateColorMap.containsKey(numberPlate)) {
+                        plateColorMap[numberPlate] = colors[colorIndex % colors.size]
+                        colorIndex++
                     }
-                    numberPlateText.setBackgroundColor(plateColorMap[task.vehicleNumberPlate] ?: Color.GRAY)
+                    numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
 
                     // Add the task view to the container
                     taskContainer.addView(taskView)
@@ -336,6 +342,86 @@ class HomeFragment : Fragment() {
             }
         })
     }
+
+
+//    private fun applyTaskFilter(filterType: String) {
+//        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId/Tasks")
+//
+//        database.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                if (!isAdded) return
+//
+//                // Clear existing views from taskContainer
+//                taskContainer.removeAllViews()
+//
+//                if (!snapshot.exists()) {
+//                    noTasksMessage.visibility = View.VISIBLE
+//                    noTasksMessage.text = "No tasks available at the moment."
+//                    return
+//                }
+//
+//                noTasksMessage.visibility = View.GONE
+//
+//                val tasksList = mutableListOf<Tasks>() // List to hold tasks
+//
+//                // Extract and add tasks data to the list
+//                for (taskSnapshot in snapshot.children) {
+//                    val taskId = taskSnapshot.key
+//                    val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+//                    val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
+//                    val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
+//                    val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
+//
+//                    // Include only tasks that are not completed
+//                    if (taskId != null && taskDescription != null && completedDate == null) {
+//                        val task = Tasks(
+//                            taskID = taskId,
+//                            taskDescription = taskDescription,
+//                            vehicleNumberPlate = numberPlate,
+//                            creationDate = creationDate,
+//                            completedDate = null
+//                        )
+//                        tasksList.add(task)
+//                    }
+//                }
+//
+//                // Sort or filter tasks based on the selected filter type
+//                when (filterType) {
+//                    "recent" -> tasksList.sortByDescending { it.creationDate }
+//                    "earliest" -> tasksList.sortBy { it.creationDate }
+//                    "plate" -> tasksList.sortBy { it.vehicleNumberPlate }
+//                }
+//
+//                // Display the filtered/sorted tasks back in the taskContainer
+//                tasksList.forEach { task ->
+//                    val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
+//
+//                    // Get references to the TextViews in each task item layout
+//                    val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
+//                    val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
+//
+//                    // Set data from the task
+//                    numberPlateText.text = task.vehicleNumberPlate ?: "No vehicle assigned"
+//                    taskDescriptionText.text = task.taskDescription ?: "No Description"
+//
+//                    // Assign colors to number plates if needed (optional)
+//                    val plateColorMap = mutableMapOf<String, Int>()
+//                    val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
+//                    if (!plateColorMap.containsKey(task.vehicleNumberPlate)) {
+//                        plateColorMap[task.vehicleNumberPlate ?: ""] =
+//                            colors[plateColorMap.size % colors.size]
+//                    }
+//                    numberPlateText.setBackgroundColor(plateColorMap[task.vehicleNumberPlate] ?: Color.GRAY)
+//
+//                    // Add the task view to the container
+//                    taskContainer.addView(taskView)
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//            }
+//        })
+//    }
 
     private fun loadServiceStatuses() {
         val database = Firebase.database.reference.child("Users/$businessId/Services")
