@@ -41,7 +41,7 @@ class AdminApprovesLeaves : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener {
-            replaceFragment(AdminEmpFragment()) // Going back to menu
+            replaceFragment(AdminLeaveMenuFragment()) // Going back to menu
         }
 
 

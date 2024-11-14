@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -22,6 +23,7 @@ class AdminLeavehistory : Fragment() {
     private lateinit var leaveHistoryContainer: LinearLayout
     private lateinit var btnApproved: Button
     private lateinit var btnDenied: Button
+    private lateinit var btnback : ImageView
     private val database = FirebaseDatabase.getInstance().reference
     private lateinit var businessID: String
 
@@ -40,6 +42,11 @@ class AdminLeavehistory : Fragment() {
         // Set button listeners to toggle between approved and denied leave requests
         btnApproved.setOnClickListener { fetchLeaveHistory("ApprovedLeave") }
         btnDenied.setOnClickListener { fetchLeaveHistory("DeniedLeave") }
+
+
+        btnback.setOnClickListener {
+            parentFragmentManager.popBackStack() // Navigate back to the previous fragment
+        }
 
         // Load approved leave by default
         fetchLeaveHistory("ApprovedLeave")
