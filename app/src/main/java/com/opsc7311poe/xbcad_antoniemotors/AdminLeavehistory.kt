@@ -34,6 +34,8 @@ class AdminLeavehistory : Fragment() {
         leaveHistoryContainer = view.findViewById(R.id.leaveHistoryContainer)
         btnApproved = view.findViewById(R.id.btnApproved)
         btnDenied = view.findViewById(R.id.btnDenied)
+        btnback =  view.findViewById(R.id.ivBackButton)
+
 
         // Retrieve business ID from shared preferences
         businessID = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)

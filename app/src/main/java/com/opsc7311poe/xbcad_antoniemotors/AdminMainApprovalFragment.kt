@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener
     private lateinit var ivDeny: ImageView
     private lateinit var ivIgnore: ImageView
     private lateinit var ivApprove: ImageView
+    private lateinit var btnBack: ImageView
 
     private lateinit var txtName: TextView
     private lateinit var txtSurname: TextView
@@ -58,6 +59,12 @@ import com.google.firebase.database.ValueEventListener
         ivDeny = view.findViewById(R.id.ivDenyCross)
         ivIgnore = view.findViewById(R.id.ivIgnoreClock)
         ivApprove = view.findViewById(R.id.ivApproveTick)
+
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener(){
+            replaceFragment(AdminApproveRegistrationFragment())
+        }
 
         fetchUserData()
 
