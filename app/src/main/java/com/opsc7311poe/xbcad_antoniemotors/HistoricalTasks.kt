@@ -2,6 +2,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.media.Image
 import android.os.Bundle
 import android.view.*
 import android.widget.*
@@ -21,6 +22,7 @@ class HistoricalTasks : Fragment() {
 
     private lateinit var svTasksOld: ScrollView // Reference to the ScrollView
     private lateinit var taskContainer: LinearLayout // Reference to the LinearLayout inside ScrollView
+    private lateinit var btnBack: ImageView // Reference to the LinearLayout inside ScrollView
 
     private var completedTasks: List<Tasks>? = null // List to store completed tasks
     private lateinit var dpStartDate: TextView
@@ -68,6 +70,11 @@ class HistoricalTasks : Fragment() {
         dpStartDate = view.findViewById(R.id.dpStartDate)
         dpEndDate = view.findViewById(R.id.dpEndDate)
 
+        btnBack = view.findViewById(R.id.ivBackButton)
+
+        btnBack.setOnClickListener {
+          replaceFragment(HomeFragment())
+        }
 
         dpStartDate.setOnClickListener {
             showDatePickerDialog(isStartDate = true)
@@ -83,6 +90,11 @@ class HistoricalTasks : Fragment() {
         return view
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
+    }
 
     private fun displayCompletedTasks() {
         taskContainer.removeAllViews() // Clear previous task views
