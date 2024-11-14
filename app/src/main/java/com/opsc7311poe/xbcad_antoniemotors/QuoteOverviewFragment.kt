@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,7 +80,6 @@ class QuoteOverviewFragment : Fragment() {
         // Retrieve the quoteId passed from the previous fragment
         quoteId = arguments?.getString("quoteId") ?: ""
         if (quoteId.isEmpty()) {
-            Log.e("QuoteOverviewFragment", "Error: quoteId not provided in arguments")
             Toast.makeText(context, "Quote ID not provided", Toast.LENGTH_SHORT).show()
             return view
         }

@@ -1,7 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

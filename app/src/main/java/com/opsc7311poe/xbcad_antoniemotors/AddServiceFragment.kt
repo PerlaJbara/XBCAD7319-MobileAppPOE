@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -293,7 +292,7 @@ class AddServiceFragment : Fragment() {
                     val lastName = customerSnapshot.child("CustomerSurname").getValue(String::class.java)
 
                     // Log data to check if it's being fetched correctly
-                    Log.d("AddServiceFragment", "Customer: $firstName $lastName, ID: $customerId")
+
 
                     // Only add customer if names are not null or empty
                     if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
@@ -330,7 +329,7 @@ class AddServiceFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading customer data: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error loading customer data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -365,7 +364,7 @@ class AddServiceFragment : Fragment() {
                     val vehModel = vehSnapshot.child("vehicleModel").getValue(String::class.java)
 
                     // Check if the vehicle belongs to the desired customer
-                    Log.d("CustomerIDOfVehicle", "Found customer id: $foundCustomerId Selected customer id: $selectedCust")
+
                     if (foundCustomerId == selectedCust && !vehNumPlate.isNullOrEmpty() && !vehModel.isNullOrEmpty()) {
                         val vehicleDisplay = "$vehNumPlate ($vehModel)"
 
@@ -395,7 +394,7 @@ class AddServiceFragment : Fragment() {
                         // Get the selected vehicle ID based on the vehicle name
                         selectedVehicleId = vehicleMap.filterValues { it == selectedVehicleName }.keys.firstOrNull().orEmpty()
 
-                        Log.d("SelectedVehicleID", "Selected Vehicle ID: $selectedVehicleId")
+
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {
@@ -437,8 +436,7 @@ class AddServiceFragment : Fragment() {
                     val serviceTypeId = serviceTypeSnapshot.key
                     val serviceTypeName = serviceTypeSnapshot.child("name").getValue(String::class.java)
 
-                    // Log data to check if it's being fetched correctly
-                    Log.d("FirebaseData", "ServiceType: $serviceTypeName, ID: $serviceTypeId")
+
 
                     // Only add service type if names are not null or empty
                     if (!serviceTypeName.isNullOrEmpty() && serviceTypeId != null) {
@@ -480,7 +478,7 @@ class AddServiceFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading service type data: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error loading service type data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -516,7 +514,7 @@ class AddServiceFragment : Fragment() {
 
             }
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading service type data: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error loading service type data", Toast.LENGTH_SHORT).show()
             }
         })

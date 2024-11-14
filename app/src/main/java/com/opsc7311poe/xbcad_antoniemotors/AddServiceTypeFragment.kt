@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -111,7 +110,6 @@ class AddServiceTypeFragment : Fragment() {
                 {
                     val database = Firebase.database
 
-                    Log.d("AddServiceTypeFragment", "BusinessId fetched: ${businessId}")
 
                     val empRef = database.getReference("Users/$businessId").child("ServiceTypes")
 

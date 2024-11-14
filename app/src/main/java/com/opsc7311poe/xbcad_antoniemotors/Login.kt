@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -154,7 +153,7 @@ class Login : AppCompatActivity() {
                         checkUserStatus(user.uid)
                     }
                 } else {
-                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Please enter correct credentials.", Toast.LENGTH_SHORT).show()
                     pbLoad.visibility = View.GONE
                     btnLogin.visibility = View.VISIBLE
                 }
@@ -164,19 +163,18 @@ class Login : AppCompatActivity() {
 
     private fun checkUserStatus(userId: String) {
         val usersRef = database.child("Users")
-        Log.d("Login", "Checking for userId: $userId in Users node")
+
 
         usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (userSnapshot in snapshot.children) {
-                    Log.d("Login", "Checking business node: ${userSnapshot.key}")
+
 
                     //saving business id to be used later in app
 
                     val sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
 
                     val editor = sharedPref.edit()
-                    Log.d("Login", "BusinessId saved: ${userSnapshot.key}")
 
                     editor.putString("business_id", userSnapshot.key)
 
@@ -184,19 +182,18 @@ class Login : AppCompatActivity() {
 
                     val employeeSnapshot = userSnapshot.child("Employees").child(userId)
                     if (employeeSnapshot.exists()) {
-                        Log.d("Login", "Found employee with userId: $userId")
-                        val approvalStatus = employeeSnapshot.child("approval").getValue(String::class.java)
+               val approvalStatus = employeeSnapshot.child("approval").getValue(String::class.java)
                         val role = employeeSnapshot.child("role").getValue(String::class.java)
                         redirectToMainActivity(role)
                         return
                     }
                 }
-                Log.d("Login", "User with userId: $userId not found in Employees")
+
                 checkPendingStatus(userId)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Login", "Database error: ${error.message}")
+                Toast.makeText(this@Login, "Oh no! Something went wrong.", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -234,7 +231,6 @@ class Login : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Login", "Database error: ${error.message}")
             }
         })
     }

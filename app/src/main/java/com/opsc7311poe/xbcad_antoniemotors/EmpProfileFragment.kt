@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -134,7 +133,7 @@ class EmpProfileFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
-            Log.d("EmpProfileFragment", "Image URI set: $imageUri")
+
 
             // Load and display the selected image as a preview
             val inputStream: InputStream? = context?.contentResolver?.openInputStream(imageUri!!)
@@ -143,18 +142,16 @@ class EmpProfileFragment : Fragment() {
 
             // Automatically upload the selected image
             uploadProfilePicture()
-        } else {
-            Log.e("EmpProfileFragment", "Failed to get image URI from result.")
         }
     }
 
     private fun uploadProfilePicture() {
         val userId = auth.currentUser?.uid ?: return
-        Log.d("EmpProfileFragment", "uploadProfilePicture called with userId: $userId")
+
 
         imageUri?.let { newImageUri ->
             val ref = storage.reference.child("employee_profile_images/$userId.jpg")
-            Log.d("EmpProfileFragment", "Storage reference created for: ${ref.path}")
+
 
             // Step 1: Check for existing image URL
             database.child("Users").child(businessId).child("Employees").child(userId)
@@ -166,39 +163,39 @@ class EmpProfileFragment : Fragment() {
                             // Step 2: Delete the old image from Firebase Storage
                             FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUrl).delete()
                                 .addOnSuccessListener {
-                                    Log.d("EmpProfileFragment", "Old image deleted successfully.")
+
                                     // Proceed with uploading new image
                                     uploadNewProfileImage(ref, newImageUri)
                                 }
                                 .addOnFailureListener { e ->
-                                    Log.e("EmpProfileFragment", "Failed to delete old image: ${e.message}")
+
                                     // Even if deletion fails, proceed with uploading new image
                                     uploadNewProfileImage(ref, newImageUri)
                                 }
                         } else {
-                            Log.d("EmpProfileFragment", "No old image URL found, uploading new image directly.")
+
                             uploadNewProfileImage(ref, newImageUri)
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.e("EmpProfileFragment", "DatabaseError: Failed to check old image URL - ${error.message}")
+
                         Toast.makeText(context, "Failed to check old image URL.", Toast.LENGTH_SHORT).show()
                     }
                 })
         } ?: run {
-            Log.e("EmpProfileFragment", "Image URI is null, cannot upload profile picture.")
+
             Toast.makeText(context, "No image selected.", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun uploadNewProfileImage(ref: StorageReference, newImageUri: Uri) {
-        Log.d("EmpProfileFragment", "Uploading new image to storage: ${ref.path}")
+
         ref.putFile(newImageUri)
             .addOnSuccessListener {
-                Log.d("EmpProfileFragment", "Image uploaded successfully to storage.")
+
                 ref.downloadUrl.addOnSuccessListener { uri ->
-                    Log.d("EmpProfileFragment", "Download URL received: $uri")
+
 
                     // Step 3: Update the database with the new image URL
                     val dbRef = database.child("Users").child(businessId)
@@ -207,17 +204,17 @@ class EmpProfileFragment : Fragment() {
                     dbRef.setValue(uri.toString())
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Log.d("EmpProfileFragment", "Database updated with new profile image URL.")
+
                                 Toast.makeText(context, "Profile picture updated", Toast.LENGTH_SHORT).show()
                             } else {
-                                Log.e("EmpProfileFragment", "Database update failed: ${task.exception?.message}")
+
                                 Toast.makeText(context, "Failed to update profile picture in database", Toast.LENGTH_SHORT).show()
                             }
                         }
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("EmpProfileFragment", "Failed to upload image to storage: ${e.message}")
+
                 Toast.makeText(context, "Failed to upload new image.", Toast.LENGTH_SHORT).show()
             }
     }

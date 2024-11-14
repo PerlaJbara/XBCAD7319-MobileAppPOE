@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +85,6 @@ class deleteAccFragment : Fragment() {
                 Toast.makeText(requireContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show()
                 navigateToLoginActivity()
             } else {
-                Log.e("DeleteAcc", "Account deletion failed: ${task.exception?.message}")
                 Toast.makeText(requireContext(), "Failed to delete account. Please try again later.", Toast.LENGTH_SHORT).show()
             }
         }

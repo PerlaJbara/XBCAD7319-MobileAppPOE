@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -220,7 +219,6 @@ class AdminAnalyticsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("TaskGraphError", "Error loading task data: ${error.message}")
                 Toast.makeText(requireContext(), "Failed to load task data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -244,7 +242,6 @@ class AdminAnalyticsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("EmployeeNameError", "Error fetching employee names: ${error.message}")
                 callback(emptyMap())
             }
         })
@@ -334,7 +331,6 @@ class AdminAnalyticsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("LineChartError", "Error loading completed tasks: ${error.message}")
                 Toast.makeText(requireContext(), "Failed to load completed tasks", Toast.LENGTH_SHORT).show()
             }
         })

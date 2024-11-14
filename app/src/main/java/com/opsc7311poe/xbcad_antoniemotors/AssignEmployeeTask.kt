@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -166,7 +165,7 @@ class AssignEmployeeTask : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading employee data: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -238,7 +237,7 @@ class AssignEmployeeTask : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseError", "Error loading employee data: ${error.message}")
+
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -285,7 +284,6 @@ class AssignEmployeeTask : Fragment() {
             employeeID = selectedEmployeeID
             adminID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             this.dueDate = dueDate
-            Log.d("AssignEmployeeTask", "Due Date Entered: $dueDate")
             //taskApprovalRequired = swTaskApproval.isChecked
             //status by default "Not started"
             status = "Not Started"
@@ -321,14 +319,14 @@ class AssignEmployeeTask : Fragment() {
             override fun onDataChange(serviceSnapshot: DataSnapshot) {
                 fetchedVehicleID = serviceSnapshot.getValue(String::class.java)
                 if (fetchedVehicleID.isNullOrEmpty()) {
-                    Log.e("fetchVehicleID", "No vehicleID found for service: $serviceId")
+                  //  Log.e("fetchVehicleID", "No vehicleID found for service: $serviceId")
                 } else {
-                    Log.d("fetchVehicleID", "Fetched vehicleID: $fetchedVehicleID")
+                  //  Log.d("fetchVehicleID", "Fetched vehicleID: $fetchedVehicleID")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("fetchVehicleID", "Error fetching vehicleID: ${error.message}")
+               // Log.e("fetchVehicleID", "Error fetching vehicleID: ${error.message}")
                 fetchedVehicleID = null
             }
         })

@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -186,7 +185,7 @@ class Register_Employee_Page : Fragment() {
             // Save employee details to Firebase
             employeeDetailsRef.setValue(emp)
                 .addOnSuccessListener {
-                    Log.d("Register_Employee_Page", "Employee details saved successfully under their own UID")
+
                     Toast.makeText(requireContext(), "Employee details saved successfully", Toast.LENGTH_SHORT).show()
                 }
                 .addOnFailureListener { e ->
@@ -280,7 +279,7 @@ class Register_Employee_Page : Fragment() {
 
 
     private fun replaceFragment(fragment: Fragment) {
-        Log.d("Register_Employee_Page", "Replacing fragment: ${fragment::class.java.simpleName}")
+
         parentFragmentManager.beginTransaction()
             .replace(R.id.frame_container, fragment)
             .addToBackStack(null)
