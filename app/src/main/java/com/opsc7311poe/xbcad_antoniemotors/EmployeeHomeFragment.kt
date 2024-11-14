@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import androidx.appcompat.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -169,7 +168,7 @@ class EmployeeHomeFragment : Fragment() {
                                         }
 
                                         override fun onCancelled(error: DatabaseError) {
-                                            Log.e("VehicleFetchError", "Failed to fetch vehicle data: ${error.message}")
+
                                         }
                                     })
                                 } else {
@@ -185,7 +184,7 @@ class EmployeeHomeFragment : Fragment() {
                             }
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.e("ServiceFetchError", "Failed to fetch service data: ${error.message}")
+
                             }
                         })
                     }
@@ -193,7 +192,7 @@ class EmployeeHomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
+
             }
         })
     }
@@ -289,7 +288,7 @@ class EmployeeHomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("HomeFragment", "Failed to load tasks: ${error.message}")
+                Toast.makeText(requireContext(), "Failed to retrieve tasks", Toast.LENGTH_SHORT).show()
             }
         })
     }

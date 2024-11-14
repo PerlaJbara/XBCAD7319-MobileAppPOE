@@ -164,6 +164,7 @@ class AssignEmployeeTask : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })
@@ -235,6 +236,7 @@ class AssignEmployeeTask : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })

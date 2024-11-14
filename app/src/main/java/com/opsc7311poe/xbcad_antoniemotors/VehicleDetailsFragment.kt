@@ -1,7 +1,6 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +40,7 @@ class VehicleDetailsFragment : Fragment() {
     private lateinit var btnEditVehicleDetails: Button
     private lateinit var btnDeleteVehicle: Button
     private lateinit var btnSave: Button
+    private lateinit var btnBack: ImageView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseRef: DatabaseReference
@@ -75,6 +75,7 @@ class VehicleDetailsFragment : Fragment() {
         btnSave = view.findViewById(R.id.btnSaveChanges)
         btnDeleteVehicle = view.findViewById(R.id.btnDeleteVehicle)
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
 
         btnSave.visibility = View.INVISIBLE
@@ -104,6 +105,10 @@ class VehicleDetailsFragment : Fragment() {
 
         searchVehicleAcrossBusinesses()
 
+        btnBack.setOnClickListener {
+            replaceFragment(SearchVehiclesFragment())
+        }
+
         return view
     }
 
@@ -128,7 +133,7 @@ class VehicleDetailsFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(requireContext(), "Error searching vehicle.", Toast.LENGTH_SHORT).show()
-                Log.e("VehicleDetailsFragment", "Database error: ${error.message}")
+
             }
         })
     }
@@ -169,10 +174,10 @@ class VehicleDetailsFragment : Fragment() {
 
 
     private fun checkUserRole() {
-        Log.d("VehicleDetailsFragment", "Checking user role with businessId: $businessId")
+
         val userId = auth.currentUser?.uid ?: return
         if (businessId == null) {
-            Log.e("VehicleDetailsFragment", "Business ID is null, skipping role check.")
+
             return
         }
 
@@ -189,7 +194,7 @@ class VehicleDetailsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("VehicleDetailsFragment", "Error fetching user role: ${error.message}")
+
             }
         })
     }
@@ -294,9 +299,9 @@ class VehicleDetailsFragment : Fragment() {
     private fun deleteImageFromStorage(imageUrl: String) {
         val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
         storageRef.delete().addOnSuccessListener {
-            Log.d("VehicleDetailsFragment", "Image deleted: $imageUrl")
+
         }.addOnFailureListener {
-            Log.e("VehicleDetailsFragment", "Failed to delete image: $imageUrl", it)
+
         }
     }
 

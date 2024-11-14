@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -54,7 +53,7 @@ class DeniedActivity : AppCompatActivity() {
         }
 
         val usersRef = FirebaseDatabase.getInstance().getReference("Users")
-        Log.d("DeniedActivity", "Checking Employees node for userId: $currentUserId")
+
 
         // First, check in Employees
         usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -65,7 +64,7 @@ class DeniedActivity : AppCompatActivity() {
                     val employeeSnapshot = businessSnapshot.child("Employees").child(currentUserId!!)
 
                     if (employeeSnapshot.exists()) {
-                        Log.d("DeniedActivity", "Found user in Employees with userId: $currentUserId")
+
                         businessId = businessSnapshot.key
                         userId = currentUserId
                         userFound = true
@@ -74,13 +73,13 @@ class DeniedActivity : AppCompatActivity() {
                 }
 
                 if (!userFound) {
-                    Log.d("DeniedActivity", "User not found in Employees, checking Pending")
+
                     checkPendingStatus() // Call checkPendingStatus if user not found in Employees
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("DeniedActivity", "Database error: ${error.message}")
+
             }
         })
     }
@@ -96,7 +95,7 @@ class DeniedActivity : AppCompatActivity() {
                     val pendingSnapshot = businessSnapshot.child("Pending").child(currentUserId!!)
 
                     if (pendingSnapshot.exists()) {
-                        Log.d("DeniedActivity", "Found user in Pending with userId: $currentUserId")
+
                         businessId = businessSnapshot.key
                         userId = currentUserId
                         userFound = true
@@ -110,7 +109,7 @@ class DeniedActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("DeniedActivity", "Database error: ${error.message}")
+
             }
         })
     }
@@ -148,7 +147,7 @@ class DeniedActivity : AppCompatActivity() {
         // Delete data from Realtime Database first
         dbRef.removeValue().addOnCompleteListener { dbTask ->
             if (dbTask.isSuccessful) {
-                Log.d("DeniedActivity", "User data deleted from Realtime Database.")
+
 
                 // Then delete user from Firebase Authentication
                 user.delete().addOnCompleteListener { authTask ->
@@ -157,12 +156,12 @@ class DeniedActivity : AppCompatActivity() {
                         finish() // Close the activity
                     } else {
                         Toast.makeText(this, "Failed to delete account from Authentication.", Toast.LENGTH_SHORT).show()
-                        Log.e("DeniedActivity", "Authentication deletion failed: ${authTask.exception?.message}")
+
                     }
                 }
             } else {
                 Toast.makeText(this, "Failed to delete data from Realtime Database.", Toast.LENGTH_SHORT).show()
-                Log.e("DeniedActivity", "Database deletion failed: ${dbTask.exception?.message}")
+
             }
         }
     }

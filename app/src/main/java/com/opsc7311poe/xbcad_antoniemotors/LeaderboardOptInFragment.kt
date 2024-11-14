@@ -2,7 +2,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +28,7 @@ class LeaderboardOptInFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            Log.e("FirebaseAuth", "User not logged in.")
+
             return view
         }
 
@@ -38,7 +37,7 @@ class LeaderboardOptInFragment : Fragment() {
             .getString("business_id", null)
 
         if (businessId == null) {
-            Log.e("SharedPreferences", "Business ID not found in SharedPreferences.")
+
             return view
         }
 
@@ -50,13 +49,13 @@ class LeaderboardOptInFragment : Fragment() {
             val isOptedIn = snapshot.getValue(Boolean::class.java) ?: false
             switchOptIn.isChecked = isOptedIn
         }.addOnFailureListener {
-            Log.e("Firebase", "Failed to fetch leaderboard status", it)
+
         }
 
         // Listen for switch toggle to update leaderboard status in Firebase
         switchOptIn.setOnCheckedChangeListener { _, isChecked ->
             database.child("leaderboard").setValue(isChecked).addOnFailureListener {
-                Log.e("Firebase", "Failed to update leaderboard status", it)
+
             }
         }
 

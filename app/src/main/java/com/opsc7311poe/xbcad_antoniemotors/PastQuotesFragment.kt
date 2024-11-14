@@ -100,6 +100,7 @@ class PastQuotesFragment : Fragment() {
 
             cardView.findViewById<TextView>(R.id.txtCustName).text = quote.customerName ?: "Unknown"
             cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${quote.totalCost ?: "0"}"
+            cardView.findViewById<TextView>(R.id.txtDate).text = "${quote.dateCreated ?: "0"}"
 
             // Set OnClickListener for card view to navigate to quote details
             cardView.setOnClickListener {

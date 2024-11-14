@@ -211,6 +211,7 @@ class CheckTaskStatus : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+
                 Toast.makeText(requireContext(), "Failed to load tasks", Toast.LENGTH_SHORT).show()
             }
         })
@@ -371,6 +372,7 @@ class CheckTaskStatus : Fragment() {
 
     private fun saveStatus(taskID: String?, tempStatus: String?) {
 
+
         if (taskID == null || tempStatus == null) return
 
         val taskRef = Firebase.database.reference.child("Users/$businessId/EmployeeTasks").child(taskID)
@@ -380,6 +382,7 @@ class CheckTaskStatus : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val employeeID = snapshot.getValue(String::class.java)
                 if (employeeID == null) {
+
                     return
                 }
 
@@ -389,6 +392,7 @@ class CheckTaskStatus : Fragment() {
                     // Save the current time as completedDate
                     taskRef.child("completedDate").setValue(System.currentTimeMillis())
                         .addOnSuccessListener {
+
 
                             // Increment completedTasks count
                             empRef.runTransaction(object : com.google.firebase.database.Transaction.Handler {

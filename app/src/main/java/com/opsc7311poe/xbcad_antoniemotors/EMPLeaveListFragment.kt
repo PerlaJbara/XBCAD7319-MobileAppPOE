@@ -3,7 +3,6 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -169,7 +168,7 @@ class EMPLeaveListFragment : Fragment() {
         val leaveItem = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(16, 16, 16, 16)
-            Log.d("EMPLeaveListFragment", "Adding leave item: $employeeName, $startDate to $endDate")
+
         }
 
         val employeeTextView = TextView(requireContext()).apply {
@@ -199,7 +198,7 @@ class EMPLeaveListFragment : Fragment() {
             startRangeDate != null && endRangeDate != null && leaveStartDate != null && leaveEndDate != null &&
                     !leaveEndDate.before(startRangeDate) && !leaveStartDate.after(endRangeDate)
         } catch (e: Exception) {
-            Log.e("EMPLeaveListFragment", "Error parsing dates", e)
+
             false
         }
     }

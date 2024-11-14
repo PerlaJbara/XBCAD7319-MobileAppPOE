@@ -4,11 +4,11 @@ import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.github.mikephil.charting.charts.BarChart
@@ -33,6 +33,7 @@ import java.util.Locale
 private lateinit var customerTypeBarChart: BarChart
 private lateinit var customerLineGraph: LineChart
 private lateinit var txtAllCustomers: TextView
+private lateinit var btnBack: ImageView
 
 private var businessId : String? = null
 
@@ -49,9 +50,13 @@ class CustomerAnalyticsFragment : Fragment() {
         customerTypeBarChart = view.findViewById(R.id.custTypeBarChart)
         customerLineGraph = view.findViewById(R.id.custLineChart)
         txtAllCustomers = view.findViewById(R.id.txtTotalCustomers)
-
+        btnBack = view.findViewById(R.id.ivBackButton)
         //get the businessId of the logged-in user
         getBusinessIdAndFetchVehicleCount()
+
+        btnBack.setOnClickListener {
+            replaceFragment(CustomerMenuFragment())
+        }
 
         return view
     }
@@ -217,6 +222,11 @@ class CustomerAnalyticsFragment : Fragment() {
         })
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
+    }
 
 
 }

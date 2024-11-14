@@ -4,7 +4,6 @@ import QuoteData
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -85,6 +84,7 @@ class PastReceiptsFragment : Fragment() {
 
                             cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
                             cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
+                            cardView.findViewById<TextView>(R.id.txtDate).text = "${receipt.dateCreated ?: "0"}"
 
                             // Set OnClickListener for card view to navigate to receipt details
                             cardView.setOnClickListener {
