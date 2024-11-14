@@ -182,7 +182,7 @@ class RegisterVehicleFragment : Fragment() {
         }
 
         btnBack.setOnClickListener {
-            replaceFragment(VehicleMenuFragment())
+            replaceFragment(SearchVehiclesFragment())
         }
 
 

@@ -40,6 +40,7 @@ class VehicleDetailsFragment : Fragment() {
     private lateinit var btnEditVehicleDetails: Button
     private lateinit var btnDeleteVehicle: Button
     private lateinit var btnSave: Button
+    private lateinit var btnBack: ImageView
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseRef: DatabaseReference
@@ -74,6 +75,7 @@ class VehicleDetailsFragment : Fragment() {
         btnSave = view.findViewById(R.id.btnSaveChanges)
         btnDeleteVehicle = view.findViewById(R.id.btnDeleteVehicle)
         ynpYearPicker = view.findViewById(R.id.npYearPicker)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
 
         btnSave.visibility = View.INVISIBLE
@@ -102,6 +104,10 @@ class VehicleDetailsFragment : Fragment() {
         btnDeleteVehicle.setOnClickListener { showDeleteConfirmationDialog() }
 
         searchVehicleAcrossBusinesses()
+
+        btnBack.setOnClickListener {
+            replaceFragment(SearchVehiclesFragment())
+        }
 
         return view
     }

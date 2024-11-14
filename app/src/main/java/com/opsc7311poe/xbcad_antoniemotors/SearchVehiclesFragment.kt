@@ -44,7 +44,7 @@ class SearchVehiclesFragment : Fragment() {
         }
 
         btnBack.setOnClickListener {
-            replaceFragment(HomeFragment())
+            replaceFragment(VehicleMenuFragment())
         }
 
         vehicleList = ArrayList()

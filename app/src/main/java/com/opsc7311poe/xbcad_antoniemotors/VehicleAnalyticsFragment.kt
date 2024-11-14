@@ -10,6 +10,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import android.content.Context
 import android.graphics.Color
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.github.mikephil.charting.components.XAxis
@@ -36,6 +37,7 @@ private lateinit var vehicleDemoBarChart: BarChart
 private lateinit var vehicleModelBarChart: BarChart
 private lateinit var vehicleLineChart: LineChart
 private lateinit var txtAllVehicles: TextView
+private lateinit var btnBack: ImageView
 
 private var businessId : String? = null
 
@@ -53,11 +55,14 @@ class VehicleAnalyticsFragment : Fragment() {
         vehicleModelBarChart = view.findViewById(R.id.vhlModelBarChart)
         vehicleLineChart = view.findViewById(R.id.vhlLineChart)
         txtAllVehicles = view.findViewById(R.id.txtTotalVehicles)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Call method to get the businessId of the logged-in user
         getBusinessIdAndFetchVehicleCount()
 
-
+        btnBack.setOnClickListener {
+            replaceFragment(VehicleMenuFragment())
+        }
 
         return view
     }
@@ -296,6 +301,12 @@ class VehicleAnalyticsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error fetching VehiclePOR data data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .commit()
     }
 
 
