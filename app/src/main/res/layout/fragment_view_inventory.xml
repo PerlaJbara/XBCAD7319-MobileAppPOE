@@ -89,14 +89,14 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="287dp"
                 android:layout_marginVertical="5dp">
 
                 <LinearLayout
                     android:id="@+id/linlayServiceCards"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewInventory"
@@ -124,7 +124,7 @@
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/red"/>
+                                android:background="@color/red" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -135,7 +135,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
-                                    android:orientation="vertical"/>
+                                    android:orientation="vertical" />
 
                             </LinearLayout>
 
@@ -158,16 +158,13 @@
 
                 <ImageView
                     android:id="@+id/imgPlus"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_marginStart="100dp"
-                    android:layout_marginEnd="100dp"
-                    android:layout_marginBottom="60dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/vectorplusbutton"
+                    android:layout_marginBottom="35dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"  />
+                    app:layout_constraintStart_toStartOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
