@@ -34,7 +34,7 @@ class AdminApproveRegistrationFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
 
         btnBack.setOnClickListener {
-            replaceFragment(AdminTasksMenuFragment()) // Going back to menu
+            replaceFragment(AdminEmpFragment()) // Going back to menu
         }
 
         // Fetch pending users from Firebase if adminId is available
