@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,7 +18,6 @@ class DocumentationFragment : Fragment() {
     private lateinit var viewInvoices: ImageView
     private lateinit var receipts: ImageView
     private lateinit var viewReceipts: ImageView
-
     private lateinit var executor: Executor
 
     override fun onCreateView(
@@ -81,14 +81,19 @@ class DocumentationFragment : Fragment() {
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                Toast.makeText(requireContext(), "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+                if (errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON || errorCode == BiometricPrompt.ERROR_USER_CANCELED) {
+                    // Optionally allow the user to enter device password or PIN as a fallback
+                    // If supported by device and settings
+                } else {
+                    Toast.makeText(requireContext(), "Authentication error: $errString", Toast.LENGTH_SHORT).show()
+                }
             }
         })
 
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(title)
             .setSubtitle(subtitle)
-            .setNegativeButtonText("Cancel")
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL) // Allows device password/PIN fallback
             .build()
 
         biometricPrompt.authenticate(promptInfo)
