@@ -26,7 +26,7 @@ class EmpLeaveFragment : Fragment() {
     private lateinit var txtleaveend: TextView
     private lateinit var btnrequestleave: Button
     private lateinit var txtRules: TextView
-    private lateinit var btnback : Button
+    private lateinit var btnback : ImageView
 
     private val database = Firebase.database
     private val auth = FirebaseAuth.getInstance()
