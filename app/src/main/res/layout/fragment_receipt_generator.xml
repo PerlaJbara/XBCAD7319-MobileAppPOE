@@ -22,7 +22,7 @@
             android:layout_width="55dp"
             android:layout_height="40dp"
             android:src="@drawable/vectorback"
-            android:layout_gravity="start"/>
+            android:layout_gravity="start" />
 
         <TextView
             android:id="@+id/txtQuoteOverview"
@@ -34,19 +34,18 @@
             android:text="Invoice Generator"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />
-
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@+id/txtSelectCustomer"
@@ -56,27 +55,23 @@
                 android:fontFamily="@font/poppins"
                 android:text="Select Customer"
                 android:textSize="25sp"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
                 android:id="@+id/spinCustomer"
-                android:paddingHorizontal="5dp"
                 android:layout_width="310dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/spingradientgtor"
                 android:fontFamily="@font/fontpoppinsregular"
+                android:paddingHorizontal="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtSelectCustomer"
-                app:layout_constraintWidth_default="wrap" />
-
-
-
+                app:layout_constraintTop_toBottomOf="@+id/txtSelectCustomer" />
 
             <TextView
                 android:id="@+id/txtParts"
@@ -84,14 +79,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Parts"
                 android:fontFamily="@font/poppins"
+                android:text="Parts"
                 android:textSize="25sp"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinCustomer"
-                android:textColor="@color/black"/>
-
+                app:layout_constraintTop_toBottomOf="@+id/spinCustomer" />
 
             <Spinner
                 android:id="@+id/spinPartName"
@@ -99,7 +93,6 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="8dp"
-                android:layout_weight="1"
                 android:background="@drawable/spingradientgtor"
                 android:hint="Part Name"
                 android:padding="8dp"
@@ -113,7 +106,6 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="280dp"
                 android:layout_marginTop="8dp"
-                android:layout_weight="1"
                 android:background="@drawable/spingradientgtor"
                 android:hint="Part Price"
                 android:inputType="numberDecimal"
@@ -180,9 +172,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
+                android:fontFamily="@font/poppins"
                 android:text="Labour Cost"
                 android:textSize="25sp"
-                android:fontFamily="@font/poppins"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -195,12 +187,11 @@
                 android:layout_marginTop="5dp"
                 android:paddingLeft="10dp"
                 android:background="@drawable/spingradientgtor"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:inputType="numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtLabourCost"
-                app:layout_constraintWidth_default="wrap" />
+                app:layout_constraintTop_toBottomOf="@+id/txtLabourCost" />
 
             <Button
                 android:id="@+id/btnFinalReview"
@@ -220,55 +211,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Final Quote"
                 android:fontFamily="@font/fontpoppinsmedium"
+                android:text="Final Quote"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btnFinalReview" />
 
             <LinearLayout
                 android:id="@+id/layoutQuote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/spingradientgtor"
+                android:orientation="vertical"
+                android:padding="10dp"
                 app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote">
-
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:visibility="invisible"
-                android:text="Review"
-                android:fontFamily="@font/fontpoppinsmedium"
-                android:backgroundTint="#038A39"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layoutQuote" />
-
-            <TextView
-                android:id="@+id/txtRvalue"
-                android:layout_width="192dp"
-                android:layout_height="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/greenboderbackground"
-                app:layout_constraintTop_toTopOf="@+id/layoutQuote" />
-
-            <TextView
-                android:id="@+id/txtFinalPrice"
-                android:layout_width="27dp"
-                android:layout_height="42dp"
-                android:text="R"
-                android:textSize="30dp"
-                app:layout_constraintEnd_toStartOf="@+id/txtRvalue"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtFinalQuote" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
