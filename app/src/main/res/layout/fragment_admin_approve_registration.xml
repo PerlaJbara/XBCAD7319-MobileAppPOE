@@ -11,12 +11,11 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="206dp"
+        android:layout_height="190dp"
         android:background="@drawable/toolboxv4"
         android:clipToOutline="true"
         android:foregroundTint="#80000000"
         android:orientation="vertical"
-        android:paddingTop="10dp"
         android:paddingRight="10dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,11 +33,10 @@
 
         <TextView
             android:id="@+id/txtEmployee"
-            android:layout_width="411dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
-            android:paddingTop="10dp"
             android:text="Approve Registration"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
