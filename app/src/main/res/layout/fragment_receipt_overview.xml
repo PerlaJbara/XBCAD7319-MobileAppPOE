@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="170dp"
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
@@ -31,14 +31,14 @@
             android:text="Invoice Overview"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
-            android:paddingTop="45dp"/>
+            android:paddingTop="40dp"/>
     </LinearLayout>
 
-    <!-- Main content Layout (quote details) -->
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="191dp">
+        android:layout_marginTop="170dp">
 
         <!-- Scrollable content layout -->
         <ScrollView
@@ -64,7 +64,7 @@
             android:layout_height="62dp"
             android:layout_gravity="bottom"
             android:orientation="horizontal"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center_horizontal">
 
             <Button

@@ -80,7 +80,7 @@ class ReceiptOverviewFragment : Fragment() {
         // Retrieve the quoteId passed from the previous fragment
         receiptId = arguments?.getString("receiptId") ?: ""
         if (receiptId.isEmpty()) {
-            Toast.makeText(context, "Quote ID not provided", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Quote ID provided", Toast.LENGTH_SHORT).show()
             return view
         }
         btnBack.setOnClickListener {

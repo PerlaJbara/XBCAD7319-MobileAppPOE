@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="170dp"
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
-            android:paddingTop="50dp"
+            android:paddingTop="40dp"
             android:text="Quote Overview"
             android:textColor="#FFFFFF"
             android:textSize="34sp" />
@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="540dp"
         android:layout_below="@id/layoutHeader"
+        android:layout_marginTop="35dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +69,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="62dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="35dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

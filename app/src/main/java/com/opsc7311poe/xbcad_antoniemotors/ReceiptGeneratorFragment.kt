@@ -107,9 +107,9 @@ class ReceiptGeneratorFragment : Fragment() {
 
         // Set up final review button
         btnFinalReview.setOnClickListener {
-            val receiptId = generateReceipt()  // Generate the quote and get the quote ID
+            val receiptId = generateReceipt()
             val bundle = Bundle()
-            bundle.putString("receiptID", receiptId)  // Pass quoteId to the next fragment
+            bundle.putString("receiptID", receiptId)
 
             val ReceiptOverviewFragment = ReceiptOverviewFragment()
             ReceiptOverviewFragment.arguments = bundle
@@ -298,7 +298,7 @@ class ReceiptGeneratorFragment : Fragment() {
         val quoteRef = database.getReference("Users").child(userID).child("Receipts").child(receiptId)
         quoteRef.setValue(quoteData)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Quote saved!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Invoice saved!", Toast.LENGTH_SHORT).show()
 
                 val bundle = Bundle().apply {
                     putString("receiptId", receiptId) // Pass the quoteId to the next fragment

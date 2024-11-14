@@ -80,7 +80,7 @@ class QuoteOverviewFragment : Fragment() {
         // Retrieve the quoteId passed from the previous fragment
         quoteId = arguments?.getString("quoteId") ?: ""
         if (quoteId.isEmpty()) {
-            Toast.makeText(context, "Quote ID not provided", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Quote ID provided", Toast.LENGTH_SHORT).show()
             return view
         }
 
