@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -51,6 +52,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
 
         businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
         userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -109,15 +111,23 @@ class HomeFragment : Fragment() {
                 .setTitle("Filter Tasks By")
                 .setItems(filterOptions) { _, which ->
                     when (which) {
-                        0 -> applyTaskFilter("recent")
-                        1 -> applyTaskFilter("earliest")
-                        2 -> applyTaskFilter("plate")
+                        0 -> {
+                            Log.d("FilterSelection", "Selected: Recent")
+                            applyTaskFilter("recent")
+                        }
+                        1 -> {
+                            Log.d("FilterSelection", "Selected: Earliest")
+                            applyTaskFilter("earliest")
+                        }
+                        2 -> {
+                            Log.d("FilterSelection", "Selected: Plate")
+                            applyTaskFilter("plate")
+                        }
                     }
                 }
-                .setNegativeButton("Cancel", null)
+                .setNegativeButton("Cancel", null)  // Moved outside the setItems block
                 .show()
         }
-
 
         loadTasks()
         loadServiceStatuses()
@@ -259,14 +269,26 @@ class HomeFragment : Fragment() {
     }
 
     private fun applyTaskFilter(filterType: String) {
-        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId/Tasks")
+        // Get the current user id dynamically (use FirebaseAuth to get the UID)
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserId == null) {
+            // Handle the case where no user is logged in
+            return
+        }
+
+        // Build the path to the current user's tasks under their employee node
+        val database = Firebase.database.reference.child("Users/$businessId/Employees/$currentUserId/Tasks")
 
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded) return
+                if (!isAdded) {
+                    Log.d("applyTaskFilter", "Fragment not added, skipping update.")
+                    return
+                }
 
                 // Clear existing views from taskContainer
                 taskContainer.removeAllViews()
+                Log.d("applyTaskFilter", "Starting to apply filter: $filterType")
 
                 if (!snapshot.exists()) {
                     noTasksMessage.visibility = View.VISIBLE
@@ -275,14 +297,13 @@ class HomeFragment : Fragment() {
                 }
 
                 noTasksMessage.visibility = View.GONE
-
                 val tasksList = mutableListOf<Tasks>() // List to hold tasks
 
                 // Extract and add tasks data to the list
                 for (taskSnapshot in snapshot.children) {
                     val taskId = taskSnapshot.key
                     val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-                    val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
+                    val creationDate = taskSnapshot.child("creationDate").getValue(Long::class.java)
                     val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
                     val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
 
@@ -333,95 +354,22 @@ class HomeFragment : Fragment() {
                     }
                     numberPlateText.setBackgroundColor(plateColorMap[numberPlate] ?: Color.GRAY)
 
-                    // Add the task view to the container
-                    taskContainer.addView(taskView)
+                    // Update UI on the main thread
+                    requireActivity().runOnUiThread {
+                        taskContainer.addView(taskView)
+                    }
                 }
+                Log.d("applyTaskFilter", "Finished applying filter: $filterType")
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e("applyTaskFilter", "Database error: ${error.message}")
             }
         })
     }
 
 
-//    private fun applyTaskFilter(filterType: String) {
-//        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId/Tasks")
-//
-//        database.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                if (!isAdded) return
-//
-//                // Clear existing views from taskContainer
-//                taskContainer.removeAllViews()
-//
-//                if (!snapshot.exists()) {
-//                    noTasksMessage.visibility = View.VISIBLE
-//                    noTasksMessage.text = "No tasks available at the moment."
-//                    return
-//                }
-//
-//                noTasksMessage.visibility = View.GONE
-//
-//                val tasksList = mutableListOf<Tasks>() // List to hold tasks
-//
-//                // Extract and add tasks data to the list
-//                for (taskSnapshot in snapshot.children) {
-//                    val taskId = taskSnapshot.key
-//                    val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
-//                    val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
-//                    val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
-//                    val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
-//
-//                    // Include only tasks that are not completed
-//                    if (taskId != null && taskDescription != null && completedDate == null) {
-//                        val task = Tasks(
-//                            taskID = taskId,
-//                            taskDescription = taskDescription,
-//                            vehicleNumberPlate = numberPlate,
-//                            creationDate = creationDate,
-//                            completedDate = null
-//                        )
-//                        tasksList.add(task)
-//                    }
-//                }
-//
-//                // Sort or filter tasks based on the selected filter type
-//                when (filterType) {
-//                    "recent" -> tasksList.sortByDescending { it.creationDate }
-//                    "earliest" -> tasksList.sortBy { it.creationDate }
-//                    "plate" -> tasksList.sortBy { it.vehicleNumberPlate }
-//                }
-//
-//                // Display the filtered/sorted tasks back in the taskContainer
-//                tasksList.forEach { task ->
-//                    val taskView = layoutInflater.inflate(R.layout.task_item, taskContainer, false)
-//
-//                    // Get references to the TextViews in each task item layout
-//                    val numberPlateText = taskView.findViewById<TextView>(R.id.numberPlateText)
-//                    val taskDescriptionText = taskView.findViewById<TextView>(R.id.taskDescriptionText)
-//
-//                    // Set data from the task
-//                    numberPlateText.text = task.vehicleNumberPlate ?: "No vehicle assigned"
-//                    taskDescriptionText.text = task.taskDescription ?: "No Description"
-//
-//                    // Assign colors to number plates if needed (optional)
-//                    val plateColorMap = mutableMapOf<String, Int>()
-//                    val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
-//                    if (!plateColorMap.containsKey(task.vehicleNumberPlate)) {
-//                        plateColorMap[task.vehicleNumberPlate ?: ""] =
-//                            colors[plateColorMap.size % colors.size]
-//                    }
-//                    numberPlateText.setBackgroundColor(plateColorMap[task.vehicleNumberPlate] ?: Color.GRAY)
-//
-//                    // Add the task view to the container
-//                    taskContainer.addView(taskView)
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//            }
-//        })
-//    }
+
 
     private fun loadServiceStatuses() {
         val database = Firebase.database.reference.child("Users/$businessId/Services")
