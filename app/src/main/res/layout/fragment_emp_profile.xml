@@ -38,7 +38,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="661dp">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -77,16 +77,16 @@
                     android:paddingBottom="28dp"
                     android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/textView31"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:text="First Name:"
-                android:textColor="@color/white"
-                android:fontFamily="@font/albert_sans"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/textView31"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="First Name:"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/txtAppName"
@@ -101,113 +101,113 @@
                     android:textSize="20sp" />
 
                 <TextView
-                android:id="@+id/textView33"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:text="Last Name:"
-                android:textColor="@color/white"
-                android:fontFamily="@font/albert_sans"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                    android:id="@+id/textView33"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="Last Name:"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
                     android:paddingTop="17dp"/>
 
-            <TextView
-                android:id="@+id/txtAppSurname"
-                android:layout_width="350dp"
-                android:layout_marginStart="20dp"
-                android:layout_height="45dp"
-                android:background="@drawable/txtgradientgtor"
-                android:fontFamily="@font/poppins"
-                android:paddingStart="15dp"
-                android:paddingTop="7dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/txtAppSurname"
+                    android:layout_width="350dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:fontFamily="@font/poppins"
+                    android:paddingStart="15dp"
+                    android:paddingTop="7dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView34"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:text="Email:"
-                android:textColor="@color/white"
-                android:fontFamily="@font/albert_sans"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="17dp"/>
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="Email:"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="17dp"/>
 
-            <TextView
-                android:id="@+id/txtAppEmail"
-                android:layout_width="350dp"
-                android:layout_marginStart="20dp"
-                android:layout_height="45dp"
-                android:background="@drawable/txtgradientgtor"
-                android:fontFamily="@font/poppins"
-                android:paddingStart="15dp"
-                android:paddingTop="7dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/txtAppEmail"
+                    android:layout_width="350dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:fontFamily="@font/poppins"
+                    android:paddingStart="15dp"
+                    android:paddingTop="7dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView35"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins"
-                android:paddingStart="20dp"
-                android:text="Phone Number:"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="17dp"/>
+                <TextView
+                    android:id="@+id/textView35"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:paddingStart="20dp"
+                    android:text="Phone Number:"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="17dp"/>
 
-            <TextView
-                android:id="@+id/txtAppPhone"
-                android:layout_width="350dp"
-                android:layout_marginStart="20dp"
-                android:layout_height="45dp"
-                android:background="@drawable/txtgradientgtor"
-                android:fontFamily="@font/poppins"
-                android:paddingStart="15dp"
-                android:paddingTop="7dp"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/txtAppPhone"
+                    android:layout_width="350dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:fontFamily="@font/poppins"
+                    android:paddingStart="15dp"
+                    android:paddingTop="7dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView36"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="20dp"
-                android:text="Physical Address:"
-                android:textColor="@color/white"
-                android:fontFamily="@font/albert_sans"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="17dp"/>
+                <TextView
+                    android:id="@+id/textView36"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:text="Physical Address:"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="17dp"/>
 
-            <TextView
-                android:id="@+id/txtAppAddress"
-                android:layout_width="350dp"
-                android:layout_marginStart="20dp"
-                android:layout_height="45dp"
-                android:background="@drawable/txtgradientgtor"
-                android:fontFamily="@font/poppins"
-                android:paddingStart="15dp"
-                android:paddingTop="7dp"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:autoSizeTextType="uniform"/>
+                <TextView
+                    android:id="@+id/txtAppAddress"
+                    android:layout_width="350dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/txtgradientgtor"
+                    android:fontFamily="@font/poppins"
+                    android:paddingStart="15dp"
+                    android:paddingTop="7dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:autoSizeTextType="uniform"/>
 
-            <TextView
-                android:id="@+id/textView37"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="15dp"
-                android:text="Role:"
-                android:textColor="@color/white"
-                android:fontFamily="@font/albert_sans"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="17dp"/>
+                <TextView
+                    android:id="@+id/textView37"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:text="Role:"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/albert_sans"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:paddingTop="17dp"/>
 
                 <TextView
                     android:id="@+id/txtAppRole"

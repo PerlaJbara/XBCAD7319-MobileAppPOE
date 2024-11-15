@@ -33,6 +33,8 @@ class EmpProfileFragment : Fragment() {
     private lateinit var ivEmpPic: ImageView
     private lateinit var businessId: String
 
+    private lateinit var btnBack: ImageView
+
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var storage: FirebaseStorage
@@ -62,6 +64,7 @@ class EmpProfileFragment : Fragment() {
         txtAppRole = view.findViewById(R.id.txtAppRole)
         ivEmpPic = view.findViewById(R.id.ivEmpPic)
         txtUpdatePic = view.findViewById(R.id.txtUpdatePic)
+        btnBack = view.findViewById(R.id.ivBackButton)
 
         // Initialize Firebase instances
         auth = FirebaseAuth.getInstance()
@@ -78,6 +81,10 @@ class EmpProfileFragment : Fragment() {
 
         txtUpdatePic.setOnClickListener(){
              openImageChooser()
+        }
+
+        btnBack.setOnClickListener {
+            replaceFragment(EmployeeHomeFragment())
         }
     }
 
@@ -227,4 +234,13 @@ class EmpProfileFragment : Fragment() {
             .error(R.drawable.vector_myprofile)
             .into(ivEmpPic)
     }
+
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 }
