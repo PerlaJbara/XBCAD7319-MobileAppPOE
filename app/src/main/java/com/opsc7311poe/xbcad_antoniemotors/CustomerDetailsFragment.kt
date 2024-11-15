@@ -29,7 +29,7 @@ class CustomerDetailsFragment : Fragment() {
     private lateinit var txtEmail: TextView
     private lateinit var txtAddress: EditText
     private lateinit var txtCellNumber: EditText
-    private lateinit var txtCustType: EditText
+    private lateinit var txtCustType: TextView
     private lateinit var rviewCustomerVehicles: RecyclerView
     private lateinit var vehicleAdapter: VehicleAdapter
     private lateinit var vehicleList: ArrayList<VehicleData>
@@ -57,6 +57,7 @@ class CustomerDetailsFragment : Fragment() {
         btnSaveCust = view.findViewById(R.id.btnSaveChanges)
         spnCustType = view.findViewById(R.id.spnCustomerType)
         auth = FirebaseAuth.getInstance()
+
         // Retrieve customer details from arguments
         val customerID = arguments?.getString("customerID") ?: ""
         val customerName = arguments?.getString("customerName") ?: ""
@@ -73,7 +74,8 @@ class CustomerDetailsFragment : Fragment() {
         txtEmail.text = customerEmail
         txtAddress.setText(customerAddress)
         txtCellNumber.setText(customerMobile)
-        txtCustType.setText(customerType)
+        //txtCustType.setText(customerType)
+        txtCustType.text = customerType
 
 
         val customerTypes = arrayOf("business", "private")

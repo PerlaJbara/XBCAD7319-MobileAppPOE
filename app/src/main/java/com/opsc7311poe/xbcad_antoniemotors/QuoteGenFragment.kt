@@ -25,6 +25,7 @@ class QuoteGenFragment : Fragment() {
     private lateinit var btnFinalReview: Button
     private lateinit var btnBack: ImageView
     private lateinit var txtPartsList: TextView
+    private lateinit var btnAddNewPart: ImageView
     private lateinit var btnAddPart: Button
     private lateinit var SpinPartName: Spinner  // Changed from EditText
     private lateinit var edtPartCost: EditText
@@ -63,6 +64,7 @@ class QuoteGenFragment : Fragment() {
         btnBack = view.findViewById(R.id.ivBackButton)
         btnFinalReview = view.findViewById(R.id.btnFinalReview)
         npStockCounter = view.findViewById(R.id.npStockCounter)
+        btnAddNewPart = view.findViewById(R.id.btnPlus)
 
         partsList = mutableListOf()
 
@@ -87,6 +89,11 @@ class QuoteGenFragment : Fragment() {
         // Handle back button press
         btnBack.setOnClickListener {
             replaceFragment(DocumentationFragment())
+        }
+
+        //directs the user to the add parts/ inventory page
+        btnAddNewPart.setOnClickListener {
+            replaceFragment(AddPartFragment())
         }
 
         // Set up add part button

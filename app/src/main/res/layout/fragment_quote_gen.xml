@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterVehicleFragment">
+    tools:context=".QuoteGenFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -125,12 +123,43 @@
 
             </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/btnPlus"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/vectorplusbutton"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/txtAddANewPart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fontpoppinsmedium"
+                    android:gravity="center"
+                    android:text="Add a new part"
+                    android:textSize="15sp" />
 
                 <Spinner
                     android:id="@+id/spinPartName"

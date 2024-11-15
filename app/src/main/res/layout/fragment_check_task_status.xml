@@ -77,7 +77,9 @@
         app:layout_constraintBottom_toTopOf="@+id/svTasks"
         app:layout_constraintEnd_toStartOf="@+id/imgFilter"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"></SearchView>
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader">
+
+    </SearchView>
 
     <!--<TextView
         android:id="@+id/textView8"
@@ -146,7 +148,7 @@
 
     <ScrollView
         android:id="@+id/svTasks"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="439dp"
         android:layout_marginTop="19dp"
         app:layout_constraintEnd_toEndOf="parent"

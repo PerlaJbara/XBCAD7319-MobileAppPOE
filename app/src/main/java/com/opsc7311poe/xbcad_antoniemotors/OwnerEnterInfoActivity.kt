@@ -213,7 +213,7 @@ class OwnerEnterInfoActivity : AppCompatActivity() {
                                         if (task.isSuccessful) {
                                             // Data saved successfully
                                             Toast.makeText(this@OwnerEnterInfoActivity, "Owner account created successfully!", Toast.LENGTH_SHORT).show()
-                                            startActivity(Intent(this@OwnerEnterInfoActivity, SuccessActivity::class.java))
+                                            startActivity(Intent(this@OwnerEnterInfoActivity, SuccessOwnerActivity::class.java))
                                         } else {
                                             // Failed to save data
                                             Toast.makeText(this@OwnerEnterInfoActivity, "Failed to create owner account!", Toast.LENGTH_SHORT).show()
