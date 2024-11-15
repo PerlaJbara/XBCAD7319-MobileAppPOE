@@ -17,7 +17,6 @@ import com.google.firebase.ktx.Firebase
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieProperty
@@ -61,7 +60,7 @@ class HomeFragment : Fragment() {
         //changing colour of animation
         lottieAnimationView = view.findViewById(R.id.lottieAnimationView)
         lottieAnimationView.addValueCallback(
-            KeyPath("**"), // This applies to all layers; use specific layer names if you want more control
+            KeyPath(""), // This applies to all layers; use specific layer names if you want more control
             LottieProperty.COLOR_FILTER
         ) { PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP) }
 
@@ -112,15 +111,15 @@ class HomeFragment : Fragment() {
                 .setItems(filterOptions) { _, which ->
                     when (which) {
                         0 -> {
-                            Log.d("FilterSelection", "Selected: Recent")
+
                             applyTaskFilter("recent")
                         }
                         1 -> {
-                            Log.d("FilterSelection", "Selected: Earliest")
+
                             applyTaskFilter("earliest")
                         }
                         2 -> {
-                            Log.d("FilterSelection", "Selected: Plate")
+
                             applyTaskFilter("plate")
                         }
                     }
@@ -201,7 +200,7 @@ class HomeFragment : Fragment() {
                 val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.MAGENTA)
 
                 for (taskSnapshot in snapshot.children) {
-                    val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                    val taskDescription = taskSnapshot.child("taskName").getValue(String::class.java)
                     val taskId = taskSnapshot.key
                     val creationDate = taskSnapshot.child("taskCreatedDate").getValue(Long::class.java)
                     val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
@@ -282,13 +281,13 @@ class HomeFragment : Fragment() {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (!isAdded) {
-                    Log.d("applyTaskFilter", "Fragment not added, skipping update.")
+
                     return
                 }
 
                 // Clear existing views from taskContainer
                 taskContainer.removeAllViews()
-                Log.d("applyTaskFilter", "Starting to apply filter: $filterType")
+
 
                 if (!snapshot.exists()) {
                     noTasksMessage.visibility = View.VISIBLE
@@ -302,7 +301,7 @@ class HomeFragment : Fragment() {
                 // Extract and add tasks data to the list
                 for (taskSnapshot in snapshot.children) {
                     val taskId = taskSnapshot.key
-                    val taskDescription = taskSnapshot.child("taskDescription").getValue(String::class.java)
+                    val taskDescription = taskSnapshot.child("taskName").getValue(String::class.java)
                     val creationDate = taskSnapshot.child("creationDate").getValue(Long::class.java)
                     val completedDate = taskSnapshot.child("taskCompletedDate").getValue(Long::class.java)
                     val numberPlate = taskSnapshot.child("vehicleNumberPlate").getValue(String::class.java)
@@ -359,11 +358,11 @@ class HomeFragment : Fragment() {
                         taskContainer.addView(taskView)
                     }
                 }
-                Log.d("applyTaskFilter", "Finished applying filter: $filterType")
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("applyTaskFilter", "Database error: ${error.message}")
+
             }
         })
     }
