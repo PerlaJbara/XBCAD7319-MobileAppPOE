@@ -250,24 +250,45 @@ class HomeFragment : Fragment() {
     }
 
     private fun markTaskAsCompleted(taskId: String, taskView: View, creationDate: Long) {
-        val database = Firebase.database.reference.child("Users/$businessId/Employees/$userId").child("Tasks").child(taskId)
+        val db1 =
+            Firebase.database.reference.child("Users/$businessId/Employees/$userId").child("Tasks")
+                .child(taskId)
 
+        if (taskId.isBlank()) {
+            return
+        }
+        val db = Firebase.database.reference
+            .child("Users")
+            .child(businessId)
+            .child("Employees")
+            .child(userId)
+            .child("Tasks")
+            .child(taskId)
+        // Prepare data for completion
         val taskUpdate = mapOf(
+            "completedDate" to System.currentTimeMillis(), // Set completed date to the current time
+            "creationDate" to creationDate, // Keep the original creation date
             "taskCompletedDate" to System.currentTimeMillis(), // Add completed date
             "taskCreatedDate" to creationDate // Ensure original creation date is stored
         )
 
-        database.updateChildren(taskUpdate)
+        // Update the Firebase node with the completed date
+        db.updateChildren(taskUpdate)
             .addOnSuccessListener {
                 taskContainer.removeView(taskView) // Remove the task view from the container
                 Toast.makeText(requireContext(), "Task completed!", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Failed to mark task as completed", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to mark task as completed",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-    }
 
-    private fun applyTaskFilter(filterType: String) {
+
+    }
+        private fun applyTaskFilter(filterType: String) {
         // Get the current user id dynamically (use FirebaseAuth to get the UID)
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserId == null) {
