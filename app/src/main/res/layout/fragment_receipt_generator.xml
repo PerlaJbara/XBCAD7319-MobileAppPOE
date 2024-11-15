@@ -272,6 +272,7 @@
                     android:layout_width="310dp"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
+                    android:paddingLeft="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/spingradientgtor"
@@ -341,30 +342,6 @@
 
             </LinearLayout>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_horizontal">
-
-                <Button
-                    android:id="@+id/btnReview"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:layout_gravity="center"
-                    android:text="Review"
-                    android:visibility="invisible"
-                    android:fontFamily="@font/fontpoppinsmedium"
-                    android:backgroundTint="#038A39" />
-
-
-
-            </LinearLayout>
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -398,6 +375,27 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal">
+
+                    <Button
+                        android:id="@+id/btnReview"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
+                        android:layout_gravity="center"
+                        android:text="Review"
+                        android:visibility="invisible"
+                        android:fontFamily="@font/fontpoppinsmedium"
+                        android:backgroundTint="#038A39" />
+
+
+
+                </LinearLayout>
 
 
 
