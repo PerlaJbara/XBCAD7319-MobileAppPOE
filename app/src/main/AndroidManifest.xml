@@ -68,10 +68,6 @@
             android:exported="false"
            />
         <activity
-            android:name=".EmployeeregCompletion"
-            android:exported="false"
-           />
-        <activity
             android:name=".AdminEnterInfo"
             android:exported="false"
            />
