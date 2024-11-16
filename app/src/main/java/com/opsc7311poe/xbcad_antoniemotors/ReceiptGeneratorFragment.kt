@@ -19,6 +19,7 @@ import java.util.*
 
 class ReceiptGeneratorFragment : Fragment() {
 
+    private lateinit var spinCompanyName: Spinner
     private lateinit var spinCustomer: Spinner
     private lateinit var edtLabour: EditText
     private lateinit var txtRvalue: TextView
@@ -31,6 +32,8 @@ class ReceiptGeneratorFragment : Fragment() {
     private lateinit var edtPartCost: EditText
     private lateinit var npStockCounter: NumberPicker  // New NumberPicker
 
+    private lateinit var businessId: String
+
     private lateinit var partsList: MutableList<Map<String, String>>  // List to store parts and their costs
     private var totalPartsCost: Double = 0.0
     private var totalLabourCost: Double = 0.0
@@ -40,7 +43,6 @@ class ReceiptGeneratorFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var databases: DatabaseReference
-    private lateinit var businessId: String
 
     // Firebase database reference
     private val database = FirebaseDatabase.getInstance()
@@ -51,9 +53,8 @@ class ReceiptGeneratorFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_receipt_generator, container, false)
 
-        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
-
         // Initialize views
+        spinCompanyName = view.findViewById(R.id.spinCompanyName)
         spinCustomer = view.findViewById(R.id.spinCustomer)
         SpinPartName = view.findViewById(R.id.spinPartName)
         edtPartCost = view.findViewById(R.id.edtPartCost)
@@ -66,66 +67,126 @@ class ReceiptGeneratorFragment : Fragment() {
         npStockCounter = view.findViewById(R.id.npStockCounter)
         btnAddNewPart = view.findViewById(R.id.btnPlus)
 
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null)!!
+
         partsList = mutableListOf()
 
         npStockCounter.minValue = 1
-        npStockCounter.maxValue = 1000  // Adjust based on max stock value in Firebase
+        npStockCounter.maxValue = 15
         npStockCounter.wrapSelectorWheel = true
 
-        SpinPartName.setSelection(0)
-        edtPartCost.text.clear()
-        npStockCounter.value = 1
-        txtPartsList.text = ""
         edtLabour.text.clear()
         txtRvalue.text = "R0.00"
-        spinCustomer.setSelection(0)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         userId?.let {
             populateCustomerSpinner()
-            populatePartSpinner() // Populate SpinPartName with parts from Firebase
+            populatePartSpinner()
+            populateCompanySpinner()
         }
 
-        // Handle back button press
         btnBack.setOnClickListener {
             replaceFragment(DocumentationFragment())
         }
 
-        //directs the user to the add parts/ inventory page
         btnAddNewPart.setOnClickListener {
             replaceFragment(AddPartFragment())
         }
 
-        // Set up add part button
         btnAddPart.setOnClickListener {
-            addPart()
+            if (validateAddPartInput()) addPart()
         }
 
-        // Add TextWatcher to update total when labor changes
         edtLabour.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 totalLabourCost = s.toString().toDoubleOrNull() ?: 0.0
                 updateTotalQuote()
             }
         })
 
-        // Set up final review button
         btnFinalReview.setOnClickListener {
-            val receiptId = generateReceipt()
-            val bundle = Bundle()
-            bundle.putString("receiptID", receiptId)
-
-            val ReceiptOverviewFragment = ReceiptOverviewFragment()
-            ReceiptOverviewFragment.arguments = bundle
-
-            replaceFragment(ReceiptOverviewFragment)  // Navigate to the receipt overview fragment
+            if (validateFinalReviewInput()) {
+                val receiptId = generateReceipt()
+                val bundle = Bundle().apply { putString("receiptID", receiptId) }
+                val receiptOverviewFragment = ReceiptOverviewFragment().apply { arguments = bundle }
+                replaceFragment(receiptOverviewFragment)
+            }
         }
 
         return view
     }
+    private fun validateAddPartInput(): Boolean {
+        val selectedPartName = SpinPartName.selectedItem?.toString()
+        val partCost = edtPartCost.text.toString().trim()
+
+        if (selectedPartName.isNullOrEmpty() || partCost.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all part details.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+    private fun validateFinalReviewInput(): Boolean {
+        if (selectedCustomerName.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a customer.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (partsList.isEmpty()) {
+            Toast.makeText(requireContext(), "Please add at least one part.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (edtLabour.text.isEmpty()) {
+            Toast.makeText(requireContext(), "Please enter labour cost.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+
+
+    private fun populateCompanySpinner() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val businessNames = mutableListOf<String>()
+        val partsReference = database.reference.child("Users/$businessId").child("BusinessAddress")
+
+        partsReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (partSnapshot in snapshot.children) {
+                    val businessName = partSnapshot.child("businessName").getValue(String::class.java)
+                    businessName?.let { businessNames.add(it) }
+                }
+
+                if (businessNames.isEmpty()) {
+                    // Display a message if no business addresses are found
+                    Toast.makeText(
+                        context,
+                        "You need to add a business address first.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        businessNames
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinCompanyName.adapter = adapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    context,
+                    "Failed to load business names: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
 
     private fun populateCustomerSpinner() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -185,7 +246,7 @@ class ReceiptGeneratorFragment : Fragment() {
     private fun populatePartSpinner() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val partNames = mutableListOf<String>()
-        val partsReference = database.reference.child("Users").child(userId!!).child("parts")
+        val partsReference = database.reference.child("Users/$businessId").child("parts")
 
         partsReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -218,7 +279,7 @@ class ReceiptGeneratorFragment : Fragment() {
 
         if (selectedPartName != null && partCost.isNotEmpty()) {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val partsReference = database.reference.child("Users").child(userId!!).child("parts")
+            val partsReference = database.reference.child("Users/$businessId").child("parts")
 
             partsReference.orderByChild("partName").equalTo(selectedPartName)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -285,41 +346,84 @@ class ReceiptGeneratorFragment : Fragment() {
     private fun generateReceipt(): String {
         val userID = FirebaseAuth.getInstance().currentUser?.uid
         if (userID == null) {
-            Toast.makeText(requireContext(), "User not authenticated. Cannot save quote.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "User not authenticated. Cannot save invoice.",
+                Toast.LENGTH_SHORT
+            ).show()
             return ""
         }
-
         val receiptId = UUID.randomUUID().toString()
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        val quoteData = QuoteData(
-            id = receiptId,
-            customerName = selectedCustomerName,
-            parts = partsList,
-            labourCost = totalLabourCost.toString(),
-            totalCost = (totalPartsCost + totalLabourCost).toString(),
-            dateCreated = currentDate
-        )
+        val selectedCompanyName = spinCompanyName.selectedItem?.toString() ?: ""
+        if (selectedCompanyName.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a company name.", Toast.LENGTH_SHORT)
+                .show()
+            return ""
+        }
 
-        // Reference the path as "Users/<userID>/Quotes/<quoteId>"
-        val quoteRef = database.getReference("Users").child(userID).child("Receipts").child(receiptId)
-        quoteRef.setValue(quoteData)
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Invoice saved!", Toast.LENGTH_SHORT).show()
+        val businessRef = database.reference.child("Users/$businessId/BusinessAddress")
 
-                val bundle = Bundle().apply {
-                    putString("receiptId", receiptId) // Pass the quoteId to the next fragment
+        businessRef.orderByChild("businessName").equalTo(selectedCompanyName)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (businessSnapshot in snapshot.children) {
+                        val streetName =
+                            businessSnapshot.child("streetName").getValue(String::class.java)
+                        val city = businessSnapshot.child("city").getValue(String::class.java)
+                        val postCode = businessSnapshot.child("postCode").getValue(Int::class.java)
+                        val suburb = businessSnapshot.child("suburb").getValue(String::class.java)
+
+                        val receiptData = ReceiptData(
+                            id = receiptId,
+                            companyName = selectedCompanyName,
+                            customerName = selectedCustomerName,
+                            parts = partsList,
+                            labourCost = totalLabourCost.toString(),
+                            totalCost = (totalPartsCost + totalLabourCost).toString(),
+                            dateCreated = currentDate,
+                            streetName = streetName,
+                            city = city,
+                            postCode = postCode,
+                            suburb = suburb
+                        )
+
+                        val quoteRef =
+                            database.reference.child("Users/$businessId/Receipts").child(receiptId)
+                        quoteRef.setValue(receiptData)
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), "Invoice saved!", Toast.LENGTH_SHORT)
+                                    .show()
+
+                                val bundle = Bundle().apply {
+                                    putString("receiptId", receiptId)
+                                }
+                                val receiptOverviewFragment = ReceiptOverviewFragment().apply {
+                                    arguments = bundle
+                                }
+                                replaceFragment(receiptOverviewFragment)
+                            }
+                            .addOnFailureListener { error ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Failed to save invoice data: ${error.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
                 }
-                val receiptOverviewFragment = ReceiptOverviewFragment().apply {
-                    arguments = bundle
-                }
-                replaceFragment(receiptOverviewFragment)
-            }
-            .addOnFailureListener { error ->
-                Toast.makeText(requireContext(), "Failed to save quote data: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
 
-        return receiptId // Returning the quoteId to pass it to the next fragment
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to fetch business address details: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+
+        return receiptId
     }
 
     private fun replaceFragment(fragment: Fragment) {

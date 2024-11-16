@@ -37,6 +37,7 @@ class ViewInventoryFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private val auth = FirebaseAuth.getInstance()
     private lateinit var btnBack: ImageView
+    private lateinit var businessId: String
 
     private val REQUEST_CODE_NOTIFICATION_PERMISSION = 1001
 
@@ -52,6 +53,9 @@ class ViewInventoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null)!!
 
         addImage = view.findViewById(R.id.imgPlus)
         recyclerView = view.findViewById(R.id.recyclerViewInventory)
@@ -121,7 +125,7 @@ class ViewInventoryFragment : Fragment() {
         }
         val userId = currentUser.uid
 
-        database.child("Users").child(userId).child("parts")
+        database.child("Users/$businessId").child("parts")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val partsList = mutableListOf<PartsData>()

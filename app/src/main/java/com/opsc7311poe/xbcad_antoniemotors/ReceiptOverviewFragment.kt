@@ -41,12 +41,18 @@ class ReceiptOverviewFragment : Fragment() {
 
     private lateinit var scrollView: ScrollView
     private lateinit var txtDate: TextView
+    private lateinit var txtCompanyName: TextView
+    private lateinit var txtStreet: TextView
+    private lateinit var txtArea: TextView
+    private lateinit var txtSuburb: TextView
+    private lateinit var txtPostCode: TextView
     private lateinit var tvOwnerName: TextView
     private lateinit var addParts: LinearLayout
     private lateinit var llHoursLabour: LinearLayout
     private lateinit var tvTotal: TextView
     private lateinit var receiptId: String
     private lateinit var btnBack: ImageView
+    private lateinit var businessId: String
 
     companion object {
         private const val REQUEST_CODE_WRITE_STORAGE = 1
@@ -62,11 +68,18 @@ class ReceiptOverviewFragment : Fragment() {
         // Initialize the ScrollView and invoice layout
         scrollView = view.findViewById(R.id.svQuoteOverview)
 
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
+
         // Inflate the invoice_layout.xml into a new LinearLayout
         val invoiceView = inflater.inflate(R.layout.invoice_layout, null)
 
         // Initialize the views from invoice_layout
         txtDate = invoiceView.findViewById(R.id.txtDate)
+        txtCompanyName = invoiceView.findViewById(R.id.txtCompanyName)
+        txtStreet = invoiceView.findViewById(R.id.txtStreet)
+        txtArea = invoiceView.findViewById(R.id.txtArea)
+        txtSuburb = invoiceView.findViewById(R.id.txtSuburb)
+        txtPostCode = invoiceView.findViewById(R.id.txtPostCode)
         tvOwnerName = invoiceView.findViewById(R.id.tvOwnerName)
         addParts = invoiceView.findViewById(R.id.addparts)
         llHoursLabour = invoiceView.findViewById(R.id.llHoursLabour)
@@ -113,23 +126,30 @@ class ReceiptOverviewFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null && receiptId.isNotEmpty()) {
             val database = FirebaseDatabase.getInstance()
-            val quoteRef =
-                database.getReference("Users").child(userId).child("Receipts").child(receiptId)
+            val quoteRef = database.getReference("Users/$businessId").child("Receipts").child(receiptId)
 
             quoteRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val receipt = snapshot.getValue(ReceiptData::class.java)
-                    if (receipt != null) {
+                    val quote = snapshot.getValue(QuoteData::class.java)
+                    if (quote != null) {
+                        // Set the existing fields
+                        txtDate.text = quote.dateCreated ?: "N/A"
+                        tvOwnerName.text = quote.customerName ?: "Unknown"
+                        tvTotal.text = "R ${quote.totalCost ?: "0"}"
 
-                        // Set the data into the views
-                        txtDate.text = receipt.dateCreated ?: "N/A"
-                        tvOwnerName.text = receipt.customerName ?: "Unknown"
-                        tvTotal.text = "R ${receipt.totalCost ?: "0"}"
+                        // Set Company Name
+                        txtCompanyName.text = quote.companyName ?: "Unknown"
+
+                        // Set Address Fields
+                        txtStreet.text = quote.streetName ?: "Unknown"
+                        txtArea.text = quote.suburb ?: "Unknown"
+                        txtSuburb.text = quote.city ?: "Unknown"
+                        txtPostCode.text = quote.postCode?.toString() ?: "Unknown"
 
                         // Display Labor Cost in llHoursLabour LinearLayout
                         llHoursLabour.removeAllViews() // Clear any existing views
                         val labourCostText = TextView(requireContext()).apply {
-                            text = "Labor Cost: R ${receipt.labourCost ?: "0"}"
+                            text = "Labor Cost: R ${quote.labourCost ?: "0"}"
                             textSize = 16f
                             setPadding(16, 16, 16, 16)
                         }
@@ -137,8 +157,8 @@ class ReceiptOverviewFragment : Fragment() {
 
                         // Display Parts in addParts LinearLayout
                         addParts.removeAllViews() // Clear existing views
-                        if (receipt.parts.isNotEmpty()) {
-                            for (part in receipt.parts) {
+                        if (quote.parts.isNotEmpty()) {
+                            for (part in quote.parts) {
                                 val partName = part["name"] as? String ?: "Unknown"
                                 val partCost = part["cost"] as? String ?: "0"
                                 val partQuantity = part["quantity"] as? String ?: "0"
@@ -181,12 +201,15 @@ class ReceiptOverviewFragment : Fragment() {
                             }
                             addParts.addView(noPartsText)
                         }
-                    } else {
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to load data: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
@@ -202,7 +225,7 @@ class ReceiptOverviewFragment : Fragment() {
             if (userId != null && receiptId.isNotEmpty()) {
                 val database = FirebaseDatabase.getInstance()
                 val quoteRef =
-                    database.getReference("Users").child(userId).child("Receipts").child(receiptId)
+                    database.getReference("Users/$businessId").child("Receipts").child(receiptId)
 
                 // Delete the quote from Firebase
                 quoteRef.removeValue().addOnCompleteListener { task ->
