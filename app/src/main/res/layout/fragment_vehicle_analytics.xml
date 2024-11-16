@@ -65,7 +65,7 @@ tools:context=".VehicleAnalyticsFragment">
             android:layout_marginHorizontal="20dp"
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Total vehicles registered"
-            android:textAlignment="textStart"
+            android:textAlignment="center"
             android:textSize="25sp"
             android:textColor="@color/black"/>
 
@@ -87,7 +87,7 @@ tools:context=".VehicleAnalyticsFragment">
             android:layout_marginHorizontal="20dp"
             android:fontFamily="@font/fontpoppinssemibold"
             android:text="Vehicles registered over time"
-            android:textAlignment="textStart"
+            android:textAlignment="center"
             android:textSize="25sp"
             android:textColor="@color/black"/>
 
