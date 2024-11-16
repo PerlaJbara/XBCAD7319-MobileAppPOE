@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".QuoteOverviewFragment">
 
     <!-- Header Layout -->
     <LinearLayout
@@ -13,10 +14,8 @@
         android:background="@drawable/carexhaustheader"
         android:clipToOutline="true"
         android:orientation="vertical"
-        android:paddingTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:paddingTop="30dp">
+
         <ImageView
             android:id="@+id/ivBackButton"
             android:layout_width="55dp"
@@ -30,23 +29,16 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/aclonica"
             android:gravity="center_horizontal"
-            android:paddingTop="40dp"
             android:text="Quote Overview"
             android:textColor="#FFFFFF"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            android:paddingTop="20dp"/>
     </LinearLayout>
 
-    <!-- Main content Layout (quote details) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="540dp"
-        android:layout_below="@id/layoutHeader"
-        android:layout_marginTop="35dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutHeader">
+        android:layout_height="match_parent"
+        android:layout_marginTop="170dp">
 
         <!-- Scrollable content layout -->
         <ScrollView
@@ -63,16 +55,17 @@
 
                 <!-- Dynamic content will be added here -->
             </LinearLayout>
+
         </ScrollView>
 
         <!-- Action buttons -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="62dp"
-            android:layout_marginBottom="35dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_horizontal">
 
             <Button
                 android:id="@+id/btnMakePDF"
@@ -81,10 +74,7 @@
                 android:fontFamily="@font/fontpoppinsregular"
                 android:text="Make PDF"
                 android:backgroundTint="#038A39"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/btnQuoteOv"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_margin="10dp"/>
 
             <Button
                 android:id="@+id/btnQuoteOv"
@@ -93,13 +83,12 @@
                 android:fontFamily="@font/fontpoppinsregular"
                 android:text="Delete"
                 android:backgroundTint="#038A39"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@id/btnMakePDF" />
+                android:layout_margin="10dp"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+
+

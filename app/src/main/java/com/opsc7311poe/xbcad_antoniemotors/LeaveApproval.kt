@@ -20,7 +20,7 @@ class LeaveApproval : Fragment() {
 
     private lateinit var ivDenyL: ImageView
     private lateinit var ivApproveL: ImageView
-
+    private lateinit var btnBack: ImageView
     private lateinit var txtName: TextView
     private lateinit var txtLeaveType: TextView
     private lateinit var txtStartDate: TextView
@@ -59,12 +59,17 @@ class LeaveApproval : Fragment() {
             txtTotalDuration = view.findViewById(R.id.txtEmpDuration)
             ivDenyL = view.findViewById(R.id.ivDenyCross)
             ivApproveL = view.findViewById(R.id.ivApproveTick)
+            btnBack = view.findViewById(R.id.ivBackButton)
 
             // Fetch user data
             fetchUserData(businessId!!, userId!!)
         }
        ivDenyL.setOnClickListener { denyUser() }
         ivApproveL.setOnClickListener { approveUser() }
+
+        btnBack.setOnClickListener {
+            replaceFragment(AdminLeaveMenuFragment())
+        }
 
         return view
     }
@@ -192,5 +197,12 @@ class LeaveApproval : Fragment() {
                 Toast.makeText(context, "Failed to deny leave request.", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.frame_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
