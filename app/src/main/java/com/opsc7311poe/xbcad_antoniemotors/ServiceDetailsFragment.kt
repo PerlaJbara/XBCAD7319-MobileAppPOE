@@ -134,8 +134,10 @@ class ServiceDetailsFragment : Fragment() {
                         //Handle payment status display
                         if (fetchedService.paid!!){
                             imgPayStatus.setImageResource(R.drawable.vectorpaid)
+                            currentPaymentStatus = true
                         } else {
                             imgPayStatus.setImageResource(R.drawable.vectornotpaid)
+                            currentPaymentStatus = false
                         }
 
                         //populating vehicle info

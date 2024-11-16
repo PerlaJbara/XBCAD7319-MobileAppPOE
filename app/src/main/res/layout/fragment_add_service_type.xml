@@ -169,6 +169,7 @@
                             android:fontFamily="@font/fontpoppinsregular"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="3dp"
+                            android:inputType="number"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView7"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -237,6 +238,7 @@
                             android:fontFamily="@font/fontpoppinsregular"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="3dp"
+                            android:inputType="number"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/textView5"
                             app:layout_constraintTop_toTopOf="parent" />
