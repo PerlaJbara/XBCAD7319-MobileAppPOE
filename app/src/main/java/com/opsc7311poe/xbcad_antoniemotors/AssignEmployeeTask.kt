@@ -93,54 +93,29 @@ class AssignEmployeeTask : Fragment() {
     }
 
     private fun loadServices() {
-        // Get the current logged-in user ID
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId == null) {
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Query the database for employees under the current user's business ID
-        val empRef = FirebaseDatabase.getInstance().getReference("Users/$businessId").child("Services")
+        val empRef = Firebase.database.reference.child("Users/$businessId/Services")
 
         empRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val serviceMap = mutableMapOf<String, String>()
                 val serviceNames = mutableListOf<String>()
 
-                // Add a default blank selection at the start
-                serviceNames.add("")
+                // Add a placeholder for "No Service Selected"
+                serviceNames.add("No Service Selected")
 
-                // Check if there are employees associated with the user
-                if (!snapshot.exists()) {
-                    Toast.makeText(requireContext(), "No services found", Toast.LENGTH_SHORT).show()
-                    return
-                }
-
-                // Loop through all employees associated with this user
-                for (empSnapshot in snapshot.children) {
-                    val serviceId = empSnapshot.key // Get service ID
-                    val name = empSnapshot.child("name").getValue(String::class.java)
-
-                    // Only add employees with the role "employee" and valid name details
-                    if ( !name.isNullOrEmpty() && serviceId != null) {
+                for (serviceSnapshot in snapshot.children) {
+                    val serviceId = serviceSnapshot.key
+                    val name = serviceSnapshot.child("name").getValue(String::class.java)
+                    if (!name.isNullOrEmpty() && serviceId != null) {
                         serviceMap[serviceId] = name
-                        serviceNames.add(name) // Add full name to spinner options
+                        serviceNames.add(name)
                     }
                 }
 
-                // Check if the list is empty (after filtering by role)
-                if (serviceNames.size == 1) { // Only the blank option exists
-                    Toast.makeText(requireContext(), "No services found", Toast.LENGTH_SHORT).show()
-                    return
-                }
-
-                // Set up the spinner with the list of employee names
                 val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, serviceNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spVehicleChoice.adapter = adapter
 
-                // Handle employee selection from the spinner
                 spVehicleChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                         val selectedServiceName = parent.getItemAtPosition(position).toString()
@@ -148,19 +123,17 @@ class AssignEmployeeTask : Fragment() {
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>) {
-                        // Handle case where nothing is selected if necessary
+                        selectedServiceID = "" // No service selected
                     }
                 }
             }
 
-
-
             override fun onCancelled(error: DatabaseError) {
-
-                Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error loading services", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
     private fun loadEmployees() {
         // Get the current logged-in user ID
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -232,61 +205,55 @@ class AssignEmployeeTask : Fragment() {
         })
     }
     private fun submitTask() {
+        val empTaskToSubmit = EmpTask()
 
-        var empTaskToSubmit: EmpTask = EmpTask()
-
-        //checking compulsory stuff is filled
+        // Check that all required fields are filled
         if (txtTaskDesc.text.isBlank() || txtTaskName.text.isBlank() || spEmpChoice.selectedItem.toString().isBlank()) {
             Toast.makeText(requireContext(), "Please ensure all task information is filled correctly.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Converting date text to date values
+        // Convert date text to timestamp
         val dateTimeFormatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val dateTimeString = txtSelectDueDate.text.toString()
-
-        // Attempt to parse due date
         val dueDate: Long? = try {
             dateTimeFormatter.parse(dateTimeString)?.time
         } catch (e: Exception) {
             null
         }
 
-
-        //assigning data to temp empTask object
+        // Populate the EmpTask object
         empTaskToSubmit.apply {
             taskDescription = txtTaskDesc.text.toString()
             taskName = txtTaskName.text.toString()
             employeeID = selectedEmployeeID
             adminID = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             this.dueDate = dueDate
-            //taskApprovalRequired = swTaskApproval.isChecked
-            //status by default "Not started"
             status = "Not Started"
 
-            // If a vehicle/service is selected, assign vehicle to object
-            if (spVehicleChoice.selectedItem.toString().isNotBlank()) {
-                serviceID = selectedServiceID
-                fetchVehicleID(serviceID!!)
+            // If a service is selected, fetch vehicle ID; otherwise, leave it empty
+            if (selectedServiceID.isNotBlank()) {
+                fetchVehicleID(selectedServiceID)
                 vehicleID = fetchedVehicleID
-            }}
+            }
+        }
 
-
+        // Save task to Firebase
         val database = Firebase.database
         val taskRef = database.getReference("Users/$businessId").child("EmployeeTasks")
 
-        //pushing task to firebase
         taskRef.push().setValue(empTaskToSubmit)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Employee Task successfully added", Toast.LENGTH_LONG).show()
-                //going back to task menu
                 replaceFragment(AdminTasksMenuFragment())
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "An error occurred while adding an employee task:" + it.toString() , Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "An error occurred while adding an employee task: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
     private fun fetchVehicleID(serviceId: String) {
+        if (serviceId.isBlank()) return // Skip fetching if no service is selected
+
         val serviceRef = Firebase.database.reference.child("Users/$businessId/Services").child(serviceId).child("vehicleId")
         serviceRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(serviceSnapshot: DataSnapshot) {
@@ -298,7 +265,6 @@ class AssignEmployeeTask : Fragment() {
             }
         })
     }
-
     fun pickDateTime(edittxt: TextView) {
         val cal = Calendar.getInstance()
         val year = cal.get(Calendar.YEAR)
