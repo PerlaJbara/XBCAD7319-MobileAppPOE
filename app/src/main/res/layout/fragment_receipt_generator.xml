@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterVehicleFragment">
+    tools:context=".ReceiptGeneratorFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -74,10 +74,7 @@
                         android:gravity="center"
                         android:fontFamily="@font/fontpoppinsmedium"
                         android:text="Select Customer"
-                        android:textSize="25sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:textSize="25sp" />
 
                 </LinearLayout>
 
@@ -122,9 +119,41 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/btnPlus"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/vectorplusbutton"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/txtAddANewPart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/fontpoppinsmedium"
+                        android:gravity="center"
+                        android:text="Add a new part"
+                        android:textSize="15sp" />
 
                     <Spinner
                         android:id="@+id/spinPartName"

@@ -43,11 +43,11 @@ class CustomerMenuFragment : Fragment() {
         }
 
 
-        //this is where we'll have to add the link to the web page when the website is hosted officially
+       /* //this is where we'll have to add the link to the web page when the website is hosted officially
         btnRegNewCust.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
             replaceFragment(HomeFragment())
-        }
+        }*/
 
     }
 

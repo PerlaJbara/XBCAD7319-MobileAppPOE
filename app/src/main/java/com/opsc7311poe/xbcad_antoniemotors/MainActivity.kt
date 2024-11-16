@@ -35,11 +35,15 @@ class MainActivity : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_main)
 
+
         businessId = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         bottomNavView = findViewById(R.id.bottom_navigation)
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
+
+        // Check if there's a redirect flag
+        val redirectToHome = intent.getBooleanExtra("redirectToHome", false)
 
         // Check if the user is logged in
         val user = auth.currentUser
@@ -48,12 +52,24 @@ class MainActivity : AppCompatActivity() {
             getUserDetails(user.uid)
             checkPendingRequests() //this is for the notification thingie
 
+            // Redirect to HomeFragment if flagged from SuccessOwnerActivity
+            if (redirectToHome) {
+                replaceFragment(HomeFragment())
+            }
         } else {
+            Toast.makeText(this, "You're not logged in!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this@MainActivity, Login::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        //old method
+       /* } else {
             Toast.makeText(this,"You're not logged in!", Toast.LENGTH_SHORT).show()
             val intent = Intent(this@MainActivity, Login ::class.java)
             startActivity(intent)
             finish()
-        }
+        }*/
 
 
         // Set up the bottom navigation listener

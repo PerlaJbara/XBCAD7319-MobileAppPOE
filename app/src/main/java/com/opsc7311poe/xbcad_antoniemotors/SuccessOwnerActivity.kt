@@ -29,7 +29,12 @@ class SuccessOwnerActivity : AppCompatActivity() {
         lottieAnimationView.addAnimatorListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                val intent = Intent(this@SuccessOwnerActivity, MainActivity::class.java)
+                //val intent = Intent(this@SuccessOwnerActivity, MainActivity::class.java)
+
+                // Pass a flag to MainActivity to indicate redirection to HomeFragment
+                val intent = Intent(this@SuccessOwnerActivity, MainActivity::class.java).apply {
+                    putExtra("redirectToHome", true) // Add a flag
+                }
                 startActivity(intent)
                 finish()
             }
