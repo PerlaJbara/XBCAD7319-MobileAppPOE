@@ -48,7 +48,6 @@ class AssignEmployeeTask : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
         }
     }
 
@@ -81,24 +80,15 @@ class AssignEmployeeTask : Fragment() {
         }
 
         //handling assigning task
-
         btnAssignTask = view.findViewById(R.id.btnAssignTask)
         btnAssignTask.setOnClickListener {
 
             submitTask()
-            //going back to task menu
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(AdminTasksMenuFragment())
         }
-
         //allowing user to pick date
         txtSelectDueDate.setOnClickListener{
             pickDateTime(txtSelectDueDate)
         }
-
-
-
-
         return view
     }
 
@@ -163,14 +153,14 @@ class AssignEmployeeTask : Fragment() {
                 }
             }
 
+
+
             override fun onCancelled(error: DatabaseError) {
 
                 Toast.makeText(requireContext(), "Error loading employee data", Toast.LENGTH_SHORT).show()
             }
         })
     }
-
-
     private fun loadEmployees() {
         // Get the current logged-in user ID
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -241,28 +231,15 @@ class AssignEmployeeTask : Fragment() {
             }
         })
     }
-
-
     private fun submitTask() {
 
         var empTaskToSubmit: EmpTask = EmpTask()
 
         //checking compulsory stuff is filled
-        if (txtTaskDesc.text.isBlank()) {
-            Toast.makeText(requireContext(), "Please fill in the task description.", Toast.LENGTH_SHORT).show()
+        if (txtTaskDesc.text.isBlank() || txtTaskName.text.isBlank() || spEmpChoice.selectedItem.toString().isBlank()) {
+            Toast.makeText(requireContext(), "Please ensure all task information is filled correctly.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        if (txtTaskName.text.isBlank()) {
-            Toast.makeText(requireContext(), "Please fill in the task name.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (spEmpChoice.selectedItem.toString().isBlank()) {
-            Toast.makeText(requireContext(), "Please select an employee.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
 
         // Converting date text to date values
         val dateTimeFormatter = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
@@ -302,16 +279,13 @@ class AssignEmployeeTask : Fragment() {
         taskRef.push().setValue(empTaskToSubmit)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Employee Task successfully added", Toast.LENGTH_LONG).show()
-
+                //going back to task menu
+                replaceFragment(AdminTasksMenuFragment())
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "An error occurred while adding an employee task:" + it.toString() , Toast.LENGTH_LONG).show()
             }
-
-
-
     }
-
     private fun fetchVehicleID(serviceId: String) {
         val serviceRef = Firebase.database.reference.child("Users/$businessId/Services").child(serviceId).child("vehicleId")
         serviceRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -324,7 +298,6 @@ class AssignEmployeeTask : Fragment() {
             }
         })
     }
-
 
     fun pickDateTime(edittxt: TextView) {
         val cal = Calendar.getInstance()
@@ -364,7 +337,6 @@ class AssignEmployeeTask : Fragment() {
 
         datePickDialog.show()
     }
-
 
     private fun replaceFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
