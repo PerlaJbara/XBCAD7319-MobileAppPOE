@@ -135,7 +135,6 @@ class LeaveApproval : Fragment() {
                                         .addOnSuccessListener {
                                             // Remove the request from PendingLeave
                                             leaveSnapshot.ref.removeValue().addOnSuccessListener {
-                                                Toast.makeText(context, "Leave approved and updated.", Toast.LENGTH_SHORT).show()
                                                 requireActivity().supportFragmentManager.popBackStack()
                                             }
                                         }.addOnFailureListener {

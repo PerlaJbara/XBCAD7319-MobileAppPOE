@@ -161,7 +161,25 @@ class EmpLeaveFragment : Fragment() {
         val selectedLeaveType = spinleave.selectedItem.toString()
         val startDate = txtleavestart.text.toString()
         val endDate = txtleaveend.text.toString()
-        val remainingDays = txtremainleave.text.toString().toIntOrNull() ?: 0
+        val remainingDays = txtremainleave.text.toString().toIntOrNull()
+
+        // Validate all fields are filled
+        if (selectedLeaveType.isBlank() ||
+            startDate.isBlank() ||
+            endDate.isBlank() ||
+            remainingDays == null) {
+            Toast.makeText(requireContext(), "Please fill in all fields before submitting", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Calculate the requested leave duration
+        val requestedDuration = calculateLeaveDuration(startDate, endDate)
+
+        // Check if requested leave exceeds remaining days
+        if (requestedDuration > remainingDays) {
+            Toast.makeText(requireContext(), "You cannot request more leave days than available", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Fetch the user's manager ID and name for the leave request
         database.reference.child("Users").child(businessID).child("Employees")
@@ -178,8 +196,8 @@ class EmpLeaveFragment : Fragment() {
                         "leaveType" to selectedLeaveType,
                         "startDate" to startDate,
                         "endDate" to endDate,
-                        "remainingDays" to remainingDays,
-                        "duration" to calculateLeaveDuration(startDate, endDate),
+                        "remainingDays" to remainingDays - requestedDuration, // Update remaining days
+                        "duration" to requestedDuration,
                         "requestDate" to requestDate,
                         "status" to "pending"
                     )

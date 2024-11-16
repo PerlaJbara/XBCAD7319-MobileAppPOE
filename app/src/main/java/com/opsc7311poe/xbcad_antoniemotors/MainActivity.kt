@@ -223,11 +223,29 @@ class MainActivity : AppCompatActivity() {
 
     fun assignAndCheckLeave() {
         val userId = auth.currentUser?.uid ?: return
-        val leaveRef = FirebaseDatabase.getInstance().reference.child("Users").child(businessId).child("Employees").child(userId).child("Leave")
+        val leaveRef = FirebaseDatabase.getInstance()
+            .reference
+            .child("Users")
+            .child(businessId)
+            .child("Employees")
+            .child(userId)
+            .child("Leave")
 
-        leaveRef.setValue(defaultLeaveTypes()).addOnSuccessListener {
-            checkAndRenewLeave(userId, businessId)
-        }.addOnFailureListener { e ->
+        // Check if Leave node already exists
+        leaveRef.get().addOnSuccessListener { snapshot ->
+            if (!snapshot.exists()) {
+                // Assign default leave types if the node does not exist
+                leaveRef.setValue(defaultLeaveTypes()).addOnSuccessListener {
+                    checkAndRenewLeave(userId, businessId)
+                }.addOnFailureListener { e ->
+                    // Handle failure
+                }
+            } else {
+                // Only check and renew leave if the node exists
+                checkAndRenewLeave(userId, businessId)
+            }
+        }.addOnFailureListener {
+            // Handle error if needed
         }
     }
 
