@@ -62,6 +62,7 @@ class CameraCaptureActivity : AppCompatActivity() {
 
 
 
+
 /*
 package com.opsc7311poe.xbcad_antoniemotors
 
@@ -103,4 +104,10 @@ class CameraCaptureActivity : AppCompatActivity() {
         finish()
     }
 }
+
 */
+
+
+
+
+

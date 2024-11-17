@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -262,8 +264,47 @@ class VehicleDetailsFragment : Fragment() {
             .show()
     }
 
-    // Delete vehicle and associated images from Firebase
+
+
+
     private fun deleteVehicle() {
+        if (businessId == null || vehicleId == null) {
+            Toast.makeText(requireContext(), "Error: Missing business or vehicle ID.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val vehicleRef = FirebaseDatabase.getInstance()
+            .getReference("Users/$businessId/Vehicles/$vehicleId")
+
+        vehicleRef.child("images").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Iterate through the categories (front, rear, left, right)
+                for (categorySnapshot in snapshot.children) {
+                    // Each category contains multiple images
+                    for (imageSnapshot in categorySnapshot.children) {
+                        val imageUrl = imageSnapshot.value.toString()
+                        deleteImageFromStorage(imageUrl) // Delete each image from Storage
+                    }
+                }
+
+                // After deleting images, delete the vehicle data
+                vehicleRef.removeValue().addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Vehicle successfully deleted.", Toast.LENGTH_SHORT).show()
+                    // Navigate back or update UI as needed
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), "Failed to delete vehicle.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Error deleting vehicle images.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    // Delete vehicle and associated images from Firebase
+    /*private fun deleteVehicle() {
         if (businessId == null || vehicleId == null) {
             Toast.makeText(requireContext(), "Error: Missing business or vehicle ID.", Toast.LENGTH_SHORT).show()
             return
@@ -293,7 +334,7 @@ class VehicleDetailsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error deleting vehicle images.", Toast.LENGTH_SHORT).show()
             }
         })
-    }
+    }*/
 
     // Function to delete an image from Firebase Storage
     private fun deleteImageFromStorage(imageUrl: String) {

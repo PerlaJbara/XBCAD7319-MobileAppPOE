@@ -793,6 +793,19 @@ class RegisterVehicleFragment : Fragment() {
         }
     }
 
+  /*  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_IMAGE_CAPTURE -> {
+                    // Handle the captured image returned from CameraCaptureActivity
+                    handleCameraImage(data)
+                }
+            }
+        }
+    }*/
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -822,21 +835,6 @@ class RegisterVehicleFragment : Fragment() {
             }
         }
     }
-
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
-                    // Handle the captured image returned from CameraCaptureActivity
-                    handleCameraImage(data)
-                }
-            }
-        }
-    }*/
-
 
 
 
@@ -928,7 +926,7 @@ class RegisterVehicleFragment : Fragment() {
 
 
 
-    /*private fun handleCameraImage(data: Intent?) {
+   /* private fun handleCameraImage(data: Intent?) {
         val photoBitmap = data?.extras?.get("data") as? Bitmap
         if (photoBitmap == null) {
             Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()

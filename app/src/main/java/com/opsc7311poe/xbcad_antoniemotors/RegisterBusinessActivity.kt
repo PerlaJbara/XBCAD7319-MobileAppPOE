@@ -3,6 +3,7 @@ package com.opsc7311poe.xbcad_antoniemotors
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -40,6 +41,8 @@ class RegisterBusinessActivity : AppCompatActivity() {
 
             if (businessName.isNotEmpty() && ownerName.isNotEmpty() && ownerSurname.isNotEmpty()) {
                 checkBusinessName(businessName, ownerName, ownerSurname)
+
+
             } else {
                 Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
             }
@@ -51,6 +54,7 @@ class RegisterBusinessActivity : AppCompatActivity() {
     private fun checkBusinessName(businessName: String, ownerName: String, ownerSurname: String) {
         // Show progress bar
         progressBar.visibility = ProgressBar.VISIBLE
+        btnRegisterBusiness.visibility = View.GONE
 
         // Get Firebase database reference
         val database = FirebaseDatabase.getInstance()
@@ -63,6 +67,7 @@ class RegisterBusinessActivity : AppCompatActivity() {
                     if (dataSnapshot.exists()) {
                         // Business name already exists
                         progressBar.visibility = ProgressBar.GONE
+                        btnRegisterBusiness.visibility = View.VISIBLE
                         Toast.makeText(this@RegisterBusinessActivity, "Business name already exists. Please choose a different name.", Toast.LENGTH_SHORT).show()
                     } else {
                         // If no businesses exist, or business name is unique, proceed with registration
@@ -73,6 +78,7 @@ class RegisterBusinessActivity : AppCompatActivity() {
                 override fun onCancelled(databaseError: DatabaseError) {
                     // Hide progress bar and show error message
                     progressBar.visibility = ProgressBar.GONE
+                    btnRegisterBusiness.visibility = View.VISIBLE
                     Toast.makeText(this@RegisterBusinessActivity, "Error checking business name. Please try again.", Toast.LENGTH_SHORT).show()
                 }
             })

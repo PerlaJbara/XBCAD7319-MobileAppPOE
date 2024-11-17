@@ -66,6 +66,7 @@
                     android:id="@+id/edtBusinessNames"
                     android:layout_width="310dp"
                     android:layout_height="50dp"
+                    android:padding="12dp"
                     android:background="@drawable/spingradientgtor"
                     />
 

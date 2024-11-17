@@ -147,7 +147,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/txtgradientgtor"
-                    android:inputType="text"
+                    android:inputType="textEmailAddress"
                     android:padding="12dp"
                     android:textColor="@color/black"
                     android:hint="Please enter your email address"/>
