@@ -42,19 +42,19 @@ class EmpSettingsFragment : Fragment() {
         btnChangePass.setOnClickListener {
             // Replace the current fragment with CustomerFragment
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(ChnagepasswordFragment())
+            replaceFragment(EmployeeChangePasswordFragment())
         }
 
         btnDelAcc.setOnClickListener {
             // Replace the current fragment with CustomerFragment
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(deleteAccFragment())
+            replaceFragment(EmpDeleteAccountFragment())
         }
 
         btnLogout.setOnClickListener {
             // Replace the current fragment with CustomerFragment
             it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(LogoutFragment())
+            replaceFragment(EmployeeLogoutFragment())
         }
 
         btnLeaderboards.setOnClickListener(){

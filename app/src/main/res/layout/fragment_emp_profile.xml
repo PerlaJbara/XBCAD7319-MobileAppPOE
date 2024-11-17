@@ -22,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bgseethroughblack"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal">
 
         <TextView
             android:id="@+id/textView3"
@@ -36,199 +37,209 @@
             android:paddingTop="45dp"
             android:paddingBottom="30dp"/>
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal">
 
-                <ImageView
-                    android:id="@+id/ivEmpPic"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:src="@drawable/camera" />
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/txtUpdatePic"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/albert_sans"
-                    android:text="Update Profile Picture"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/ivEmpPic"
+                        android:layout_width="match_parent"
+                        android:layout_height="85dp"
+                        android:src="@drawable/camera" />
 
-                <TextView
-                    android:id="@+id/textView38"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/albert_sans"
-                    android:text="Details:"
-                    android:textAlignment="textStart"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"
-                    android:paddingTop="20dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:paddingBottom="28dp"
-                    android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/txtUpdatePic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/albert_sans"
+                        android:text="Update Profile Picture"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/textView31"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="First Name:"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/textView38"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/albert_sans"
+                        android:text="Details:"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        android:paddingTop="20dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="28dp"
+                        android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/txtAppName"
-                    android:layout_width="350dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:fontFamily="@font/poppins"
-                    android:layout_marginStart="20dp"
-                    android:paddingStart="15dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/textView31"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="First Name:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/textView33"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="Last Name:"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingTop="17dp"/>
+                    <TextView
+                        android:id="@+id/txtAppName"
+                        android:layout_width="350dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:fontFamily="@font/poppins"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingStart="15dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/txtAppSurname"
-                    android:layout_width="350dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:fontFamily="@font/poppins"
-                    android:paddingStart="15dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/textView33"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Last Name:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:paddingTop="17dp"/>
 
-                <TextView
-                    android:id="@+id/textView34"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="Email:"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingTop="17dp"/>
+                    <TextView
+                        android:id="@+id/txtAppSurname"
+                        android:layout_width="350dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:fontFamily="@font/poppins"
+                        android:paddingStart="15dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/txtAppEmail"
-                    android:layout_width="350dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:fontFamily="@font/poppins"
-                    android:paddingStart="15dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/textView34"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Email:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:paddingTop="17dp"/>
 
-                <TextView
-                    android:id="@+id/textView35"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:paddingStart="20dp"
-                    android:text="Phone Number:"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingTop="17dp"/>
+                    <TextView
+                        android:id="@+id/txtAppEmail"
+                        android:layout_width="350dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:fontFamily="@font/poppins"
+                        android:paddingStart="15dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/txtAppPhone"
-                    android:layout_width="350dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:fontFamily="@font/poppins"
-                    android:paddingStart="15dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    <TextView
+                        android:id="@+id/textView35"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:textAlignment="center"
+                        android:text="Phone Number:"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:paddingTop="17dp"/>
 
-                <TextView
-                    android:id="@+id/textView36"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="20dp"
-                    android:text="Physical Address:"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingTop="17dp"/>
+                    <TextView
+                        android:id="@+id/txtAppPhone"
+                        android:layout_width="350dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:fontFamily="@font/poppins"
+                        android:paddingStart="15dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/txtAppAddress"
-                    android:layout_width="350dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:fontFamily="@font/poppins"
-                    android:paddingStart="15dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:autoSizeTextType="uniform"/>
+                    <TextView
+                        android:id="@+id/textView36"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Physical Address:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:paddingTop="17dp"/>
 
-                <TextView
-                    android:id="@+id/textView37"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="15dp"
-                    android:text="Role:"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:paddingTop="17dp"/>
+                    <TextView
+                        android:id="@+id/txtAppAddress"
+                        android:layout_width="350dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:fontFamily="@font/poppins"
+                        android:paddingStart="15dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:autoSizeTextType="uniform"/>
 
-                <TextView
-                    android:id="@+id/txtAppRole"
-                    android:layout_width="350dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/txtgradientgtor"
-                    android:paddingStart="20dp"
-                    android:paddingTop="7dp"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/albert_sans"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/textView37"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Role:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:paddingTop="17dp"/>
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp" />
+                    <TextView
+                        android:id="@+id/txtAppRole"
+                        android:layout_width="350dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_height="45dp"
+                        android:background="@drawable/txtgradientgtor"
+                        android:paddingStart="20dp"
+                        android:paddingTop="7dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/albert_sans"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp" />
 
 
-            </LinearLayout>
-        </ScrollView>
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:fontFamily="@font/aclonica"
-                android:layout_marginTop="95dp"
+                android:layout_marginTop="60dp"
                 android:text="Address\nDetails"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -93,7 +93,7 @@
                             android:id="@+id/edtBusinessName"
                             android:paddingHorizontal="5dp"
                             android:layout_width="310dp"
-                            android:layout_height="43dp"
+                            android:layout_height="50dp"
                             android:background="@drawable/spingradientgtor"
                             android:textColor="@color/black"/>
 

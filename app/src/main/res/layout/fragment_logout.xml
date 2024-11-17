@@ -1,23 +1,19 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".LogoutFragment">
 
     <!-- Background Image with updated constraints and scaleType -->
     <ImageView
         android:id="@+id/backgroundImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scaleType="fitXY"
-    android:src="@drawable/carsunset"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
+        android:src="@drawable/carsunset" />
 
     <!-- Semi-transparent black overlay -->
     <View
@@ -26,89 +22,95 @@
         android:layout_height="match_parent"
         android:background="@drawable/bgblackdark" />
 
-    <!-- Header Layout -->
     <LinearLayout
-        android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="241dp"
-        android:clipToOutline="true"
-        android:foregroundTint="#80000000"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingTop="10dp"
-        android:paddingRight="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/ivBackButton"
             android:layout_width="55dp"
             android:layout_height="40dp"
-            android:layout_gravity="start"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="start|top"
             android:src="@drawable/vectorback" />
 
         <TextView
             android:id="@+id/txtSettingsTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/agdasima_bold"
             android:gravity="center_horizontal"
-            android:paddingTop="80dp"
+            android:paddingTop="20dp"
             android:text="Logout"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="60sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="490dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/layoutHeader"
-        app:layout_constraintVertical_bias="1.0">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp">
 
         <TextView
             android:id="@+id/txtChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="37dp"
-            android:paddingTop="40dp"
+            android:textAlignment="center"
             android:text="Are you sure you want to logout?"
             android:textColor="@color/white"
             android:textSize="24sp" />
 
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/red"
+            android:text="Yes" />
+
+
+    </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="423dp"
-            android:orientation="horizontal"
-            android:paddingTop="50dp">
-
-            <Button
-                android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="80dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="60dp"
-                android:backgroundTint="@color/red"
-                android:text="Yes" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal">
 
             <Button
                 android:id="@+id/btnStayLoggedIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="30dp"
                 android:backgroundTint="@color/red"
                 android:text="No" />
+
         </LinearLayout>
+
+
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
