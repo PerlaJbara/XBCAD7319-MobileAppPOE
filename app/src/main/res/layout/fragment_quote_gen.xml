@@ -34,16 +34,17 @@
                 android:layout_gravity="start"/>
 
             <TextView
-                android:id="@+id/txtQuoteOverview"
+                android:id="@+id/txtTitleVehicleNumberPLate"
                 android:layout_width="match_parent"
-                android:layout_height="117dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingTop="60dp"
+                android:text="Receipt Generator"
+                android:textColor="#ffffff"
                 android:fontFamily="@font/aclonica"
-                android:gravity="center_horizontal"
-                android:paddingTop="62dp"
-                android:text="Quote Generator"
-                android:textColor="#FFFFFF"
-                android:textSize="34sp" />
-
+                android:textSize="37sp"
+                android:elevation="4dp" />
 
         </FrameLayout>
 
@@ -60,6 +61,44 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtSelectBuisness"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:fontFamily="@font/fontpoppinsmedium"
+                        android:text="Select Company"
+                        android:textSize="25sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <Spinner
+                        android:id="@+id/spinCompanyName"
+                        android:paddingHorizontal="5dp"
+                        android:layout_width="310dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:padding="12dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/spingradientgtor"
+                        android:fontFamily="@font/fontpoppinsregular" />
+
+
+                </LinearLayout>
 
 
             <LinearLayout
@@ -309,6 +348,7 @@
                     android:layout_height="45dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
+                    android:paddingLeft="12dp"
                     android:layout_gravity="center"
                     android:background="@drawable/spingradientgtor"
                     app:layout_constraintEnd_toEndOf="parent"

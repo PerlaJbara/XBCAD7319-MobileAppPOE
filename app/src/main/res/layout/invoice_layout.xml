@@ -40,23 +40,39 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/txtCompanyName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Antonie Motors cc"
+                            android:text="Company Name"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/txtStreet"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Repairs, Services\nAnd Car Sales"
+                            android:text="Street Number and Name"
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/txtArea"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="263 Main Reef Road\nBenoni, Johannesburg\n2014"
-                            android:textSize="12sp" />
+                            android:text="Suburb"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/txtSuburb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="City"
+                            android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/txtPostCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2194"
+                            android:textSize="14sp" />
+
                     </LinearLayout>
 
                     <!-- Job Info (Right) -->

@@ -41,12 +41,18 @@ class QuoteOverviewFragment : Fragment() {
 
     private lateinit var scrollView: ScrollView
     private lateinit var txtDate: TextView
+    private lateinit var txtCompanyName: TextView
+    private lateinit var txtStreet: TextView
+    private lateinit var txtArea: TextView
+    private lateinit var txtSuburb: TextView
+    private lateinit var txtPostCode: TextView
     private lateinit var tvOwnerName: TextView
     private lateinit var addParts: LinearLayout
     private lateinit var llHoursLabour: LinearLayout
     private lateinit var tvTotal: TextView
     private lateinit var quoteId: String
     private lateinit var btnBack: ImageView
+    private lateinit var businessId: String
 
     companion object {
         private const val REQUEST_CODE_WRITE_STORAGE = 1
@@ -67,11 +73,20 @@ class QuoteOverviewFragment : Fragment() {
 
         // Initialize the views from invoice_layout
         txtDate = invoiceView.findViewById(R.id.txtDate)
+        txtCompanyName = invoiceView.findViewById(R.id.txtCompanyName)
+        txtStreet = invoiceView.findViewById(R.id.txtStreet)
+        txtArea = invoiceView.findViewById(R.id.txtArea)
+        txtSuburb = invoiceView.findViewById(R.id.txtSuburb)
+        txtPostCode = invoiceView.findViewById(R.id.txtPostCode)
         tvOwnerName = invoiceView.findViewById(R.id.tvOwnerName)
         addParts = invoiceView.findViewById(R.id.addparts)
         llHoursLabour = invoiceView.findViewById(R.id.llHoursLabour)
         tvTotal = invoiceView.findViewById(R.id.tvTotal)
         btnBack = view.findViewById(R.id.ivBackButton)
+
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null)!!
 
         // Find the LinearLayout inside the ScrollView and add the inflated invoice view
         val linearLayout = scrollView.getChildAt(0) as LinearLayout
@@ -115,18 +130,25 @@ class QuoteOverviewFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null && quoteId.isNotEmpty()) {
             val database = FirebaseDatabase.getInstance()
-            val quoteRef =
-                database.getReference("Users").child(userId).child("Quotes").child(quoteId)
+            val quoteRef = database.getReference("Users/$businessId").child("Quotes").child(quoteId)
 
             quoteRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val quote = snapshot.getValue(QuoteData::class.java)
                     if (quote != null) {
-
-                        // Set the data into the views
+                        // Set the existing fields
                         txtDate.text = quote.dateCreated ?: "N/A"
                         tvOwnerName.text = quote.customerName ?: "Unknown"
                         tvTotal.text = "R ${quote.totalCost ?: "0"}"
+
+                        // Set Company Name
+                        txtCompanyName.text = quote.companyName ?: "Unknown"
+
+                        // Set Address Fields
+                        txtStreet.text = quote.streetName ?: "Unknown"
+                        txtArea.text = quote.suburb ?: "Unknown"
+                        txtSuburb.text = quote.city ?: "Unknown"
+                        txtPostCode.text = quote.postCode?.toString() ?: "Unknown"
 
                         // Display Labor Cost in llHoursLabour LinearLayout
                         llHoursLabour.removeAllViews() // Clear any existing views
@@ -187,11 +209,16 @@ class QuoteOverviewFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to load data: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
     }
+
 
     private fun deleteQuote() {
         // Show confirmation dialog before deleting
@@ -202,23 +229,39 @@ class QuoteOverviewFragment : Fragment() {
             val userId = FirebaseAuth.getInstance().currentUser?.uid
             if (userId != null && quoteId.isNotEmpty()) {
                 val database = FirebaseDatabase.getInstance()
-                val quoteRef =
-                    database.getReference("Users").child(userId).child("Quotes").child(quoteId)
+                val quoteRef = database.getReference("Users/$businessId").child("Quotes").child(quoteId)
 
-                // Delete the quote from Firebase
-                quoteRef.removeValue().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(context, "Quote deleted successfully", Toast.LENGTH_SHORT)
-                            .show()
+                // Check if the quote reference exists before trying to delete
+                quoteRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            // Proceed with deleting the quote if it exists
+                            quoteRef.removeValue().addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(context, "Quote deleted successfully", Toast.LENGTH_SHORT).show()
 
-                        // Navigate to DocumentationFragment using replaceFragment
-                        val documentationFragment =
-                            DocumentationFragment() // Create the new fragment instance
-                        replaceFragment(documentationFragment) // Replace the container with DocumentationFragment
-                    } else {
-                        Toast.makeText(context, "Failed to delete quote", Toast.LENGTH_SHORT).show()
+                                    // Navigate to DocumentationFragment after deletion
+                                    val documentationFragment = DocumentationFragment()
+                                    replaceFragment(documentationFragment)
+                                } else {
+                                    Toast.makeText(context, "Failed to delete quote", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        } else {
+                            Toast.makeText(context, "Quote not found, unable to delete", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(
+                            context,
+                            "Failed to load quote data: ${error.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+            } else {
+                Toast.makeText(context, "Invalid quote ID", Toast.LENGTH_SHORT).show()
             }
         }
         builder.setNegativeButton("No") { dialog, _ -> dialog.dismiss() }

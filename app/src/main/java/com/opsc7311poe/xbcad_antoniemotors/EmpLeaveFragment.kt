@@ -91,9 +91,15 @@ class EmpLeaveFragment : Fragment() {
     // Function to display leave rules for the selected leave type
     private fun displayLeaveRules(leaveType: String) {
         val rules = when (leaveType) {
-            "Sick Leave" -> "Sick Leave is allowed up to 30 days per year. Please submit a sick note to your manager for two days or more."
-            "Parental Leave" -> "Parental Leave is available for up to 10 days."
-            "Annual Leave" -> "Annual Leave accumulates at 15 days per year."
+            "Annual Leave" -> "Annual Leave accumulates at 15 days per year and must be used within 6 months unless otherwise agreed."
+            "Sick Leave" -> "Sick Leave is allowed up to 30 days over 3 years; a sick note is required for absences of 2 days or more."
+            "Family Responsibility Leave" -> "3 days per year for events like a child's birth, illness, or death of a close family member."
+            "Bereavement Leave" -> "Typically falls under Family Responsibility Leave or company policy; check with HR for details."
+            "Maternity Leave" -> "4 months of unpaid leave; UIF benefits can be claimed during this period."
+            "Parental Leave" -> "Parental Leave is available for up to 10 consecutive days."
+            "Religious Leave" -> "Not legislated; usually taken as annual or unpaid leave for religious observances."
+            "Study Leave" -> "Not legislated; may be granted for exams or preparation as per company policy."
+            "Unpaid Leave" -> "Unpaid Leave is available with employer approval when other leave types are exhausted."
             else -> "Please contact HR for more information."
         }
         txtRules.text = rules
@@ -155,7 +161,25 @@ class EmpLeaveFragment : Fragment() {
         val selectedLeaveType = spinleave.selectedItem.toString()
         val startDate = txtleavestart.text.toString()
         val endDate = txtleaveend.text.toString()
-        val remainingDays = txtremainleave.text.toString().toIntOrNull() ?: 0
+        val remainingDays = txtremainleave.text.toString().toIntOrNull()
+
+        // Validate all fields are filled
+        if (selectedLeaveType.isBlank() ||
+            startDate.isBlank() ||
+            endDate.isBlank() ||
+            remainingDays == null) {
+            Toast.makeText(requireContext(), "Please fill in all fields before submitting", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Calculate the requested leave duration
+        val requestedDuration = calculateLeaveDuration(startDate, endDate)
+
+        // Check if requested leave exceeds remaining days
+        if (requestedDuration > remainingDays) {
+            Toast.makeText(requireContext(), "You cannot request more leave days than available", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Fetch the user's manager ID and name for the leave request
         database.reference.child("Users").child(businessID).child("Employees")
@@ -172,8 +196,8 @@ class EmpLeaveFragment : Fragment() {
                         "leaveType" to selectedLeaveType,
                         "startDate" to startDate,
                         "endDate" to endDate,
-                        "remainingDays" to remainingDays,
-                        "duration" to calculateLeaveDuration(startDate, endDate),
+                        "remainingDays" to remainingDays - requestedDuration, // Update remaining days
+                        "duration" to requestedDuration,
                         "requestDate" to requestDate,
                         "status" to "pending"
                     )

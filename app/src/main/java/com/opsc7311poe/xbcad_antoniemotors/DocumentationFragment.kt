@@ -15,6 +15,7 @@ import java.util.concurrent.Executor
 class DocumentationFragment : Fragment() {
 
     private lateinit var invoice: ImageView
+    private lateinit var address: ImageView
     private lateinit var viewInvoices: ImageView
     private lateinit var receipts: ImageView
     private lateinit var viewReceipts: ImageView
@@ -34,6 +35,11 @@ class DocumentationFragment : Fragment() {
         viewInvoices = view.findViewById(R.id.btnpastQuotes)
         receipts = view.findViewById(R.id.btnInvoiceGen)
         viewReceipts = view.findViewById(R.id.btnViewInvoices)
+        address = view.findViewById(R.id.btnAddBuisness)
+
+        address.setOnClickListener {
+            replaceFragment(BusinessAddressFragment())
+        }
 
         // Set click listeners for navigation
         invoice.setOnClickListener {

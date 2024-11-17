@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import QuoteData
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,12 +28,15 @@ class PastReceiptsFragment : Fragment() {
     private lateinit var linLay: LinearLayout
     private lateinit var btnBack: ImageView
     private val receiptsList = mutableListOf<ReceiptData>()  // Updated to hold receipts
+    private lateinit var businessId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_past_receipts, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
         searchInput = view.findViewById(R.id.txtSearch)
         btnBack = view.findViewById(R.id.ivBackButton)
@@ -65,37 +69,39 @@ class PastReceiptsFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
             val database = Firebase.database
-            val receiptsRef = database.getReference("Users").child(userId).child("Receipts")
+            val receiptsRef = database.getReference("Users/$businessId").child("Receipts")
 
             receiptsRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    linLay.removeAllViews()  // Clear previous views
-                    receiptsList.clear()  // Clear list before adding new data
+                    context?.let { ctx ->
+                        linLay.removeAllViews()  // Clear previous views
+                        receiptsList.clear()  // Clear list before adding new data
 
-                    for (receiptSnapshot in snapshot.children) {
-                        val receipt = receiptSnapshot.getValue(ReceiptData::class.java)
+                        for (receiptSnapshot in snapshot.children) {
+                            val receipt = receiptSnapshot.getValue(ReceiptData::class.java)
 
-                        if (receipt != null) {
-                            receiptsList.add(receipt)  // Add each receipt to the list
+                            if (receipt != null) {
+                                receiptsList.add(receipt)  // Add each receipt to the list
 
-                            // Create and populate the card view
-                            val cardView = LayoutInflater.from(requireContext())
-                                .inflate(R.layout.documentationlayout, linLay, false) as CardView
+                                // Create and populate the card view
+                                val cardView = LayoutInflater.from(ctx)
+                                    .inflate(R.layout.documentationlayout, linLay, false) as CardView
 
-                            cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
-                            cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
-                            cardView.findViewById<TextView>(R.id.txtDate).text = "${receipt.dateCreated ?: "0"}"
+                                cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
+                                cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
+                                cardView.findViewById<TextView>(R.id.txtDate).text = "${receipt.dateCreated ?: "0"}"
 
-                            // Set OnClickListener for card view to navigate to receipt details
-                            cardView.setOnClickListener {
-                                val receiptOverviewFragment = ReceiptOverviewFragment()
-                                val bundle = Bundle()
-                                bundle.putString("receiptId", receiptSnapshot.key)
-                                receiptOverviewFragment.arguments = bundle
-                                replaceFragment(receiptOverviewFragment)
+                                // Set OnClickListener for card view to navigate to receipt details
+                                cardView.setOnClickListener {
+                                    val receiptOverviewFragment = ReceiptOverviewFragment()
+                                    val bundle = Bundle()
+                                    bundle.putString("receiptId", receiptSnapshot.key)
+                                    receiptOverviewFragment.arguments = bundle
+                                    replaceFragment(receiptOverviewFragment)
+                                }
+
+                                linLay.addView(cardView)  // Add the card to the container
                             }
-
-                            linLay.addView(cardView)  // Add the card to the container
                         }
                     }
                 }

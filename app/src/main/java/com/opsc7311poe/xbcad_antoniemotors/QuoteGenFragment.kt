@@ -20,6 +20,7 @@ import java.util.*
 class QuoteGenFragment : Fragment() {
 
     private lateinit var spinCustomer: Spinner
+    private lateinit var spinCompanyName: Spinner
     private lateinit var edtLabour: EditText
     private lateinit var txtRvalue: TextView
     private lateinit var btnFinalReview: Button
@@ -36,6 +37,7 @@ class QuoteGenFragment : Fragment() {
     private var totalLabourCost: Double = 0.0
 
     private var selectedCustomerName: String = ""
+    private var selectedCompanyName: String = ""
     private var selectedServiceTypeName: String = ""
 
     private lateinit var auth: FirebaseAuth
@@ -51,9 +53,11 @@ class QuoteGenFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_quote_gen, container, false)
 
-        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null)!!
 
         // Initialize views
+        spinCompanyName = view.findViewById(R.id.spinCompanyName)
         spinCustomer = view.findViewById(R.id.spinCustomer)
         SpinPartName = view.findViewById(R.id.spinPartName)
         edtPartCost = view.findViewById(R.id.edtPartCost)
@@ -69,7 +73,7 @@ class QuoteGenFragment : Fragment() {
         partsList = mutableListOf()
 
         npStockCounter.minValue = 1
-        npStockCounter.maxValue = 1000  // Adjust based on max stock value in Firebase
+        npStockCounter.maxValue = 15
         npStockCounter.wrapSelectorWheel = true
 
         SpinPartName.setSelection(0)
@@ -83,7 +87,8 @@ class QuoteGenFragment : Fragment() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         userId?.let {
             populateCustomerSpinner()
-            populatePartSpinner() // Populate SpinPartName with parts from Firebase
+            populatePartSpinner()
+            populateCompanySpinner()
         }
 
         // Handle back button press
@@ -98,33 +103,94 @@ class QuoteGenFragment : Fragment() {
 
         // Set up add part button
         btnAddPart.setOnClickListener {
-            addPart()
+            if (validateAddPartInput()) addPart()
         }
+
 
         // Add TextWatcher to update total when labor changes
         edtLabour.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 totalLabourCost = s.toString().toDoubleOrNull() ?: 0.0
                 updateTotalQuote()
             }
         })
 
-        // Set up final review button
         btnFinalReview.setOnClickListener {
-            val quoteId = generateReceipt()  // Generate the quote and get the quote ID
-            val bundle = Bundle()
-            bundle.putString("quoteId", quoteId)  // Pass quoteId to the next fragment
+            // Check if labor cost is entered
+            val laborCost = edtLabour.text.toString().trim()
 
-            val quoteOverviewFragment = QuoteOverviewFragment()
-            quoteOverviewFragment.arguments = bundle
-
-            replaceFragment(quoteOverviewFragment)  // Navigate to the receipt overview fragment
+            if (laborCost.isEmpty()) {
+                // If the labor cost is empty, show a toast and do not proceed
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter the labor price to proceed.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // If the labor cost is valid, generate the quote and proceed
+                val quoteId = generateReceipt()
+                val bundle = Bundle()
+                bundle.putString("quoteId", quoteId)
+                val quoteOverviewFragment = QuoteOverviewFragment()
+                quoteOverviewFragment.arguments = bundle
+                replaceFragment(quoteOverviewFragment)
+            }
         }
-
         return view
+    }
+
+    private fun validateAddPartInput(): Boolean {
+        val selectedPartName = SpinPartName.selectedItem?.toString()
+        val partCost = edtPartCost.text.toString().trim()
+
+        if (selectedPartName.isNullOrEmpty() || partCost.isEmpty()) {
+            Toast.makeText(requireContext(), "Please fill in all part details.", Toast.LENGTH_SHORT)
+                .show()
+            return false
+        }
+        return true
+    }
+
+    private fun populateCompanySpinner() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val businessNames = mutableListOf<String>()
+        val partsReference = database.reference.child("Users/$businessId").child("BusinessAddress")
+
+        partsReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (partSnapshot in snapshot.children) {
+                    val businessName = partSnapshot.child("businessName").getValue(String::class.java)
+                    businessName?.let { businessNames.add(it) }
+                }
+
+                if (businessNames.isEmpty()) {
+                    // Display a message if no business addresses are found
+                    Toast.makeText(
+                        context,
+                        "You need to add a business address first.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        businessNames
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinCompanyName.adapter = adapter
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    context,
+                    "Failed to load business names: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
 
     private fun populateCustomerSpinner() {
@@ -134,7 +200,8 @@ class QuoteGenFragment : Fragment() {
             return
         }
 
-        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId).child("Customers")
+        val customerRef = FirebaseDatabase.getInstance().getReference("Users").child(businessId)
+            .child("Customers")
 
         customerRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -142,14 +209,20 @@ class QuoteGenFragment : Fragment() {
                 val customerNames = mutableListOf<String>()
 
                 if (!snapshot.exists()) {
-                    Toast.makeText(requireContext(), "No customers found for this user", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "No customers found for this user",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return
                 }
 
                 for (customerSnapshot in snapshot.children) {
                     val customerId = customerSnapshot.key
-                    val firstName = customerSnapshot.child("CustomerName").getValue(String::class.java)
-                    val lastName = customerSnapshot.child("CustomerSurname").getValue(String::class.java)
+                    val firstName =
+                        customerSnapshot.child("CustomerName").getValue(String::class.java)
+                    val lastName =
+                        customerSnapshot.child("CustomerSurname").getValue(String::class.java)
 
                     if (!firstName.isNullOrEmpty() && !lastName.isNullOrEmpty() && customerId != null) {
                         val fullName = "$firstName $lastName"
@@ -159,16 +232,26 @@ class QuoteGenFragment : Fragment() {
                 }
 
                 if (customerNames.isEmpty()) {
-                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "No customers found", Toast.LENGTH_SHORT)
+                        .show()
                     return
                 }
 
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customerNames)
+                val adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    customerNames
+                )
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 spinCustomer.adapter = adapter
 
                 spinCustomer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
                         selectedCustomerName = parent.getItemAtPosition(position).toString()
                     }
 
@@ -177,7 +260,8 @@ class QuoteGenFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load customers", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to load customers", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -185,7 +269,7 @@ class QuoteGenFragment : Fragment() {
     private fun populatePartSpinner() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val partNames = mutableListOf<String>()
-        val partsReference = database.reference.child("Users").child(userId!!).child("parts")
+        val partsReference = database.reference.child("Users/$businessId").child("parts")
 
         partsReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -193,13 +277,18 @@ class QuoteGenFragment : Fragment() {
                     val partName = partSnapshot.child("partName").getValue(String::class.java)
                     partName?.let { partNames.add(it) }
                 }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, partNames)
+                val adapter =
+                    ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, partNames)
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 SpinPartName.adapter = adapter
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to load parts: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Failed to load parts: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -217,50 +306,18 @@ class QuoteGenFragment : Fragment() {
         val selectedQuantity = npStockCounter.value
 
         if (selectedPartName != null && partCost.isNotEmpty()) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val partsReference = database.reference.child("Users").child(userId!!).child("parts")
+            val partData = mapOf(
+                "name" to selectedPartName,
+                "cost" to partCost,
+                "quantity" to selectedQuantity.toString()
+            )
+            partsList.add(partData)
 
-            partsReference.orderByChild("partName").equalTo(selectedPartName)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            val partSnapshot = snapshot.children.first()
-                            val currentStock = partSnapshot.child("stockCount").getValue(Int::class.java) ?: 0
+            totalPartsCost += partCost.toDouble() * selectedQuantity
+            txtPartsList.text = formatPartsList()
+            updateTotalQuote()
 
-                            if (selectedQuantity <= currentStock) {
-                                val newStockCount = currentStock - selectedQuantity
-                                val partId = partSnapshot.key
-
-                                partsReference.child(partId!!).child("stockCount").setValue(newStockCount)
-                                    .addOnSuccessListener {
-                                        val partData = mapOf(
-                                            "name" to selectedPartName,
-                                            "cost" to partCost,
-                                            "quantity" to selectedQuantity.toString()
-                                        )
-                                        partsList.add(partData)
-
-                                        totalPartsCost += partCost.toDouble() * selectedQuantity
-                                        txtPartsList.text = formatPartsList()
-                                        updateTotalQuote()
-
-                                        clearFields()  // Reset fields after adding the part
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(requireContext(), "Failed to update stock", Toast.LENGTH_SHORT).show()
-                                    }
-                            } else {
-                                Toast.makeText(requireContext(), "Not enough stock available", Toast.LENGTH_SHORT).show()
-                            }
-                        } else {
-                            Toast.makeText(requireContext(), "Part not found", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(requireContext(), "Error adding part: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
-                })
+            clearFields() // Reset fields after adding the part
         } else {
             Toast.makeText(requireContext(), "Please provide part details", Toast.LENGTH_SHORT).show()
         }
@@ -285,41 +342,84 @@ class QuoteGenFragment : Fragment() {
     private fun generateReceipt(): String {
         val userID = FirebaseAuth.getInstance().currentUser?.uid
         if (userID == null) {
-            Toast.makeText(requireContext(), "User not authenticated. Cannot save quote.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "User not authenticated. Cannot save quote.",
+                Toast.LENGTH_SHORT
+            ).show()
             return ""
         }
-
         val quoteId = UUID.randomUUID().toString()
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 
-        val quoteData = QuoteData(
-            id = quoteId,
-            customerName = selectedCustomerName,
-            parts = partsList,
-            labourCost = totalLabourCost.toString(),
-            totalCost = (totalPartsCost + totalLabourCost).toString(),
-            dateCreated = currentDate
-        )
+        val selectedCompanyName = spinCompanyName.selectedItem?.toString() ?: ""
+        if (selectedCompanyName.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a company name.", Toast.LENGTH_SHORT)
+                .show()
+            return ""
+        }
 
-        // Reference the path as "Users/<userID>/Quotes/<quoteId>"
-        val quoteRef = database.getReference("Users").child(userID).child("Quotes").child(quoteId)
-        quoteRef.setValue(quoteData)
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Quote saved!", Toast.LENGTH_SHORT).show()
+        val businessRef = database.reference.child("Users/$businessId/BusinessAddress")
 
-                val bundle = Bundle().apply {
-                    putString("quoteId", quoteId) // Pass the quoteId to the next fragment
+        businessRef.orderByChild("businessName").equalTo(selectedCompanyName)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (businessSnapshot in snapshot.children) {
+                        val streetName =
+                            businessSnapshot.child("streetName").getValue(String::class.java)
+                        val city = businessSnapshot.child("city").getValue(String::class.java)
+                        val postCode = businessSnapshot.child("postCode").getValue(Int::class.java)
+                        val suburb = businessSnapshot.child("suburb").getValue(String::class.java)
+
+                        val quoteData = QuoteData(
+                            id = quoteId,
+                            companyName = selectedCompanyName,
+                            customerName = selectedCustomerName,
+                            parts = partsList,
+                            labourCost = totalLabourCost.toString(),
+                            totalCost = (totalPartsCost + totalLabourCost).toString(),
+                            dateCreated = currentDate,
+                            streetName = streetName,
+                            city = city,
+                            postCode = postCode,
+                            suburb = suburb
+                        )
+
+                        val quoteRef =
+                            database.reference.child("Users/$businessId/Quotes").child(quoteId)
+                        quoteRef.setValue(quoteData)
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), "Quote saved!", Toast.LENGTH_SHORT)
+                                    .show()
+
+                                val bundle = Bundle().apply {
+                                    putString("quoteId", quoteId)
+                                }
+                                val quoteOverviewFragment = QuoteOverviewFragment().apply {
+                                    arguments = bundle
+                                }
+                                replaceFragment(quoteOverviewFragment)
+                            }
+                            .addOnFailureListener { error ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Failed to save quote data: ${error.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                    }
                 }
-                val quoteOverviewFragment = QuoteOverviewFragment().apply {
-                    arguments = bundle
-                }
-                replaceFragment(quoteOverviewFragment)
-            }
-            .addOnFailureListener { error ->
-                Toast.makeText(requireContext(), "Failed to save quote data: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
 
-        return quoteId // Returning the quoteId to pass it to the next fragment
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Failed to fetch business address details: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+
+        return quoteId
     }
 
     private fun replaceFragment(fragment: Fragment) {
