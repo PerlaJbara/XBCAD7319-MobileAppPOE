@@ -1,7 +1,14 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +22,7 @@ import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.app.NotificationCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -133,8 +141,8 @@ class TasksFragment : Fragment() {
                             val txtCompletedDate =
                                 taskCardView.findViewById<TextView>(R.id.txtDateCompleted)
                             val imgStatus = taskCardView.findViewById<ImageView>(R.id.imgStatus)
-                            val imgChangeStatus =
-                                taskCardView.findViewById<ImageView>(R.id.imgChangeStatus)
+                            val imgChangeStatus = taskCardView.findViewById<ImageView>(R.id.imgChangeStatus)
+                            val imgRemindMe = taskCardView.findViewById<ImageView>(R.id.imgRemindMe)
                             val btnSaveChanges = taskCardView.findViewById<Button>(R.id.btnSave)
 
                             //temp status for saving changes
@@ -185,6 +193,21 @@ class TasksFragment : Fragment() {
                                 saveStatus(task.taskID, tempStatus)
                             }
 
+                            imgRemindMe.setOnClickListener {
+                                val alarmOptions = arrayOf("5 Minutes", "30 Minutes", "1 Hour")
+                                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                    .setTitle("Remind me about task in...")
+                                    .setItems(alarmOptions) { _, which ->
+                                        when (which) {
+                                            0 -> if (checkExactAlarmPermission()){setAlarm(5, task.taskName ?: "Unnamed Task")}
+                                            1 -> if (checkExactAlarmPermission()){setAlarm(30, task.taskName ?: "Unnamed Task")}
+                                            2 -> if (checkExactAlarmPermission()){setAlarm(60, task.taskName ?: "Unnamed Task")}
+                                        }
+                                    }
+                                    .setNegativeButton("Cancel", null)
+                                    .show()
+                            }
+
 
                             // Add the populated task card to the scroll view container
                             svlinlay.addView(taskCardView)
@@ -197,6 +220,57 @@ class TasksFragment : Fragment() {
                 Toast.makeText(requireContext(), "Failed to load tasks", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun setAlarm(time: Int, taskName: String) {
+
+        val context = requireContext()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Create an Intent to send the notification
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("taskName", taskName) // Pass the taskName to the receiver
+        }
+
+        // Use a unique request code for the pending intent
+        val requestCode = System.currentTimeMillis().toInt()
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        // Calculate the trigger time in milliseconds
+        val triggerTimeMillis = System.currentTimeMillis() + (time * 60 * 1000L)
+
+        // Set the alarm
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            triggerTimeMillis,
+            pendingIntent
+        )
+
+        Toast.makeText(context, "Notification set for $time minutes from now", Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun checkExactAlarmPermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            if (!alarmManager.canScheduleExactAlarms()) {
+                requestExactAlarmPermission()
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun requestExactAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+            startActivity(intent)
+        }
     }
 
     private fun loadTasksFromList(inputList: MutableList<EmpTask>) {

@@ -195,6 +195,15 @@
                     android:text="Save \nChanges"
                     android:textSize="14sp"/>
 
+                <ImageView
+                    android:id="@+id/imgRemindMe"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/vector_remindme"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
 
             </TableRow>
         </TableLayout>
