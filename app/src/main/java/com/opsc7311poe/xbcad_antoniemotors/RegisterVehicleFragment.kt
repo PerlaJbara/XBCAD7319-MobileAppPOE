@@ -799,12 +799,43 @@ class RegisterVehicleFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_IMAGE_CAPTURE -> {
+                    // Get the image URI from CameraCaptureActivity
+                    val imageUri = data?.getStringExtra("imageUri")?.let { Uri.parse(it) }
+                    imageUri?.let {
+                        try {
+                            // Load the image as a bitmap
+                            val bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, it)
+
+                            // Pass the bitmap for further handling (e.g., displaying or saving)
+                            handleCameraImage(bitmap)
+
+                            // Optionally save the image back with higher quality
+                            val newUri = getImageUriFromBitmap(requireContext(), bitmap)
+                            newUri?.let { savedUri ->
+                                // Log or display the new saved URI if needed
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_IMAGE_CAPTURE -> {
                     // Handle the captured image returned from CameraCaptureActivity
                     handleCameraImage(data)
                 }
             }
         }
-    }
+    }*/
 
 
 
@@ -829,7 +860,7 @@ class RegisterVehicleFragment : Fragment() {
         return try {
             if (imageUri != null) {
                 resolver.openOutputStream(imageUri)?.use { outputStream ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 }
             }
             imageUri
@@ -865,10 +896,39 @@ class RegisterVehicleFragment : Fragment() {
     }
 
 
+    private fun handleCameraImage(bitmap: Bitmap) {
+        val tempUri = getImageUriFromBitmap(requireContext(), bitmap)
+
+        if (tempUri != null) {
+            when (currentSide) {
+                "front" -> {
+                    frontImageUris.add(tempUri)
+                    displayFront.adapter?.notifyDataSetChanged()
+                }
+                "right" -> {
+                    rightImageUris.add(tempUri)
+                    displayRight.adapter?.notifyDataSetChanged()
+                }
+                "rear" -> {
+                    rearImageUris.add(tempUri)
+                    displayRear.adapter?.notifyDataSetChanged()
+                }
+                "left" -> {
+                    leftImageUris.add(tempUri)
+                    displayLeft.adapter?.notifyDataSetChanged()
+                }
+                else -> {
+                    Toast.makeText(requireContext(), "Unknown side: $currentSide", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
 
-    private fun handleCameraImage(data: Intent?) {
+    /*private fun handleCameraImage(data: Intent?) {
         val photoBitmap = data?.extras?.get("data") as? Bitmap
         if (photoBitmap == null) {
             Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()
@@ -902,7 +962,7 @@ class RegisterVehicleFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Failed to capture image. Please try again.", Toast.LENGTH_SHORT).show()
         }
-    }
+    }*/
 
 
     private fun replaceFragment(fragment: Fragment) {
