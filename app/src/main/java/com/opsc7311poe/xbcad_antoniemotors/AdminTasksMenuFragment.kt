@@ -11,6 +11,8 @@ class AdminTasksMenuFragment : Fragment() {
 
     private lateinit var imgbtnassigntask: ImageView
     private lateinit var imgbtnchecktask: ImageView
+    private lateinit var btnBack: ImageView
+
     //private lateinit var imgbtnApprovetask: ImageView
 
     override fun onCreateView(
@@ -20,6 +22,7 @@ class AdminTasksMenuFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_admin_tasks_menu, container, false)
 
+        btnBack = view.findViewById(R.id.ivBackButton)
         //handling naviagtion for each button
         imgbtnassigntask = view.findViewById(R.id.imgbtnassigntask)
         imgbtnassigntask.setOnClickListener {
@@ -29,6 +32,10 @@ class AdminTasksMenuFragment : Fragment() {
         imgbtnchecktask = view.findViewById(R.id.imgbtnchecktask)
         imgbtnchecktask.setOnClickListener {
             replaceFragment(CheckTaskStatus())
+        }
+
+        btnBack.setOnClickListener {
+            replaceFragment(AdminEmpFragment())
         }
 
         /*imgbtnApprovetask = view.findViewById(R.id.imgbtnApprovetask)
