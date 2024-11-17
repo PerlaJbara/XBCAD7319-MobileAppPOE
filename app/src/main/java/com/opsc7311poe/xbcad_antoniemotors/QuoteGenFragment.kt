@@ -306,68 +306,20 @@ class QuoteGenFragment : Fragment() {
         val selectedQuantity = npStockCounter.value
 
         if (selectedPartName != null && partCost.isNotEmpty()) {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid
-            val partsReference = database.reference.child("Users/$businessId").child("parts")
+            val partData = mapOf(
+                "name" to selectedPartName,
+                "cost" to partCost,
+                "quantity" to selectedQuantity.toString()
+            )
+            partsList.add(partData)
 
-            partsReference.orderByChild("partName").equalTo(selectedPartName)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        if (snapshot.exists()) {
-                            val partSnapshot = snapshot.children.first()
-                            val currentStock =
-                                partSnapshot.child("stockCount").getValue(Int::class.java) ?: 0
+            totalPartsCost += partCost.toDouble() * selectedQuantity
+            txtPartsList.text = formatPartsList()
+            updateTotalQuote()
 
-                            if (selectedQuantity <= currentStock) {
-                                val newStockCount = currentStock - selectedQuantity
-                                val partId = partSnapshot.key
-
-                                partsReference.child(partId!!).child("stockCount")
-                                    .setValue(newStockCount)
-                                    .addOnSuccessListener {
-                                        val partData = mapOf(
-                                            "name" to selectedPartName,
-                                            "cost" to partCost,
-                                            "quantity" to selectedQuantity.toString()
-                                        )
-                                        partsList.add(partData)
-
-                                        totalPartsCost += partCost.toDouble() * selectedQuantity
-                                        txtPartsList.text = formatPartsList()
-                                        updateTotalQuote()
-
-                                        clearFields()  // Reset fields after adding the part
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Failed to update stock",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Not enough stock available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        } else {
-                            Toast.makeText(requireContext(), "Part not found", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Error adding part: ${error.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
+            clearFields() // Reset fields after adding the part
         } else {
-            Toast.makeText(requireContext(), "Please provide part details", Toast.LENGTH_SHORT)
-                .show()
+            Toast.makeText(requireContext(), "Please provide part details", Toast.LENGTH_SHORT).show()
         }
     }
 
