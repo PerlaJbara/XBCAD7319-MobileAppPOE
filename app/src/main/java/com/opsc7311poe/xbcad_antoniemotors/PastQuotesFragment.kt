@@ -73,35 +73,47 @@ class PastQuotesFragment : Fragment() {
 
             receiptsRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (!isAdded) return  // Ensure the fragment is attached
+                    if (!isAdded) return
 
-                    linLay.removeAllViews()  // Clear previous views
-                    receiptsList.clear()  // Clear list before adding new data
+                    linLay.removeAllViews()
+                    receiptsList.clear()
 
-                    for (receiptSnapshot in snapshot.children) {
-                        val quote = receiptSnapshot.getValue(ReceiptData::class.java)
+                    // Check if there are any quotes
+                    if (!snapshot.exists()) {
+                        // If no quotes, display a message
+                        val noQuotesMessage = TextView(context).apply {
+                            text = "No quotes have been made, please add one."
+                            setTextSize(16f)
+                            setPadding(16, 16, 16, 16)
+                        }
+                        linLay.addView(noQuotesMessage)  // Add the message to the layout
+                    } else {
+                        // If there are quotes, populate the list and display them
+                        for (receiptSnapshot in snapshot.children) {
+                            val quote = receiptSnapshot.getValue(ReceiptData::class.java)
 
-                        if (quote != null) {
-                            receiptsList.add(quote)  // Add each receipt to the list
+                            if (quote != null) {
+                                receiptsList.add(quote)  // Add each receipt to the list
 
-                            // Create and populate the card view
-                            val cardView = LayoutInflater.from(context)
-                                .inflate(R.layout.documentationlayout, linLay, false) as CardView
+                                // Create and populate the card view
+                                val cardView = LayoutInflater.from(context)
+                                    .inflate(R.layout.documentationlayout, linLay, false) as CardView
 
-                            cardView.findViewById<TextView>(R.id.txtCustName).text = quote.customerName ?: "Unknown"
-                            cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${quote.totalCost ?: "0"}"
-                            cardView.findViewById<TextView>(R.id.txtDate).text = quote.dateCreated ?: "Unknown"
+                                cardView.findViewById<TextView>(R.id.txtCustName).text = quote.customerName ?: "Unknown"
+                                cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${quote.totalCost ?: "0"}"
+                                cardView.findViewById<TextView>(R.id.txtDate).text = quote.dateCreated ?: "Unknown"
 
-                            // Set OnClickListener for card view to navigate to receipt details
-                            cardView.setOnClickListener {
-                                val quoteOverviewFragment = QuoteOverviewFragment()
-                                val bundle = Bundle()
-                                bundle.putString("quoteId", receiptSnapshot.key)
-                                quoteOverviewFragment.arguments = bundle
-                                replaceFragment(quoteOverviewFragment)
+                                // Set OnClickListener for card view to navigate to receipt details
+                                cardView.setOnClickListener {
+                                    val quoteOverviewFragment = QuoteOverviewFragment()
+                                    val bundle = Bundle()
+                                    bundle.putString("quoteId", receiptSnapshot.key)
+                                    quoteOverviewFragment.arguments = bundle
+                                    replaceFragment(quoteOverviewFragment)
+                                }
+
+                                linLay.addView(cardView)  // Add the card to the container
                             }
-
-                            linLay.addView(cardView)  // Add the card to the container
                         }
                     }
                 }
@@ -112,6 +124,7 @@ class PastQuotesFragment : Fragment() {
             })
         }
     }
+
 
     private fun searchReceipts(query: String) {
         val filteredReceipts = receiptsList.filter {

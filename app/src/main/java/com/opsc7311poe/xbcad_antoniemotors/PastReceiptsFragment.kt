@@ -77,30 +77,41 @@ class PastReceiptsFragment : Fragment() {
                         linLay.removeAllViews()  // Clear previous views
                         receiptsList.clear()  // Clear list before adding new data
 
-                        for (receiptSnapshot in snapshot.children) {
-                            val receipt = receiptSnapshot.getValue(ReceiptData::class.java)
+                        if (!snapshot.exists()) {
+                            // No receipts available, show a message
+                            val noReceiptsMessage = TextView(ctx).apply {
+                                text = "No receipts have been made, please add one."
+                                textSize = 16f
+                                setPadding(16, 16, 16, 16)
+                            }
+                            linLay.addView(noReceiptsMessage)
+                        } else {
+                            // Receipts exist, process them
+                            for (receiptSnapshot in snapshot.children) {
+                                val receipt = receiptSnapshot.getValue(ReceiptData::class.java)
 
-                            if (receipt != null) {
-                                receiptsList.add(receipt)  // Add each receipt to the list
+                                if (receipt != null) {
+                                    receiptsList.add(receipt)  // Add each receipt to the list
 
-                                // Create and populate the card view
-                                val cardView = LayoutInflater.from(ctx)
-                                    .inflate(R.layout.documentationlayout, linLay, false) as CardView
+                                    // Create and populate the card view
+                                    val cardView = LayoutInflater.from(ctx)
+                                        .inflate(R.layout.documentationlayout, linLay, false) as CardView
 
-                                cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
-                                cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
-                                cardView.findViewById<TextView>(R.id.txtDate).text = "${receipt.dateCreated ?: "0"}"
+                                    cardView.findViewById<TextView>(R.id.txtCustName).text = receipt.customerName ?: "Unknown"
+                                    cardView.findViewById<TextView>(R.id.txtPrice).text = "R ${receipt.totalCost ?: "0"}"
+                                    cardView.findViewById<TextView>(R.id.txtDate).text = "${receipt.dateCreated ?: "0"}"
 
-                                // Set OnClickListener for card view to navigate to receipt details
-                                cardView.setOnClickListener {
-                                    val receiptOverviewFragment = ReceiptOverviewFragment()
-                                    val bundle = Bundle()
-                                    bundle.putString("receiptId", receiptSnapshot.key)
-                                    receiptOverviewFragment.arguments = bundle
-                                    replaceFragment(receiptOverviewFragment)
+                                    // Set OnClickListener for card view to navigate to receipt details
+                                    cardView.setOnClickListener {
+                                        val receiptOverviewFragment = ReceiptOverviewFragment()
+                                        val bundle = Bundle()
+                                        bundle.putString("receiptId", receiptSnapshot.key)
+                                        receiptOverviewFragment.arguments = bundle
+                                        replaceFragment(receiptOverviewFragment)
+                                    }
+
+                                    linLay.addView(cardView)  // Add the card to the container
                                 }
-
-                                linLay.addView(cardView)  // Add the card to the container
                             }
                         }
                     }

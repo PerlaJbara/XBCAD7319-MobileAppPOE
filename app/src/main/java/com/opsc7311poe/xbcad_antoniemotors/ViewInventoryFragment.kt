@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -38,6 +39,7 @@ class ViewInventoryFragment : Fragment() {
     private val auth = FirebaseAuth.getInstance()
     private lateinit var btnBack: ImageView
     private lateinit var businessId: String
+    private lateinit var txtNoData: TextView
 
     private val REQUEST_CODE_NOTIFICATION_PERMISSION = 1001
 
@@ -142,6 +144,14 @@ class ViewInventoryFragment : Fragment() {
                         }
                     }
 
+                    // Show or hide the no-data message
+                    val noDataMessage = view?.findViewById<TextView>(R.id.txtNoData)
+                    if (partsList.isEmpty()) {
+                        noDataMessage?.visibility = View.VISIBLE
+                    } else {
+                        noDataMessage?.visibility = View.GONE
+                    }
+
                     // Sort and display the parts list
                     allPartsList = partsList.sortedBy { it.partName?.toLowerCase() ?: "" }
                     adapter.submitList(allPartsList) // Display full list initially
@@ -152,6 +162,7 @@ class ViewInventoryFragment : Fragment() {
                 }
             })
     }
+
 
 
     private fun filterParts(query: String) {
