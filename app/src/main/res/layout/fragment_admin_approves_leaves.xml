@@ -36,8 +36,7 @@
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="45sp"
-                android:paddingTop="60dp"/>
-
+                android:paddingTop="60dp" />
 
             <ImageView
                 android:id="@+id/ivBackButton"
@@ -53,7 +52,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- TextView for 'No pending leave requests' -->
+            <TextView
+                android:id="@+id/txtNoLeaveRequests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="No pending leave requests"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:visibility="gone"/>
 
             <ScrollView
                 android:id="@+id/scrllleaveapp"
@@ -66,12 +78,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
+
             </ScrollView>
 
         </LinearLayout>
 
     </LinearLayout>
 
-
 </FrameLayout>
-

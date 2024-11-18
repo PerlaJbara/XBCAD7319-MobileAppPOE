@@ -23,6 +23,7 @@ import java.util.Locale
 
 class AdminApprovesLeaves : Fragment() {
     private lateinit var leaveRequestContainer: LinearLayout
+    private lateinit var txtNoLeaveRequests: TextView
     private lateinit var businessID: String
     private lateinit var btnBack: ImageView
     private val database = Firebase.database
@@ -36,6 +37,8 @@ class AdminApprovesLeaves : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_admin_approves_leaves, container, false)
         leaveRequestContainer = view.findViewById(R.id.leaveRequestContainer)
+
+        txtNoLeaveRequests = view.findViewById(R.id.txtNoLeaveRequests)
 
         btnBack = view.findViewById(R.id.ivBackButton)
 
@@ -82,21 +85,47 @@ class AdminApprovesLeaves : Fragment() {
     // Fetch leave requests for the business where managerID matches the logged-in admin
     private fun fetchLeaveRequestsForBusiness(businessId: String, managerId: String) {
         val employeesRef = database.reference.child("Users").child(businessId).child("Employees")
+        var hasRequests = false
+        var pendingCallbacks = 0 // Track the number of callbacks still running
 
         employeesRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-               // leaveRequestContainer.removeAllViews()  // Clear previous leave requests
+                leaveRequestContainer.removeAllViews() // Clear previous leave requests
+                txtNoLeaveRequests.visibility = View.GONE // Hide message initially
+                val employees = snapshot.children.toList()
 
-                // Loop through all employees
-                for (employeeSnapshot in snapshot.children) {
+                if (employees.isEmpty()) {
+                    // No employees found
+                    txtNoLeaveRequests.visibility = View.VISIBLE
+                    return
+                }
+
+                for (employeeSnapshot in employees) {
                     val employeeId = employeeSnapshot.key
                     val managerID = employeeSnapshot.child("managerID").getValue(String::class.java)
 
-                    // Check if the managerID matches the logged-in admin's ID
                     if (managerID == managerId) {
-                        // Now fetch the pending leave requests for this employee
-                        fetchPendingLeaveRequests(businessId, employeeId)
+                        pendingCallbacks++ // Increment pending callbacks
+                        fetchPendingLeaveRequests(businessId, employeeId) { hasEmployeeRequests ->
+                            if (hasEmployeeRequests) {
+                                hasRequests = true
+                            }
+                            pendingCallbacks-- // Decrement when callback finishes
+
+                            // Check if all callbacks are done
+                            if (pendingCallbacks == 0) {
+                                // Update visibility based on whether requests were found
+                                if (!hasRequests) {
+                                    txtNoLeaveRequests.visibility = View.VISIBLE
+                                }
+                            }
+                        }
                     }
+                }
+
+                // If no employees matched, show the "No Requests" message
+                if (pendingCallbacks == 0 && !hasRequests) {
+                    txtNoLeaveRequests.visibility = View.VISIBLE
                 }
             }
 
@@ -107,30 +136,41 @@ class AdminApprovesLeaves : Fragment() {
     }
 
     // Fetch pending leave requests for the employee
-    private fun fetchPendingLeaveRequests(businessId: String, employeeId: String?) {
-        if (employeeId == null) return
+    private fun fetchPendingLeaveRequests(
+        businessId: String,
+        employeeId: String?,
+        callback: (Boolean) -> Unit
+    ) {
+        if (employeeId == null) {
+            callback(false)
+            return
+        }
 
         val leaveRef = database.reference.child("Users").child(businessId).child("Employees")
             .child(employeeId).child("PendingLeave")
 
         leaveRef.orderByChild("status").equalTo("pending").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                for (leaveSnapshot in snapshot.children) {
-                    val leaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
-                    val startDate = leaveSnapshot.child("startDate").getValue(String::class.java) ?: "N/A"
-                    val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: "N/A"
+                if (snapshot.exists()) {
+                    for (leaveSnapshot in snapshot.children) {
+                        val leaveType = leaveSnapshot.child("leaveType").getValue(String::class.java) ?: "N/A"
+                        val startDate = leaveSnapshot.child("startDate").getValue(String::class.java) ?: "N/A"
+                        val endDate = leaveSnapshot.child("endDate").getValue(String::class.java) ?: "N/A"
 
-                    // Fetch employee name and add the leave request to the UI
-                    fetchEmployeeName(employeeId, leaveType, startDate, endDate, businessId)
+                        fetchEmployeeName(employeeId, leaveType, startDate, endDate, businessId)
+                    }
+                    callback(true) // Found pending requests
+                } else {
+                    callback(false) // No pending requests
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(requireContext(), "Failed to fetch leave requests", Toast.LENGTH_SHORT).show()
+                callback(false)
             }
         })
     }
-
     // Fetch the full name of the employee
     private fun fetchEmployeeName(employeeId: String, leaveType: String, startDate: String, endDate: String, businessId: String) {
         val employeeRef = database.reference.child("Users").child(businessId).child("Employees").child(employeeId)
