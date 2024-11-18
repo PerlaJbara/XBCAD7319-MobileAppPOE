@@ -164,10 +164,7 @@ class EmpLeaveFragment : Fragment() {
         val remainingDays = txtremainleave.text.toString().toIntOrNull()
 
         // Validate all fields are filled
-        if (selectedLeaveType.isBlank() ||
-            startDate.isBlank() ||
-            endDate.isBlank() ||
-            remainingDays == null) {
+        if (selectedLeaveType.isBlank() || startDate.isBlank() || endDate.isBlank() || remainingDays == null) {
             Toast.makeText(requireContext(), "Please fill in all fields before submitting", Toast.LENGTH_SHORT).show()
             return
         }
@@ -181,7 +178,36 @@ class EmpLeaveFragment : Fragment() {
             return
         }
 
-        // Fetch the user's manager ID and name for the leave request
+        // Check for existing pending requests
+        val pendingLeaveRef = database.reference.child("Users").child(businessID)
+            .child("Employees").child(currentUserId).child("PendingLeave")
+
+        pendingLeaveRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // If there are pending requests, show an error message
+                    Toast.makeText(requireContext(), "You already have a pending leave request. Please wait for it to be processed.", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Proceed to submit the leave request
+                    submitLeaveRequestToDatabase(currentUserId, selectedLeaveType, startDate, endDate, remainingDays, requestedDuration)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Failed to check pending leave requests", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Submit leave request data to Firebase
+    private fun submitLeaveRequestToDatabase(
+        currentUserId: String,
+        selectedLeaveType: String,
+        startDate: String,
+        endDate: String,
+        remainingDays: Int,
+        requestedDuration: Int
+    ) {
         database.reference.child("Users").child(businessID).child("Employees")
             .child(currentUserId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
