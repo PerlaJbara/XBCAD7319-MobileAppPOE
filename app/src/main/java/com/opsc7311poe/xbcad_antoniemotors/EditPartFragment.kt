@@ -1,6 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ class EditPartFragment : Fragment() {
     private lateinit var deleteButton: Button
     private lateinit var database: DatabaseReference
     private val auth = FirebaseAuth.getInstance()
+    private lateinit var businessId: String
 
     private var partId: String? = null
 
@@ -32,6 +34,9 @@ class EditPartFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_edit_part, container, false)
+
+        businessId = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            .getString("business_id", null)!!
 
         partNameEditText = view.findViewById(R.id.edtPartName)
         partDescriptionEditText = view.findViewById(R.id.edtPartDescription)
@@ -118,7 +123,7 @@ class EditPartFragment : Fragment() {
             "costPrice" to costPrice
         )
 
-        database.child("Users").child(userId).child("parts").child(partId!!)
+        database.child("Users").child(businessId).child("parts").child(partId!!)
             .updateChildren(partData)
             .addOnSuccessListener {
                 Toast.makeText(context, "Part updated successfully", Toast.LENGTH_SHORT).show()
@@ -152,7 +157,7 @@ class EditPartFragment : Fragment() {
         }
         val userId = currentUser.uid
 
-        database.child("Users").child(userId).child("parts").child(partId!!)
+        database.child("Users").child(businessId).child("parts").child(partId!!)
             .removeValue()
             .addOnSuccessListener {
                 Toast.makeText(context, "Part deleted successfully", Toast.LENGTH_SHORT).show()
