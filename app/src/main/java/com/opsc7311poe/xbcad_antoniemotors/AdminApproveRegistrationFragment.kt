@@ -53,6 +53,8 @@ class AdminApproveRegistrationFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 linlayEmployees.removeAllViews() // Clear layout
 
+                var hasPendingUsers = false // Flag to check if there are pending users
+
                 // Loop through each business node
                 for (businessSnapshot in snapshot.children) {
                     val businessId = businessSnapshot.key ?: continue
@@ -70,9 +72,20 @@ class AdminApproveRegistrationFragment : Fragment() {
                             // Display only employees with matching managerID
                             if (firstName != null && lastName != null && role != null && userId != null && managerId == adminId) {
                                 addEmployeeToLayout("$firstName $lastName", role, userId, businessId)
+                                hasPendingUsers = true
                             }
                         }
                     }
+                }
+
+                // Dynamically add the "No Pending Requests" message if no pending users were found
+                if (!hasPendingUsers) {
+                    val noPendingTextView = TextView(context)
+                    noPendingTextView.text = "No Pending Requests"
+                    noPendingTextView.textSize = 18f
+                    noPendingTextView.setPadding(16, 16, 16, 16)
+                    noPendingTextView.setTextColor(resources.getColor(android.R.color.black))
+                    linlayEmployees.addView(noPendingTextView)
                 }
             }
 
@@ -85,7 +98,6 @@ class AdminApproveRegistrationFragment : Fragment() {
     private fun replaceFragment(fragment: Fragment) {
         activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.frame_container, fragment)?.commit()
     }
-
 
     private fun addEmployeeToLayout(
         name: String,
