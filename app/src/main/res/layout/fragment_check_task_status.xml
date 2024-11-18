@@ -127,9 +127,19 @@
                 android:id="@+id/svlinlay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/fontpoppinsmedium"
+                    android:layout_marginHorizontal="25dp"
+                    android:text="There are no tasks to display" />
+               </LinearLayout>
 
         </ScrollView>
+
 
     </LinearLayout>
 
