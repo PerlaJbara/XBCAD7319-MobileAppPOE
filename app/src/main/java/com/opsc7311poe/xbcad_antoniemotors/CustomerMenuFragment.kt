@@ -1,5 +1,7 @@
 package com.opsc7311poe.xbcad_antoniemotors
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -43,11 +45,14 @@ class CustomerMenuFragment : Fragment() {
         }
 
 
-       /* //this is where we'll have to add the link to the web page when the website is hosted officially
+        //this is where we'll have to add the link to the web page when the website is hosted officially
         btnRegNewCust.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
-            replaceFragment(HomeFragment())
-        }*/
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://antoniemotors-aqaxebguhdaeesfj.southafricanorth-01.azurewebsites.net")
+            context?.startActivity(intent)
+        }
+
+        /*https://antoniemotors-aqaxebguhdaeesfj.southafricanorth-01.azurewebsites.net*/
 
     }
 
