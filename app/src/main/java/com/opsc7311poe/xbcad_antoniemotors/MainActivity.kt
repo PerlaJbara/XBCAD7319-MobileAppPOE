@@ -290,7 +290,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
+//300 commits yay!
     fun resetCompletedTasks() {
         // Get today's date
         val today = Calendar.getInstance()
