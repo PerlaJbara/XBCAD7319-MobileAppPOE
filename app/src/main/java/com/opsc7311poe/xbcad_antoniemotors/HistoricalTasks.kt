@@ -18,7 +18,7 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoricalTasks : Fragment() {
+class  HistoricalTasks : Fragment() {
 
     private lateinit var svTasksOld: ScrollView // Reference to the ScrollView
     private lateinit var taskContainer: LinearLayout // Reference to the LinearLayout inside ScrollView
@@ -135,14 +135,17 @@ class HistoricalTasks : Fragment() {
                 }
 
                 // Remove the `completedDate` field
-                taskRef?.child("completedDate")?.removeValue()
-                    ?.addOnSuccessListener {
-                        Toast.makeText(context, "Task restored successfully", Toast.LENGTH_SHORT).show()
-                        fetchCompletedTasks() // Refresh the list of completed tasks after restoring
-                    }
-                    ?.addOnFailureListener { error ->
-                        Toast.makeText(context, "Failed to restore task: ${error.message}", Toast.LENGTH_SHORT).show()
-                    }
+                taskRef?.updateChildren(
+                    mapOf(
+                        "taskCompletedDate" to null,
+                        "completedDate" to null
+                    )
+                )?.addOnSuccessListener {
+                    Toast.makeText(context, "Task restored successfully", Toast.LENGTH_SHORT).show()
+                    fetchCompletedTasks() // Refreshes tasks list
+                }?.addOnFailureListener { error ->
+                    Toast.makeText(context, "Failed to restore task: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             // Add the task view to the LinearLayout container inside ScrollView
