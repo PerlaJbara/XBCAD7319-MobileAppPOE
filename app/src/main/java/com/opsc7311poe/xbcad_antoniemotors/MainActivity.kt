@@ -21,6 +21,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+//Group Name : Tech Fusion
+//Members:
+/*Perla Jbara – ST10022447
+ Gabriella Janssen – ST10034968
+ Mauro Coelho – ST10080441
+ Lee Knowles -ST10051449
+ Daniel Antonie – ST10186731*/
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(R.layout.activity_main)
-
 
         businessId = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE).getString("business_id", null)!!
 
